@@ -1,10 +1,10 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme {
   --color-primary: #ffffff;
   --color-ink: #ffffff;
-  --color-body: #bbbbbb;
+  --color-body-text: #bbbbbb;
   --color-body-strong: #e6e6e6;
   --color-muted: #7e7e7e;
   --color-hairline: #3c3c3c;
@@ -23,26 +23,46 @@
   --color-carbon-gray: #2b2b2b;
   --color-warning: #f4b400;
   --color-success: #0fa336;
-  
-  --font-sans: "Space Grotesk", "Inter", ui-sans-serif, system-ui, sans-serif;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
   body {
-    @apply bg-canvas text-body font-sans antialiased;
+    @apply bg-canvas text-body-text font-sans antialiased overflow-x-hidden;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply text-ink font-bold;
+    @apply text-ink font-bold tracking-tight;
   }
 }
 
 @layer components {
   .btn-primary {
-    @apply h-12 px-8 bg-primary text-on-primary font-bold uppercase tracking-[1.5px] text-sm flex items-center justify-center transition-all hover:opacity-90;
+    @apply h-12 px-8 rounded-full bg-primary text-on-primary font-medium flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)];
   }
   
+  .btn-secondary {
+    @apply h-12 px-8 rounded-full bg-electric-blue text-white font-medium flex items-center justify-center transition-all hover:bg-m-blue-dark hover:scale-105 active:scale-95 shadow-lg shadow-electric-blue/20;
+  }
+
   .btn-outline {
-    @apply h-12 px-8 bg-transparent border border-hairline text-primary font-bold uppercase tracking-[1.5px] text-sm flex items-center justify-center transition-all hover:bg-white/5 hover:border-primary;
+    @apply h-12 px-8 rounded-full bg-transparent border border-hairline text-ink font-medium flex items-center justify-center transition-all hover:border-body-text hover:bg-surface-card active:scale-95;
   }
 }
+
+/* Custom Scrollbar for a premium feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-canvas);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+

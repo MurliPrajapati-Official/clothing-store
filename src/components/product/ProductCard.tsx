@@ -24,29 +24,30 @@ export default function ProductCard({ product }: ProductCardProps) {
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="group"
+      variants={{
+        hidden: { opacity: 0, y: 30, scale: 0.95 },
+        visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+      }}
+      className="group bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:-translate-y-2 transition-all duration-500 border border-hairline"
     >
       <Link to={`/product/${product.slug}`} className="block">
-        <div className="relative aspect-[4/5] overflow-hidden bg-surface-card border border-hairline">
+        <div className="relative aspect-[4/5] overflow-hidden bg-canvas">
           <img 
             src={product.images[0]} 
             alt={product.name}
-            className="h-full w-full object-cover grayscale brightness-75 transition-all duration-700 group-hover:scale-105 group-hover:grayscale-0 group-hover:brightness-100"
+            className="h-full w-full object-cover transition-transform duration-[800ms] group-hover:scale-110"
             referrerPolicy="no-referrer"
           />
           
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             {product.originalPrice && (
-              <span className="bg-m-red text-white text-[9px] font-black px-2 py-1 uppercase tracking-widest">
-                Special
+              <span className="bg-m-red text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                Sale
               </span>
             )}
             {product.isFeatured && (
-              <span className="bg-primary text-on-primary text-[9px] font-black px-2 py-1 uppercase tracking-widest">
-                Popular
+              <span className="bg-primary text-on-primary text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-[0_2px_10px_rgba(255,255,255,0.1)]">
+                Bestseller
               </span>
             )}
           </div>
@@ -54,34 +55,38 @@ export default function ProductCard({ product }: ProductCardProps) {
           <button 
             onClick={toggleWishlist}
             className={
-              `absolute top-4 right-4 p-2.5 rounded-full transition-all duration-300
-              ${exists ? 'bg-m-red text-white' : 'bg-canvas/40 backdrop-blur-md text-white hover:bg-white hover:text-black border border-white/10'}`
+              `absolute top-4 right-4 p-2.5 rounded-full transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.5)]
+              ${exists ? 'bg-m-red text-white' : 'bg-surface-card/80 backdrop-blur-md text-ink hover:bg-surface-card hover:text-m-red'}`
             }
           >
-            <Heart size={16} fill={exists ? "currentColor" : "none"} />
+            <Heart size={18} fill={exists ? "currentColor" : "none"} />
           </button>
 
-          <div className="absolute inset-x-6 bottom-6 translate-y-4 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-            <button className="w-full bg-white text-black font-black py-4 uppercase tracking-[1.5px] text-[11px] shadow-2xl">
-              EXPLORE MODEL
+          <div className="absolute inset-x-4 bottom-4 translate-y-8 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+            <button className="w-full bg-primary/90 backdrop-blur-md text-on-primary font-medium py-3 rounded-xl uppercase tracking-wider text-[12px] shadow-[0_8px_30px_rgba(255,255,255,0.05)] hover:bg-primary flex items-center justify-center gap-2 transition-colors">
+               <ShoppingBag size={14} /> Quick View
             </button>
           </div>
         </div>
 
-        <div className="mt-6">
+        <div className="p-5">
           <div className="flex items-center gap-1 mb-2">
-            <Star size={10} className="text-white fill-white" />
-            <span className="text-[10px] font-bold text-muted uppercase tracking-widest">{product.rating} / {product.reviewsCount} REVIEWS</span>
+            <div className="flex">
+               {[...Array(5)].map((_, i) => (
+                 <Star key={i} size={12} className={i < Math.floor(product.rating) ? "text-warning fill-gold" : "text-gray-300"} />
+               ))}
+            </div>
+            <span className="text-[11px] font-medium text-muted ml-1">({product.reviewsCount})</span>
           </div>
-          <h3 className="font-bold text-white text-lg uppercase tracking-tighter group-hover:text-primary transition-colors line-clamp-1">
+          <h3 className="font-semibold text-ink text-[15px] group-hover:text-m-red transition-colors line-clamp-2 mb-2 leading-tight">
             {product.name}
           </h3>
-          <div className="flex items-baseline gap-3 mt-2">
-            <span className="text-xl font-black text-white italic">
+          <div className="flex items-baseline gap-3">
+            <span className="text-lg font-bold text-ink">
               {formatCurrency(product.price)}
             </span>
             {product.originalPrice && (
-              <span className="text-sm text-muted line-through font-bold">
+              <span className="text-sm text-muted line-through">
                 {formatCurrency(product.originalPrice)}
               </span>
             )}

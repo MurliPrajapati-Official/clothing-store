@@ -1,13 +1,34 @@
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
 import { PRODUCTS, SCHOOLS, CATEGORIES } from '../constants';
 import { cn } from '../lib/utils';
 
+const fadeUpVariant = {
+  hidden: { opacity: 0, y: 60, scale: 0.95 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const slideRightVariant = {
+  hidden: { opacity: 0, x: -40 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   
   const categoryFilter = searchParams.get('category');
   const schoolFilter = searchParams.get('school');
@@ -19,26 +40,45 @@ export default function Shop() {
     if (schoolFilter && product.schoolId !== schoolFilter) return false;
     if (gradeFilter && product.grade !== gradeFilter && product.grade !== 'All') return false;
     if (genderFilter && product.gender !== genderFilter && product.gender !== 'unisex') return false;
+    
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      if (!product.name.toLowerCase().includes(lowerQuery) && !product.description.toLowerCase().includes(lowerQuery)) {
+        return false;
+      }
+    }
+    
     return true;
   });
 
   const clearFilters = () => {
     setSearchParams({});
+    setSearchQuery('');
   };
 
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
-      <div className="border-b border-hairline mb-10 pt-10 pb-8 bg-surface-card">
+      <Helmet>
+        <title>{categoryFilter ? `${categoryFilter} | Shop UniformKart` : 'Shop All | UniformKart'}</title>
+        <meta name="description" content="Browse our premium selection of school uniforms, accessories, and shoes." />
+      </Helmet>
+      
+      <motion.div 
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="border-b border-hairline mb-10 pt-10 pb-8 bg-surface-card shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+      >
         <div className="container mx-auto px-4">
           <div className="flex flex-col md:flex-row items-end justify-between gap-6">
             <div>
-              <div className="flex items-center gap-2 text-muted text-[12px] font-bold uppercase tracking-[1.5px] mb-4">
-                <span>HOME</span>
-                <span className="w-1 h-1 bg-muted rounded-none" />
-                <span className="text-white">SHOP</span>
+              <div className="flex items-center gap-2 text-muted text-sm font-medium mb-4">
+                <span>Home</span>
+                <span className="w-1 h-1 bg-text-muted rounded-full" />
+                <span className="text-ink">Shop</span>
               </div>
-              <h1 className="text-[56px] font-bold text-ink tracking-tight uppercase leading-[1.05]">
-                {categoryFilter ? categoryFilter : 'THE CATALOG'}
+              <h1 className="text-4xl md:text-5xl font-bold text-ink tracking-tight">
+                {categoryFilter ? categoryFilter : 'All Products'}
               </h1>
             </div>
             
@@ -47,140 +87,183 @@ export default function Shop() {
                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
                  <input 
                     type="text" 
-                    placeholder="SEARCH PRODUCTS..."
-                    className="w-full bg-surface-elevated border border-hairline py-3 pl-12 pr-4 text-[14px] outline-none focus:border-white transition-all text-white font-bold uppercase tracking-[1.5px] placeholder:text-muted rounded-none"
+                    placeholder="Search products..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-canvas border border-hairline py-3 pl-12 pr-4 text-base outline-none focus:border-ink transition-all text-ink rounded-full"
                  />
                </div>
                <button 
                   onClick={() => setIsFilterOpen(true)}
-                  className="lg:hidden p-3 bg-white text-black rounded-none uppercase font-bold text-[14px]"
+                  className="lg:hidden p-3 bg-surface-card text-ink border border-hairline rounded-xl hover:bg-surface-card flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.5)] active:scale-95 transition-transform"
                >
                  <Filter size={18} />
                </button>
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       <div className="container mx-auto px-4">
         <div className="flex gap-10">
-          <aside className="hidden lg:block w-72 shrink-0">
-             <div className="sticky top-28 bg-surface-card p-8 border border-hairline">
+          <motion.aside 
+            variants={slideRightVariant}
+            initial="hidden"
+            animate="visible"
+            className="hidden lg:block w-72 shrink-0"
+          >
+             <div className="sticky top-28 bg-surface-card p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline">
                 <div className="flex items-center justify-between mb-8">
-                  <h3 className="font-bold text-[24px] uppercase text-white">FILTERS</h3>
-                  <button onClick={clearFilters} className="text-[12px] font-bold text-muted uppercase tracking-[1.5px] hover:text-white transition-colors">CLEAR</button>
+                  <h3 className="font-bold text-xl text-ink">Filters</h3>
+                  <button onClick={clearFilters} className="text-sm font-medium text-m-red hover:text-red-700 transition-colors">Clear All</button>
                 </div>
-                <div className="space-y-10">
+                <div className="space-y-8">
                    <div>
-                      <h4 className="text-[12px] font-bold uppercase tracking-[1.5px] text-white mb-6 border-b border-hairline pb-2">By Fleet</h4>
-                      <div className="space-y-4">
+                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
+                      <div className="space-y-3">
                         {SCHOOLS.map(school => (
-                          <label key={school.id} className="flex items-center gap-4 cursor-pointer group">
-                             <div className="relative w-4 h-4 flex items-center justify-center">
+                          <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
+                             <div className="relative flex items-center justify-center">
                                 <input 
                                    type="radio" 
                                    name="school" 
                                    checked={schoolFilter === school.id}
                                    onChange={() => setSearchParams({ ...Object.fromEntries(searchParams), school: school.id })}
-                                   className="appearance-none w-4 h-4 border border-hairline bg-canvas checked:bg-white transition-all duration-200" 
+                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer" 
                                 />
                              </div>
-                             <span className="text-[14px] font-bold uppercase tracking-[1.0px] text-muted group-hover:text-white transition-colors">{school.name}</span>
+                             <span className={cn(
+                               "text-sm font-medium transition-colors",
+                               schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
+                             )}>{school.name}</span>
                           </label>
                         ))}
                       </div>
                    </div>
                    <div>
-                      <h4 className="text-[12px] font-bold uppercase tracking-[1.5px] text-white mb-6 border-b border-hairline pb-2">By Spec</h4>
-                      <div className="space-y-4">
+                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
+                      <div className="space-y-3">
                         {CATEGORIES.map(cat => (
-                          <label key={cat} className="flex items-center gap-4 cursor-pointer group">
-                             <div className="relative w-4 h-4 flex items-center justify-center">
+                          <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+                             <div className="relative flex items-center justify-center">
                                 <input 
                                    type="radio" 
                                    name="category" 
                                    checked={categoryFilter === cat}
                                    onChange={() => setSearchParams({ ...Object.fromEntries(searchParams), category: cat })}
-                                   className="appearance-none w-4 h-4 border border-hairline bg-canvas checked:bg-white transition-all duration-200" 
+                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer" 
                                 />
                              </div>
-                             <span className="text-[14px] font-bold uppercase tracking-[1.0px] text-muted group-hover:text-white transition-colors">{cat}</span>
+                             <span className={cn(
+                               "text-sm font-medium transition-colors",
+                               categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
+                             )}>{cat}</span>
                           </label>
                         ))}
                       </div>
                    </div>
 
                    <div>
-                      <h4 className="text-[12px] font-bold uppercase tracking-[1.5px] text-white mb-6 border-b border-hairline pb-2">By Section</h4>
-                      <div className="space-y-4">
+                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
+                      <div className="space-y-3">
                         {['Primary', 'Secondary', 'All'].map(grade => (
-                          <label key={grade} className="flex items-center gap-4 cursor-pointer group">
-                             <div className="relative w-4 h-4 flex items-center justify-center">
+                          <label key={grade} className="flex items-center gap-3 cursor-pointer group">
+                             <div className="relative flex items-center justify-center">
                                 <input 
                                    type="radio" 
                                    name="grade" 
                                    checked={gradeFilter === grade}
                                    onChange={() => setSearchParams({ ...Object.fromEntries(searchParams), grade: grade })}
-                                   className="appearance-none w-4 h-4 border border-hairline bg-canvas checked:bg-white transition-all duration-200" 
+                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer" 
                                 />
                              </div>
-                             <span className="text-[14px] font-bold uppercase tracking-[1.0px] text-muted group-hover:text-white transition-colors">{grade}</span>
+                             <span className={cn(
+                               "text-sm font-medium transition-colors",
+                               gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
+                             )}>{grade}</span>
                           </label>
                         ))}
                       </div>
                    </div>
 
                    <div>
-                      <h4 className="text-[12px] font-bold uppercase tracking-[1.5px] text-white mb-6 border-b border-hairline pb-2">By Target</h4>
-                      <div className="space-y-4">
+                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
+                      <div className="space-y-3">
                         {['boys', 'girls', 'unisex'].map(gender => (
-                          <label key={gender} className="flex items-center gap-4 cursor-pointer group">
-                             <div className="relative w-4 h-4 flex items-center justify-center">
+                          <label key={gender} className="flex items-center gap-3 cursor-pointer group">
+                             <div className="relative flex items-center justify-center">
                                 <input 
                                    type="radio" 
                                    name="gender" 
                                    checked={genderFilter === gender}
                                    onChange={() => setSearchParams({ ...Object.fromEntries(searchParams), gender: gender })}
-                                   className="appearance-none w-4 h-4 border border-hairline bg-canvas checked:bg-white transition-all duration-200" 
+                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer" 
                                 />
                              </div>
-                             <span className="text-[14px] font-bold uppercase tracking-[1.0px] text-muted group-hover:text-white transition-colors">{gender}</span>
+                             <span className={cn(
+                               "text-sm font-medium transition-colors capitalize",
+                               genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
+                             )}>{gender}</span>
                           </label>
                         ))}
                       </div>
                    </div>
                 </div>
              </div>
-          </aside>
+          </motion.aside>
 
           <main className="flex-1">
-             <div className="bg-surface-card p-4 border border-hairline flex items-center justify-between mb-8 rounded-none">
-               <div className="flex items-center gap-3">
-                  <span className="text-[14px] font-bold text-muted uppercase tracking-[1.5px]">AVAILABLE UNITS:</span>
-                  <span className="text-[16px] font-black text-white">{filteredProducts.length}</span>
+             <motion.div 
+               initial={{ opacity: 0, y: -20 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ duration: 0.6, delay: 0.2 }}
+               className="bg-surface-card p-4 border border-hairline flex flex-wrap items-center justify-between mb-8 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] gap-4"
+             >
+               <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-muted">Showing</span>
+                  <span className="text-base font-bold text-ink">{filteredProducts.length} items</span>
                </div>
-               <div className="flex items-center gap-6">
-                 <div className="flex items-center gap-3">
-                   <SlidersHorizontal size={16} className="text-muted" />
-                   <select className="bg-canvas border border-hairline text-[14px] font-bold uppercase tracking-[1.5px] text-white outline-none py-2 px-4 rounded-none">
-                      <option className="bg-surface-card">SORT: POPULARITY</option>
-                      <option className="bg-surface-card">SORT: PRICE ASC</option>
+               <div className="flex items-center gap-4">
+                 <div className="flex items-center gap-2">
+                   <SlidersHorizontal size={18} className="text-muted" />
+                   <select className="bg-canvas border-none text-sm font-medium text-ink outline-none py-2 px-4 rounded-lg cursor-pointer">
+                      <option value="popular">Sort by: Popularity</option>
+                      <option value="price-asc">Price: Low to High</option>
+                      <option value="price-desc">Price: High to Low</option>
                    </select>
                  </div>
                </div>
-             </div>
+             </motion.div>
 
              {filteredProducts.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
+                <motion.div 
+                  variants={staggerContainer}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
+                >
                   {filteredProducts.map((product) => (
-                    <ProductCard key={product.id} product={product} />
+                    <motion.div variants={fadeUpVariant} key={product.id}>
+                      <ProductCard product={product} />
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
              ) : (
-               <div className="py-[96px] text-center border border-hairline bg-surface-card">
-                  <h3 className="text-[32px] font-bold text-ink uppercase">NO UNITS FOUND</h3>
-                  <p className="text-[16px] text-body font-light mt-4">Adjust your filters parameters to explore the catalog.</p>
-               </div>
+               <motion.div 
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="py-24 text-center bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline"
+                >
+                  <div className="w-20 h-20 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6">
+                     <Search className="text-muted" size={32} />
+                  </div>
+                  <h3 className="text-2xl font-bold text-ink mb-2">No Products Found</h3>
+                  <p className="text-muted mb-6">We couldn't find any items matching your selected filters.</p>
+                  <button onClick={clearFilters} className="btn-outline">
+                    Clear All Filters
+                  </button>
+               </motion.div>
              )}
           </main>
         </div>
