@@ -35,7 +35,30 @@
 
 @layer base {
   body {
-    @apply bg-canvas text-body-text font-sans antialiased overflow-x-hidden;
+    background-color: var(--color-canvas);
+    color: var(--color-body-text);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  /* Responsive Images: Prevent overflow and maintain aspect ratio */
+  img, 
+  video {
+    max-width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Accessibility: Ensure touch targets are at least 44px for usability */
+  button, 
+  a, 
+  input, 
+  select, 
+  textarea {
+    min-height: 44px;
+    min-width: 44px;
   }
 
   h1,
@@ -49,8 +72,13 @@
 }
 
 @layer components {
+  /* Step 2 & 5: Flexible Main Container with responsive padding */
+  .container-custom {
+    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full;
+  }
+
   .btn-primary {
-    @apply h-12 px-8 rounded-full bg-primary text-on-primary font-medium flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255, 255, 255, 0.1)];
+    @apply h-12 px-8 rounded-full bg-primary text-on-primary font-medium flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)];
   }
 
   .btn-secondary {

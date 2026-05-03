@@ -1,20 +1,31 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# Ovi Global Uniform
 
-# Run and deploy your AI Studio app
+Premium manufacturer and supplier of specialized uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
 
-This contains everything you need to run your app locally.
+## Development
 
-View your app in AI Studio: https://ai.studio/apps/0294a2bc-0726-4ed8-a9a5-bcdbdd755bdb
+This project is built with React, Vite, and Tailwind CSS.
 
-## Run Locally
+### Getting Started
 
-**Prerequisites:**  Node.js
+1.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
 
+2.  **Start the development server:**
+    ```bash
+    npm run dev
+    ```
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+3.  **Build for production:**
+    ```bash
+    npm run build
+    ```
+
+## Features
+
+-   Responsive Design
+-   Product Catalog with filtering
+-   Smooth Scrolling with Lenis
+-   Modern UI with Motion (Framer Motion)

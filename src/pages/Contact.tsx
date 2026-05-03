@@ -24,7 +24,7 @@ export default function Contact() {
         <meta name="description" content="Get in touch with Ovi Global Uniform for bulk orders, custom designs, and inquiries." />
       </Helmet>
 
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="container-custom max-w-7xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

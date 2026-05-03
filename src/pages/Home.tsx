@@ -53,7 +53,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-canvas/95 via-canvas/70 to-transparent" />
         </motion.div>
 
-        <div className="container mx-auto px-4 relative z-10 pt-20">
+        <div className="container-custom relative z-10 pt-20">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -86,7 +86,7 @@ export default function Home() {
 
       {/* Introduction Section */}
       <section className="py-24 bg-surface-card border-b border-hairline relative z-20">
-        <div className="container mx-auto px-4">
+        <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center mb-16">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
@@ -153,7 +153,7 @@ export default function Home() {
 
       {/* Featured Categories */}
       <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container-custom">
           <motion.div 
              variants={fadeUpVariant}
              initial="hidden"
@@ -219,7 +219,7 @@ export default function Home() {
 
       {/* Featured Products */}
       <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
-        <div className="container mx-auto px-4">
+        <div className="container-custom">
           <motion.div 
              variants={fadeUpVariant}
              initial="hidden"
@@ -254,7 +254,7 @@ export default function Home() {
 
       {/* Newsletter / CTA */}
       <section className="py-24 bg-surface-card border-y border-hairline relative overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container-custom relative z-10">
           <motion.div 
              variants={fadeUpVariant}
              initial="hidden"
