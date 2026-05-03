@@ -7,47 +7,33 @@ export default function ReturnPolicy() {
       <Helmet>
         <title>Return Policy | Ovi Global Uniform</title>
       </Helmet>
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div 
+      <div className="container-custom max-w-4xl">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold mb-8 text-ink tracking-tight">Return & Exchange Policy</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-12 tracking-tight">Return Policy</h1>
           
-          <div className="bg-surface-card rounded-2xl p-8 shadow-sm border border-hairline space-y-8">
+          <div className="prose prose-invert max-w-none space-y-8 text-lg font-light leading-relaxed">
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">1. General Returns</h2>
-              <p className="text-muted leading-relaxed">
-                We accept returns within 15 days of delivery for all unworn, unwashed, and undamaged items in their original packaging with tags still attached. Items that show signs of wear or are missing original packaging may be rejected.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">1. Eligibility for Returns</h2>
+              <p>Items can be returned within 14 days of delivery. To be eligible for a return, your item must be unused and in the same condition that you received it. It must also be in the original packaging.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">2. Custom & Bulk Orders</h2>
-              <p className="text-muted leading-relaxed">
-                Customized uniforms, monogrammed items, and specific bulk orders made to specialized requirements cannot be returned unless there is a clear manufacturing defect or an error on our part. Please review all proofs and sample sizes carefully before confirming a bulk order.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">2. Non-returnable Items</h2>
+              <p>Customized uniforms with school logos or personal names cannot be returned unless there is a manufacturing defect.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">3. Exchanges</h2>
-              <p className="text-muted leading-relaxed">
-                If you ordered the wrong size, we are happy to exchange it for the correct size within the 15-day window. Please initiate the exchange process through our contact page or by reaching out to our support team. Additional shipping charges may apply.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">3. Refunds</h2>
+              <p>Once your return is received and inspected, we will send you an email to notify you that we have received your returned item. We will also notify you of the approval or rejection of your refund.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">4. Defective Items</h2>
-              <p className="text-muted leading-relaxed">
-                If you receive a defective or incorrect item, please take photos of the defect and contact our support team within 48 hours of delivery. We will arrange a replacement and cover all subsequent shipping costs.
-              </p>
-            </section>
-
-            <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">5. Refund Process</h2>
-              <p className="text-muted leading-relaxed">
-                Once we receive and inspect your returned items, a refund will be processed to your original method of payment within 5-7 business days. Please note that original shipping fees are non-refundable.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">4. Shipping</h2>
+              <p>You will be responsible for paying for your own shipping costs for returning your item. Shipping costs are non-refundable.</p>
             </section>
           </div>
         </motion.div>

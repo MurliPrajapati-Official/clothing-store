@@ -19,7 +19,7 @@ export default function Footer() {
   return (
     <footer className="bg-canvas border-t border-hairline pt-20 pb-12 overflow-hidden">
       <div className="container mx-auto px-4">
-        <motion.div 
+        <motion.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -36,12 +36,12 @@ export default function Footer() {
               Ovi Global Uniform is a trusted manufacturer and supplier of specialized uniforms. We manufacture uniforms that combine all-day comfort with long-lasting durability.
             </p>
             <div className="flex gap-4">
-               <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
-                  <Facebook size={18} />
-               </a>
-               <a href="https://www.instagram.com/walrie_exclusive_apparels/" target="_blank" rel="noopener noreferrer" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
-                  <Instagram size={18} />
-               </a>
+              <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                <Facebook size={18} />
+              </a>
+              <a href="https://www.instagram.com/walrie_exclusive_apparels/" target="_blank" rel="noopener noreferrer" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                <Instagram size={18} />
+              </a>
             </div>
           </motion.div>
 
@@ -68,7 +68,8 @@ export default function Footer() {
                 { name: 'Track Order', path: '/track-order' },
                 { name: 'Return Policy', path: '/return-policy' },
                 { name: 'Terms & Conditions', path: '/terms' },
-                { name: 'Privacy Policy', path: '/privacy' }
+                { name: 'Privacy Policy', path: '/privacy' },
+                { name: 'Cookies Policy', path: '/cookies' }
               ].map((item) => (
                 <li key={item.name}>
                   <Link to={item.path} className="hover:text-warning transition-colors block">{item.name}</Link>
@@ -94,13 +95,13 @@ export default function Footer() {
               </li>
             </ul>
             <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm">
-              <iframe 
-                src="https://maps.google.com/maps?q=WALRIE+-+Exclusive+Gown+Store&t=&z=15&ie=UTF8&iwloc=&output=embed" 
-                width="100%" 
-                height="100%" 
-                style={{ border: 0 }} 
-                allowFullScreen 
-                loading="lazy" 
+              <iframe
+                src="https://maps.google.com/maps?q=WALRIE+-+Exclusive+Gown+Store&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
                 title="Store Location"
               />
@@ -108,7 +109,7 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -119,11 +120,11 @@ export default function Footer() {
             © {new Date().getFullYear()} OVI GLOBAL UNIFORM. ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-4">
-             {/* Payment Icons */}
-             <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">VISA</div>
-             <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">MASTER</div>
-             <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">UPI</div>
-             <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">COD</div>
+            {/* Payment Icons */}
+            <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">VISA</div>
+            <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">MASTER</div>
+            <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">UPI</div>
+            <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">COD</div>
           </div>
         </motion.div>
       </div>

@@ -376,7 +376,7 @@ export const PRODUCTS: Product[] = [
 ];
 
 export const CATEGORIES = [
-  'School & College Uniforms', 
-  'Hospital Staff Uniforms', 
+  'School & College Uniforms',
+  'Hospital Staff Uniforms',
   'Admin Uniforms & Dresses'
 ];

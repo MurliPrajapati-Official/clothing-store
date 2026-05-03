@@ -12,7 +12,7 @@ export default function About() {
 
       <div className="container mx-auto px-4">
         {/* Header Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto text-center mb-20"
@@ -25,7 +25,7 @@ export default function About() {
 
         {/* Mission & Vision */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-24">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -40,7 +40,7 @@ export default function About() {
             </p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -57,14 +57,14 @@ export default function About() {
         </div>
 
         {/* Image Section */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           className="rounded-3xl overflow-hidden aspect-video md:aspect-[21/9] relative shadow-xl"
         >
-          <img 
-            src="https://picsum.photos/seed/about/1920/800" 
+          <img
+            src="https://picsum.photos/seed/about/1920/800"
             alt="Manufacturing Facility"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"

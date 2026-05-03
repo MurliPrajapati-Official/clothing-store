@@ -1,9 +1,12 @@
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
+import QuickViewModal from '../components/product/QuickViewModal';
 import { PRODUCTS } from '../constants';
+import { Product } from '../types';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 60, scale: 0.95 },
@@ -24,6 +27,7 @@ export default function Home() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 1000], [0, 400]);
   const heroTextY = useTransform(scrollY, [0, 500], [0, 150]);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   return (
@@ -32,19 +36,19 @@ export default function Home() {
         <title>Ovi Global Uniform | Dress for Excellence</title>
         <meta name="description" content="Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration." />
       </Helmet>
-      
+
       {/* Cinematic Hero Section */}
       <section className="relative h-[95vh] flex items-center overflow-hidden">
         {/* Parallax Background */}
-        <motion.div 
+        <motion.div
           className="absolute inset-0"
           initial={{ scale: 1.1 }}
           animate={{ scale: 1 }}
           transition={{ duration: 1.5, ease: "easeOut" }}
           style={{ y: heroY }}
         >
-          <img 
-            src="https://picsum.photos/seed/uniform-hero/1920/1080" 
+          <img
+            src="https://picsum.photos/seed/uniform-hero/1920/1080"
             alt="Professionals in uniform"
             className="w-full h-full object-cover brightness-[0.7]"
             referrerPolicy="no-referrer"
@@ -54,7 +58,7 @@ export default function Home() {
         </motion.div>
 
         <div className="container-custom relative z-10 pt-20">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1, ease: 'easeOut', delay: 0.2 }}
@@ -71,7 +75,7 @@ export default function Home() {
             <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
               Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
             </p>
-            
+
             <div className="flex flex-wrap gap-4">
               <Link to="/shop" className="btn-primary shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
                 Explore Our Collection
@@ -88,7 +92,7 @@ export default function Home() {
       <section className="py-24 bg-surface-card border-b border-hairline relative z-20">
         <div className="container-custom">
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <motion.h2 
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
@@ -96,20 +100,20 @@ export default function Home() {
             >
               Welcome to Ovi Global Uniform
             </motion.h2>
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-100px" }}
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Ovi Global Uniform, we believe that the right attire fosters unity, professionalism, and confidence. 
-              Whether you are equipping the next generation of students or outfitting dedicated healthcare heroes, 
+              At Ovi Global Uniform, we believe that the right attire fosters unity, professionalism, and confidence.
+              Whether you are equipping the next generation of students or outfitting dedicated healthcare heroes,
               we manufacture uniforms that combine all-day comfort with long-lasting durability.
             </motion.p>
           </div>
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -123,7 +127,7 @@ export default function Home() {
               <h4 className="font-bold text-xl text-ink mb-3">Premium Fabrics</h4>
               <p className="text-muted text-sm font-light leading-relaxed">Breathable, skin-friendly, and easy to wash materials selected for daily wear.</p>
             </motion.div>
-            
+
             <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
               <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
                 <Scissors size={28} />
@@ -154,18 +158,18 @@ export default function Home() {
       {/* Featured Categories */}
       <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
         <div className="container-custom">
-          <motion.div 
-             variants={fadeUpVariant}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
-             className="text-center mb-16"
+          <motion.div
+            variants={fadeUpVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="text-center mb-16"
           >
-             <h2 className="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4">Our Products</h2>
-             <p className="text-lg text-muted max-w-2xl mx-auto font-light">Explore our specialized categories designed for different professional needs.</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4">Our Products</h2>
+            <p className="text-lg text-muted max-w-2xl mx-auto font-light">Explore our specialized categories designed for different professional needs.</p>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -220,23 +224,23 @@ export default function Home() {
       {/* Featured Products */}
       <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
         <div className="container-custom">
-          <motion.div 
-             variants={fadeUpVariant}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
-             className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
+          <motion.div
+            variants={fadeUpVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
           >
             <div>
-               <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Ready to Ship</h2>
-               <p className="text-muted font-light">Our most popular standard garments.</p>
+              <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Ready to Ship</h2>
+              <p className="text-muted font-light">Our most popular standard garments.</p>
             </div>
-             <Link to="/shop" className="text-ink font-semibold hover:text-primary flex items-center gap-2 transition-colors">
+            <Link to="/shop" className="text-ink font-semibold hover:text-primary flex items-center gap-2 transition-colors">
               View All Products <ArrowRight size={18} />
             </Link>
           </motion.div>
 
-          <motion.div 
+          <motion.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -245,7 +249,7 @@ export default function Home() {
           >
             {PRODUCTS.filter(p => p.isFeatured).map((product) => (
               <motion.div key={product.id} variants={fadeUpVariant}>
-                <ProductCard product={product} />
+                <ProductCard product={product} onQuickView={setQuickViewProduct} />
               </motion.div>
             ))}
           </motion.div>
@@ -255,25 +259,26 @@ export default function Home() {
       {/* Newsletter / CTA */}
       <section className="py-24 bg-surface-card border-y border-hairline relative overflow-hidden">
         <div className="container-custom relative z-10">
-          <motion.div 
-             variants={fadeUpVariant}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
-             className="max-w-4xl mx-auto text-center"
+          <motion.div
+            variants={fadeUpVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-100px" }}
+            className="max-w-4xl mx-auto text-center"
           >
-             <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Ovi Global Uniform</h2>
-             <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
-               Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
-             </p>
-             <div className="flex justify-center">
-                <Link to="/contact" className="bg-ink text-canvas hover:scale-105 active:scale-95 transition-all shadow-[0_8px_30px_rgba(255,255,255,0.1)] rounded-full py-4 px-8 text-lg font-bold inline-flex items-center justify-center">
-                  Contact Us Now
-                </Link>
-             </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Ovi Global Uniform</h2>
+            <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
+              Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
+            </p>
+            <div className="flex justify-center">
+              <Link to="/contact" className="bg-ink text-canvas hover:scale-105 active:scale-95 transition-all shadow-[0_8px_30px_rgba(255,255,255,0.1)] rounded-full py-4 px-8 text-lg font-bold inline-flex items-center justify-center">
+                Contact Us Now
+              </Link>
+            </div>
           </motion.div>
         </div>
       </section>
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   );
 }

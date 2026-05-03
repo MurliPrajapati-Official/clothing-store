@@ -4,6 +4,8 @@ import { CartItem, Product } from '../types';
 
 interface CartState {
   items: CartItem[];
+  isDrawerOpen: boolean;
+  setDrawerOpen: (open: boolean) => void;
   addItem: (product: Product, size: string, quantity: number) => void;
   removeItem: (productId: string, size: string) => void;
   updateQuantity: (productId: string, size: string, quantity: number) => void;
@@ -16,6 +18,8 @@ export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
       items: [],
+      isDrawerOpen: false,
+      setDrawerOpen: (open) => set({ isDrawerOpen: open }),
       addItem: (product, size, quantity) => {
         const currentItems = get().items;
         const existingItemIndex = currentItems.findIndex(
@@ -25,9 +29,9 @@ export const useCartStore = create<CartState>()(
         if (existingItemIndex > -1) {
           const updatedItems = [...currentItems];
           updatedItems[existingItemIndex].quantity += quantity;
-          set({ items: updatedItems });
+          set({ items: updatedItems, isDrawerOpen: true });
         } else {
-          set({ items: [...currentItems, { ...product, selectedSize: size, quantity }] });
+          set({ items: [...currentItems, { ...product, selectedSize: size, quantity }], isDrawerOpen: true });
         }
       },
       removeItem: (productId, size) => {
@@ -52,6 +56,8 @@ export const useCartStore = create<CartState>()(
     }),
     {
       name: 'uniform-kart-cart',
+      // Only persist items, not the drawer state
+      partialize: (state) => ({ items: state.items }),
     }
   )
 );

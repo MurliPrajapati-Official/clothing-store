@@ -7,47 +7,38 @@ export default function PrivacyPolicy() {
       <Helmet>
         <title>Privacy Policy | Ovi Global Uniform</title>
       </Helmet>
-      <div className="container mx-auto px-4 max-w-4xl">
-        <motion.div 
+      <div className="container-custom max-w-4xl">
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
         >
-          <h1 className="text-4xl font-bold mb-8 text-ink tracking-tight">Privacy Policy</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-12 tracking-tight">Privacy Policy</h1>
           
-          <div className="bg-surface-card rounded-2xl p-8 shadow-sm border border-hairline space-y-8">
+          <div className="prose prose-invert max-w-none space-y-8 text-lg font-light leading-relaxed">
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">1. Information We Collect</h2>
-              <p className="text-muted leading-relaxed">
-                When you visit our store or place an order, we collect certain information about your device, your interaction with the site, and information necessary to process your purchases. This may include your name, billing address, shipping address, payment information, email address, and phone number.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">1. Introduction</h2>
+              <p>Welcome to Ovi Global Uniform. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">2. How We Use Your Information</h2>
-              <p className="text-muted leading-relaxed">
-                We use the order information that we collect generally to fulfill any orders placed through the site (including processing your payment, arranging for shipping, and providing you with invoices and/or order confirmations). We also use this information to communicate with you and screen our orders for potential risk or fraud.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">2. Information We Collect</h2>
+              <p>We collect personal information that you provide to us such as name, address, contact information, passwords and security data, and payment information.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">3. Sharing Your Information</h2>
-              <p className="text-muted leading-relaxed">
-                We share your Personal Information with third parties to help us use it as described above. We may also share your Personal Information to comply with applicable laws and regulations, or to otherwise protect our rights.
-              </p>
-            </section>
-            
-            <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">4. Data Retention</h2>
-              <p className="text-muted leading-relaxed">
-                When you place an order through the Site, we will maintain your Order Information for our records unless and until you ask us to delete this information.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">3. How We Use Your Information</h2>
+              <p>We use personal information collected via our Services for a variety of business purposes described below. We process your personal information for these purposes in reliance on our legitimate business interests, in order to enter into or perform a contract with you, with your consent, and/or for compliance with our legal obligations.</p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold mb-4 text-ink">5. Changes</h2>
-              <p className="text-muted leading-relaxed">
-                We may update this privacy policy from time to time in order to reflect, for example, changes to our practices or for other operational, legal, or regulatory reasons.
-              </p>
+              <h2 className="text-2xl font-bold text-ink mb-4">4. Sharing Your Information</h2>
+              <p>We only share information with your consent, to comply with laws, to provide you with services, to protect your rights, or to fulfill business obligations.</p>
+            </section>
+
+            <section>
+              <h2 className="text-2xl font-bold text-ink mb-4">5. Contact Us</h2>
+              <p>If you have questions or comments about this policy, you may email us at privacy@oviglobal.com or by post to our business address.</p>
             </section>
           </div>
         </motion.div>

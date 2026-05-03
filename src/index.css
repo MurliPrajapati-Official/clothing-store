@@ -34,6 +34,32 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: initial;
+    overflow-x: hidden;
+  }
+
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  .lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  .lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  .lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  .lenis.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+
   body {
     background-color: var(--color-canvas);
     color: var(--color-body-text);
@@ -41,10 +67,11 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+    overscroll-behavior-y: none;
   }
 
   /* Responsive Images: Prevent overflow and maintain aspect ratio */
-  img, 
+  img,
   video {
     max-width: 100%;
     height: auto;
@@ -52,10 +79,10 @@
   }
 
   /* Accessibility: Ensure touch targets are at least 44px for usability */
-  button, 
-  a, 
-  input, 
-  select, 
+  button,
+  a,
+  input,
+  select,
   textarea {
     min-height: 44px;
     min-width: 44px;
@@ -72,6 +99,7 @@
 }
 
 @layer components {
+
   /* Step 2 & 5: Flexible Main Container with responsive padding */
   .container-custom {
     @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full;
@@ -87,6 +115,14 @@
 
   .btn-outline {
     @apply h-12 px-8 rounded-full bg-transparent border border-hairline text-ink font-medium flex items-center justify-center transition-all hover:border-body-text hover:bg-surface-card active:scale-95;
+  }
+
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
   }
 }
 

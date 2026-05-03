@@ -4,7 +4,9 @@ import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
+import QuickViewModal from '../components/product/QuickViewModal';
 import { PRODUCTS, SCHOOLS, CATEGORIES } from '../constants';
+import { Product } from '../types';
 import { cn } from '../lib/utils';
 
 const fadeUpVariant = {
@@ -30,7 +32,8 @@ export default function Shop() {
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [sortBy, setSortBy] = useState('popular');
-  
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+
   const categoryFilter = searchParams.get('category');
   const schoolFilter = searchParams.get('school');
   const gradeFilter = searchParams.get('grade');
@@ -48,14 +51,14 @@ export default function Shop() {
     if (schoolFilter && product.schoolId !== schoolFilter) return false;
     if (gradeFilter && product.grade !== gradeFilter && product.grade !== 'All') return false;
     if (genderFilter && product.gender !== genderFilter && product.gender !== 'unisex') return false;
-    
+
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
       if (!product.name.toLowerCase().includes(lowerQuery) && !product.description.toLowerCase().includes(lowerQuery)) {
         return false;
       }
     }
-    
+
     return true;
   }).sort((a, b) => {
     if (sortBy === 'price-asc') return a.price - b.price;
@@ -85,19 +88,19 @@ export default function Shop() {
         <title>{categoryFilter ? `${categoryFilter} | Shop Ovi Global Uniform` : 'Shop All | Ovi Global Uniform'}</title>
         <meta name="description" content="Browse our premium selection of school uniforms, accessories, and shoes." />
       </Helmet>
-      
+
       {/* Mobile Filter Overlay */}
       <AnimatePresence>
         {isFilterOpen && (
           <>
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterOpen(false)}
               className="fixed inset-0 bg-transparent z-[60] lg:hidden"
             />
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: '100%' }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: '100%' }}
@@ -112,98 +115,98 @@ export default function Shop() {
               </div>
               <div className="flex-1 overflow-y-auto p-6">
                 <div className="flex justify-between items-center mb-6">
-                   <h4 className="font-bold text-ink">Selected Filters</h4>
-                   <button onClick={() => { clearFilters(); setIsFilterOpen(false); }} className="text-sm font-medium text-m-red hover:text-red-700">Clear All</button>
+                  <h4 className="font-bold text-ink">Selected Filters</h4>
+                  <button onClick={() => { clearFilters(); setIsFilterOpen(false); }} className="text-sm font-medium text-m-red hover:text-red-700">Clear All</button>
                 </div>
                 <div className="space-y-8">
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
-                      <div className="space-y-3">
-                        {SCHOOLS.map(school => (
-                          <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="mobile-school" 
-                                   checked={schoolFilter === school.id}
-                                   onChange={() => handleFilterChange('school', school.id)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{school.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
-                      <div className="space-y-3">
-                        {CATEGORIES.map(cat => (
-                          <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="mobile-category" 
-                                   checked={categoryFilter === cat}
-                                   onChange={() => handleFilterChange('category', cat)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{cat}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
-                      <div className="space-y-3">
-                        {['Primary', 'Secondary', 'All'].map(grade => (
-                          <label key={grade} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="mobile-grade" 
-                                   checked={gradeFilter === grade}
-                                   onChange={() => handleFilterChange('grade', grade)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{grade}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
-                      <div className="space-y-3">
-                        {['boys', 'girls', 'unisex'].map(gender => (
-                          <label key={gender} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="mobile-gender" 
-                                   checked={genderFilter === gender}
-                                   onChange={() => handleFilterChange('gender', gender)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors capitalize",
-                               genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{gender}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
+                    <div className="space-y-3">
+                      {SCHOOLS.map(school => (
+                        <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative flex items-center justify-center">
+                            <input
+                              type="checkbox"
+                              name="mobile-school"
+                              checked={schoolFilter === school.id}
+                              onChange={() => handleFilterChange('school', school.id)}
+                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                            />
+                          </div>
+                          <span className={cn(
+                            "text-sm font-medium transition-colors",
+                            schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
+                          )}>{school.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
+                    <div className="space-y-3">
+                      {CATEGORIES.map(cat => (
+                        <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative flex items-center justify-center">
+                            <input
+                              type="checkbox"
+                              name="mobile-category"
+                              checked={categoryFilter === cat}
+                              onChange={() => handleFilterChange('category', cat)}
+                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                            />
+                          </div>
+                          <span className={cn(
+                            "text-sm font-medium transition-colors",
+                            categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
+                          )}>{cat}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
+                    <div className="space-y-3">
+                      {['Primary', 'Secondary', 'All'].map(grade => (
+                        <label key={grade} className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative flex items-center justify-center">
+                            <input
+                              type="checkbox"
+                              name="mobile-grade"
+                              checked={gradeFilter === grade}
+                              onChange={() => handleFilterChange('grade', grade)}
+                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                            />
+                          </div>
+                          <span className={cn(
+                            "text-sm font-medium transition-colors",
+                            gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
+                          )}>{grade}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
+                    <div className="space-y-3">
+                      {['boys', 'girls', 'unisex'].map(gender => (
+                        <label key={gender} className="flex items-center gap-3 cursor-pointer group">
+                          <div className="relative flex items-center justify-center">
+                            <input
+                              type="checkbox"
+                              name="mobile-gender"
+                              checked={genderFilter === gender}
+                              onChange={() => handleFilterChange('gender', gender)}
+                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                            />
+                          </div>
+                          <span className={cn(
+                            "text-sm font-medium transition-colors capitalize",
+                            genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
+                          )}>{gender}</span>
+                        </label>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -211,7 +214,7 @@ export default function Shop() {
         )}
       </AnimatePresence>
 
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -229,24 +232,24 @@ export default function Shop() {
                 {categoryFilter ? categoryFilter : 'All Products'}
               </h1>
             </div>
-            
+
             <div className="flex items-center gap-4 w-full md:w-auto">
-               <div className="relative flex-1 md:w-80">
-                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                 <input 
-                    type="text" 
-                    placeholder="Search products..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-canvas border border-hairline py-3 pl-12 pr-4 text-base outline-none focus:border-ink transition-all text-ink rounded-full"
-                 />
-               </div>
-               <button 
-                  onClick={() => setIsFilterOpen(true)}
-                  className="lg:hidden p-3 bg-surface-card text-ink border border-hairline rounded-xl hover:bg-surface-card flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.5)] active:scale-95 transition-transform"
-               >
-                 <Filter size={18} />
-               </button>
+              <div className="relative flex-1 md:w-80">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full bg-canvas border border-hairline py-3 pl-12 pr-4 text-base outline-none focus:border-ink transition-all text-ink rounded-full"
+                />
+              </div>
+              <button
+                onClick={() => setIsFilterOpen(true)}
+                className="lg:hidden p-3 bg-surface-card text-ink border border-hairline rounded-xl hover:bg-surface-card flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.5)] active:scale-95 transition-transform"
+              >
+                <Filter size={18} />
+              </button>
             </div>
           </div>
         </div>
@@ -254,172 +257,193 @@ export default function Shop() {
 
       <div className="container mx-auto px-4">
         <div className="flex gap-10">
-          <motion.aside 
+          <motion.aside
             variants={slideRightVariant}
             initial="hidden"
             animate="visible"
             className="hidden lg:block w-72 shrink-0"
           >
-             <div className="sticky top-28 bg-surface-card p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline">
-                <div className="flex items-center justify-between mb-8">
-                  <h3 className="font-bold text-xl text-ink">Filters</h3>
-                  <button onClick={clearFilters} className="text-sm font-medium text-m-red hover:text-red-700 transition-colors">Clear All</button>
+            <div className="sticky top-28 bg-surface-card p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline">
+              <div className="flex items-center justify-between mb-8">
+                <h3 className="font-bold text-xl text-ink">Filters</h3>
+                <button onClick={clearFilters} className="text-sm font-medium text-m-red hover:text-red-700 transition-colors">Clear All</button>
+              </div>
+              <div className="space-y-8">
+                <div>
+                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
+                  <div className="space-y-3">
+                    {SCHOOLS.map(school => (
+                      <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            name="school"
+                            checked={schoolFilter === school.id}
+                            onChange={() => handleFilterChange('school', school.id)}
+                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                          />
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium transition-colors",
+                          schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
+                        )}>{school.name}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-                <div className="space-y-8">
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
-                      <div className="space-y-3">
-                        {SCHOOLS.map(school => (
-                          <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="school" 
-                                   checked={schoolFilter === school.id}
-                                   onChange={() => handleFilterChange('school', school.id)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{school.name}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
-                      <div className="space-y-3">
-                        {CATEGORIES.map(cat => (
-                          <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="category" 
-                                   checked={categoryFilter === cat}
-                                   onChange={() => handleFilterChange('category', cat)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{cat}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
-                      <div className="space-y-3">
-                        {['Primary', 'Secondary', 'All'].map(grade => (
-                          <label key={grade} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="grade" 
-                                   checked={gradeFilter === grade}
-                                   onChange={() => handleFilterChange('grade', grade)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors",
-                               gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{grade}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
-
-                   <div>
-                      <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
-                      <div className="space-y-3">
-                        {['boys', 'girls', 'unisex'].map(gender => (
-                          <label key={gender} className="flex items-center gap-3 cursor-pointer group">
-                             <div className="relative flex items-center justify-center">
-                                <input 
-                                   type="checkbox" 
-                                   name="gender" 
-                                   checked={genderFilter === gender}
-                                   onChange={() => handleFilterChange('gender', gender)}
-                                   className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm" 
-                                />
-                             </div>
-                             <span className={cn(
-                               "text-sm font-medium transition-colors capitalize",
-                               genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
-                             )}>{gender}</span>
-                          </label>
-                        ))}
-                      </div>
-                   </div>
+                <div>
+                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
+                  <div className="space-y-3">
+                    {CATEGORIES.map(cat => (
+                      <label key={cat} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            name="category"
+                            checked={categoryFilter === cat}
+                            onChange={() => handleFilterChange('category', cat)}
+                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                          />
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium transition-colors",
+                          categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
+                        )}>{cat}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
-             </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
+                  <div className="space-y-3">
+                    {['Primary', 'Secondary', 'All'].map(grade => (
+                      <label key={grade} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            name="grade"
+                            checked={gradeFilter === grade}
+                            onChange={() => handleFilterChange('grade', grade)}
+                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                          />
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium transition-colors",
+                          gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
+                        )}>{grade}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                <div>
+                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
+                  <div className="space-y-3">
+                    {['boys', 'girls', 'unisex'].map(gender => (
+                      <label key={gender} className="flex items-center gap-3 cursor-pointer group">
+                        <div className="relative flex items-center justify-center">
+                          <input
+                            type="checkbox"
+                            name="gender"
+                            checked={genderFilter === gender}
+                            onChange={() => handleFilterChange('gender', gender)}
+                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
+                          />
+                        </div>
+                        <span className={cn(
+                          "text-sm font-medium transition-colors capitalize",
+                          genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
+                        )}>{gender}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </motion.aside>
 
           <main className="flex-1 min-w-0">
-             <motion.div 
-               initial={{ opacity: 0, y: -20 }}
-               animate={{ opacity: 1, y: 0 }}
-               transition={{ duration: 0.6, delay: 0.2 }}
-               className="bg-surface-card p-4 border border-hairline flex flex-wrap items-center justify-between mb-8 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] gap-4"
-             >
-               <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium text-muted">Showing</span>
-                  <span className="text-base font-bold text-ink">{filteredProducts.length} items</span>
-               </div>
-               <div className="flex items-center gap-4">
-                 <div className="flex items-center gap-2">
-                   <SlidersHorizontal size={18} className="text-muted" />
-                   <select 
-                     value={sortBy} 
-                     onChange={(e) => setSortBy(e.target.value)} 
-                     className="bg-canvas border-none text-sm font-medium text-ink outline-none py-2 px-4 rounded-lg cursor-pointer"
-                   >
-                      <option value="popular">Sort by: Popularity</option>
-                      <option value="price-asc">Price: Low to High</option>
-                      <option value="price-desc">Price: High to Low</option>
-                   </select>
-                 </div>
-               </div>
-             </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-surface-card p-4 border border-hairline flex flex-wrap items-center justify-between mb-8 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] gap-4"
+            >
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-muted">Showing</span>
+                <span className="text-base font-bold text-ink">{filteredProducts.length} items</span>
+              </div>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <SlidersHorizontal size={18} className="text-muted" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="bg-canvas border-none text-sm font-medium text-ink outline-none py-2 px-4 rounded-lg cursor-pointer"
+                  >
+                    <option value="popular">Sort by: Popularity</option>
+                    <option value="price-asc">Price: Low to High</option>
+                    <option value="price-desc">Price: High to Low</option>
+                  </select>
+                </div>
+              </div>
+            </motion.div>
 
-             {filteredProducts.length > 0 ? (
-                <motion.div 
+            {filteredProducts.length > 0 ? (
+              <>
+                {/* Mobile Carousel */}
+                <motion.div
                   variants={staggerContainer}
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-50px" }}
-                  className="grid grid-rows-2 grid-flow-col auto-cols-[85vw] sm:auto-cols-[45%] md:auto-cols-[40%] gap-4 overflow-x-auto snap-x snap-mandatory pb-8 -mx-4 px-4 lg:mx-0 lg:px-0 lg:grid-rows-none lg:grid-flow-row lg:auto-cols-auto lg:overflow-x-visible lg:snap-none lg:grid-cols-2 lg:pb-0 xl:grid-cols-3"
+                  className="lg:hidden flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory pb-8 scrollbar-hide"
+                >
+                  <div className="grid grid-rows-2 grid-flow-col gap-4 auto-cols-[min(80vw,300px)]">
+                    {filteredProducts.map((product) => (
+                      <motion.div variants={fadeUpVariant} key={product.id} className="snap-start">
+                        <ProductCard product={product} onQuickView={setQuickViewProduct} />
+                      </motion.div>
+                    ))}
+                  </div>
+                </motion.div>
+
+                {/* Desktop Grid */}
+                <motion.div
+                  variants={staggerContainer}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, margin: "-50px" }}
+                  className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-8"
                 >
                   {filteredProducts.map((product) => (
-                    <motion.div variants={fadeUpVariant} key={product.id} className="snap-start h-full">
-                      <ProductCard product={product} />
+                    <motion.div variants={fadeUpVariant} key={product.id}>
+                      <ProductCard product={product} onQuickView={setQuickViewProduct} />
                     </motion.div>
                   ))}
                 </motion.div>
-             ) : (
-               <motion.div 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className="py-24 text-center bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline"
-                >
-                  <div className="w-20 h-20 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6">
-                     <Search className="text-muted" size={32} />
-                  </div>
-                  <h3 className="text-2xl font-bold text-ink mb-2">No Products Found</h3>
-                  <p className="text-muted mb-6">We couldn't find any items matching your selected filters.</p>
-                  <button onClick={clearFilters} className="btn-outline">
-                    Clear All Filters
-                  </button>
-               </motion.div>
-             )}
+              </>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="py-24 text-center bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline"
+              >
+                <div className="w-20 h-20 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Search className="text-muted" size={32} />
+                </div>
+                <h3 className="text-2xl font-bold text-ink mb-2">No Products Found</h3>
+                <p className="text-muted mb-6">We couldn't find any items matching your selected filters.</p>
+                <button onClick={clearFilters} className="btn-outline">
+                  Clear All Filters
+                </button>
+              </motion.div>
+            )}
           </main>
         </div>
       </div>
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   );
 }
