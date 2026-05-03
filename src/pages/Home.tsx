@@ -1,9 +1,9 @@
 import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useTransform } from 'motion/react';
-import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star } from 'lucide-react';
+import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
-import { PRODUCTS, SCHOOLS, CATEGORIES } from '../constants';
+import { PRODUCTS } from '../constants';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 60, scale: 0.95 },
@@ -29,8 +29,8 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>UniformKart | Premium School & Institutional Wear</title>
-        <meta name="description" content="Discover premium school uniforms, blazers, shoes and accessories. Trustworthy, comfortable, and officially approved for top institutions." />
+        <title>Ovi Global Uniform | Dress for Excellence</title>
+        <meta name="description" content="Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration." />
       </Helmet>
       
       {/* Cinematic Hero Section */}
@@ -44,13 +44,13 @@ export default function Home() {
           style={{ y: heroY }}
         >
           <img 
-            src="https://picsum.photos/seed/hero/1920/1080" 
-            alt="Students in uniform"
-            className="w-full h-full object-cover brightness-[0.85]"
+            src="https://picsum.photos/seed/uniform-hero/1920/1080" 
+            alt="Professionals in uniform"
+            className="w-full h-full object-cover brightness-[0.7]"
             referrerPolicy="no-referrer"
           />
           {/* Subtle gradient overlay to ensure text readability */}
-          <div className="absolute inset-0 bg-gradient-to-r from-canvas/90 via-canvas/50 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-r from-canvas/95 via-canvas/70 to-transparent" />
         </motion.div>
 
         <div className="container mx-auto px-4 relative z-10 pt-20">
@@ -61,113 +61,108 @@ export default function Home() {
             style={{ y: heroTextY, opacity: heroOpacity }}
             className="max-w-3xl"
           >
-            <span className="inline-block px-4 py-1 rounded-full bg-m-red/90 text-white font-medium text-sm mb-6 tracking-wide shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-              Premium Collection 2026
+            <span className="inline-block px-4 py-1 rounded-full bg-primary/90 text-on-primary font-medium text-sm mb-6 tracking-wide shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+              Premium Manufacturer & Supplier
             </span>
-            <h1 className="text-[52px] md:text-[76px] font-bold text-white leading-[1.05] mb-6 tracking-tight">
-              A New Standard in <br />
-              School Uniforms.
+            <h1 className="text-4xl sm:text-5xl md:text-[76px] font-bold text-ink leading-[1.05] mb-6 tracking-tight">
+              Dress for Excellence with <br />
+              Ovi Global Uniform.
             </h1>
-            <p className="text-[18px] md:text-[20px] text-gray-200 mb-10 leading-[1.6] max-w-xl font-light">
-              Impeccable quality, exceptional comfort, and officially approved designs. 
-              Elevating the daily wear of India's finest institutions.
+            <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
+              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
             </p>
             
             <div className="flex flex-wrap gap-4">
-              <Link to="/shop" className="btn-primary bg-gold text-ink hover:bg-gold/90 shadow-gold/20">
-                Shop Collection
+              <Link to="/shop" className="btn-primary shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
+                Explore Our Collection
               </Link>
-              <Link to="/schools" className="btn-outline border-white/30 text-white hover:bg-surface-card/10 hover:border-white">
-                Find Your School
+              <Link to="/contact" className="btn-secondary border-hairline-strong hover:bg-surface-card hover:border-ink">
+                Request a Bulk Quote
               </Link>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Trust Signals */}
-      <section className="bg-surface-card border-b border-hairline py-12 relative z-20 shadow-[0_2px_10px_rgba(0,0,0,0.5)] overflow-hidden">
+      {/* Introduction Section */}
+      <section className="py-24 bg-surface-card border-b border-hairline relative z-20">
         <div className="container mx-auto px-4">
+          <div className="max-w-4xl mx-auto text-center mb-16">
+            <motion.h2 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
+            >
+              Welcome to Ovi Global Uniform
+            </motion.h2>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-100px" }}
+              transition={{ delay: 0.1 }}
+              className="text-lg text-muted leading-relaxed font-light"
+            >
+              At Ovi Global Uniform, we believe that the right attire fosters unity, professionalism, and confidence. 
+              Whether you are equipping the next generation of students or outfitting dedicated healthcare heroes, 
+              we manufacture uniforms that combine all-day comfort with long-lasting durability.
+            </motion.p>
+          </div>
+
           <motion.div 
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-hairline-strong"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-4 pt-4 md:pt-0">
-              <ShieldCheck size={36} className="text-warning" />
-              <div>
-                <h4 className="font-bold text-lg text-ink">Official Partner</h4>
-                <p className="text-muted text-sm mt-1">Verified supplier for 100+ schools</p>
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Star size={28} />
               </div>
+              <h4 className="font-bold text-xl text-ink mb-3">Premium Fabrics</h4>
+              <p className="text-muted text-sm font-light leading-relaxed">Breathable, skin-friendly, and easy to wash materials selected for daily wear.</p>
             </motion.div>
-            <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-4 pt-4 md:pt-0">
-              <Truck size={36} className="text-warning" />
-              <div>
-                <h4 className="font-bold text-lg text-ink">Pan-India Delivery</h4>
-                <p className="text-muted text-sm mt-1">Fast, reliable doorstep shipping</p>
+            
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Scissors size={28} />
               </div>
+              <h4 className="font-bold text-xl text-ink mb-3">Custom Fits & Tailoring</h4>
+              <p className="text-muted text-sm font-light leading-relaxed">Ensuring every individual feels comfortable and confident in their everyday attire.</p>
             </motion.div>
-            <motion.div variants={fadeUpVariant} className="flex items-center justify-center gap-4 pt-4 md:pt-0">
-              <RefreshCw size={36} className="text-warning" />
-              <div>
-                <h4 className="font-bold text-lg text-ink">Easy Returns</h4>
-                <p className="text-muted text-sm mt-1">10-Day hassle-free exchanges</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
 
-      {/* School Search Section */}
-      <section className="py-24 bg-canvas border-b border-hairline">
-        <div className="container mx-auto px-4">
-          <motion.div
-             variants={fadeUpVariant}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
-             className="max-w-4xl mx-auto text-center"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Select Your Institution</h2>
-            <p className="text-lg text-muted mb-10 max-w-2xl mx-auto">
-              Find officially approved uniforms, winter wear, and accessories specifically tailored for your school.
-            </p>
-            <div className="relative group max-w-2xl mx-auto shadow-[0_8px_30px_rgba(0,0,0,0.5)] rounded-full overflow-hidden">
-              <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none">
-                <Search className="text-muted" size={20} />
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Factory size={28} />
               </div>
-              <input 
-                type="text" 
-                placeholder="Search by school name..."
-                className="w-full bg-surface-card border-2 border-transparent py-5 pl-14 pr-36 text-base text-ink focus:border-gold transition-all outline-none"
-              />
-              <button className="absolute right-2 top-2 bottom-2 px-8 bg-primary text-on-primary font-medium rounded-full hover:scale-105 active:scale-95 transition-all shadow-[0_4px_20px_rgba(255,255,255,0.1)]">
-                Search
-              </button>
-            </div>
+              <h4 className="font-bold text-xl text-ink mb-3">Bulk Order Specialists</h4>
+              <p className="text-muted text-sm font-light leading-relaxed">Timely delivery and consistent quality for institutions of all sizes.</p>
+            </motion.div>
+
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <ShieldCheck size={28} />
+              </div>
+              <h4 className="font-bold text-xl text-ink mb-3">Unbeatable Durability</h4>
+              <p className="text-muted text-sm font-light leading-relaxed">Stitched to precision to withstand daily wear and tear for years to come.</p>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Featured Categories */}
-      <section className="py-24 bg-surface-card border-b border-hairline overflow-hidden">
+      <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
              variants={fadeUpVariant}
              initial="hidden"
              whileInView="visible"
              viewport={{ once: true, margin: "-100px" }}
-             className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
+             className="text-center mb-16"
           >
-            <div>
-               <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Shop by Category</h2>
-               <p className="text-muted">Explore our curated collections</p>
-            </div>
-            <Link to="/shop" className="text-ink font-semibold hover:text-m-red flex items-center gap-2 transition-colors">
-              View All Categories <ArrowRight size={18} />
-            </Link>
+             <h2 className="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4">Our Products</h2>
+             <p className="text-lg text-muted max-w-2xl mx-auto font-light">Explore our specialized categories designed for different professional needs.</p>
           </motion.div>
 
           <motion.div 
@@ -175,76 +170,55 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6"
+            className="grid grid-cols-1 md:grid-cols-3 gap-8"
           >
-            {CATEGORIES.map((cat, i) => (
-              <motion.div key={cat} variants={fadeUpVariant}>
-                <Link 
-                  to={`/shop?category=${cat}`}
-                  className="group flex flex-col items-center gap-4 p-4 rounded-2xl hover:bg-canvas transition-all duration-300"
-                >
-                  <div className="w-full aspect-[4/5] rounded-xl flex items-center justify-center relative overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] shadow-black/5 group-hover:shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                     <motion.img 
-                        whileHover={{ scale: 1.05 }}
-                        transition={{ duration: 0.6 }}
-                        src={`https://picsum.photos/seed/cat${i}/400/500`}
-                        className="absolute inset-0 w-full h-full object-cover" 
-                        alt={cat}
-                        referrerPolicy="no-referrer"
-                     />
-                  </div>
-                  <span className="text-base text-ink font-semibold text-center">{cat}</span>
+            {/* Category 1 */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="https://picsum.photos/seed/school-uniform/800/1000" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">School & College Uniforms</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Fostering equality and pride. Shirts, trousers, blazers, and sports uniforms built for the classroom and beyond.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('School & College Uniforms')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
                 </Link>
-              </motion.div>
-            ))}
-          </motion.div>
-        </div>
-      </section>
+              </div>
+            </motion.div>
 
-      {/* Popular Schools Grid */}
-      <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
-        <div className="container mx-auto px-4">
-          <motion.div 
-            variants={fadeUpVariant}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="text-center mb-16"
-          >
-            <h2 className="text-4xl font-bold text-ink tracking-tight mb-4">Partner Institutions</h2>
-            <p className="text-lg text-muted max-w-2xl mx-auto">Providing official mandate uniforms for elite schools.</p>
-          </motion.div>
-
-          <motion.div 
-             variants={staggerContainer}
-             initial="hidden"
-             whileInView="visible"
-             viewport={{ once: true, margin: "-100px" }}
-             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
-          >
-            {SCHOOLS.map((school) => (
-              <motion.div key={school.id} variants={fadeUpVariant}>
-                <Link 
-                  to={`/schools/${school.slug}`}
-                  className="group relative h-[380px] rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.5)] bg-surface-card block"
-                >
-                  <img src={school.logo} alt={school.name} className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-canvas/95 via-canvas/40 to-transparent flex flex-col justify-end p-8">
-                     <h3 className="font-bold text-2xl text-white leading-tight mb-1">{school.name}</h3>
-                     <div className="flex items-center gap-2 text-warning">
-                        <Star size={14} fill="currentColor"/>
-                        <span className="text-sm font-medium">{school.location}</span>
-                     </div>
-                  </div>
+            {/* Category 2 */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="https://picsum.photos/seed/hospital-uniform/800/1000" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Hospital Staff Uniforms</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Hygiene, flexibility, and comfort. Medical scrubs, lab coats, and staff tunics for healthcare heroes.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Hospital Staff Uniforms')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
                 </Link>
-              </motion.div>
-            ))}
+              </div>
+            </motion.div>
+
+            {/* Category 3 */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="https://picsum.photos/seed/admin-uniform/800/1000" alt="Admin Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Admin Uniforms & Dresses</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Make a lasting first impression. Corporate suits, formal shirts, receptionist dresses, and accessories.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Admin Uniforms & Dresses')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
+                </Link>
+              </div>
+            </motion.div>
           </motion.div>
         </div>
       </section>
 
       {/* Featured Products */}
-      <section className="py-24 bg-surface-card border-b border-hairline overflow-hidden">
+      <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
         <div className="container mx-auto px-4">
           <motion.div 
              variants={fadeUpVariant}
@@ -254,10 +228,10 @@ export default function Home() {
              className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
           >
             <div>
-               <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Bestsellers</h2>
-               <p className="text-muted">Most loved by parents and students.</p>
+               <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Ready to Ship</h2>
+               <p className="text-muted font-light">Our most popular standard garments.</p>
             </div>
-             <Link to="/shop" className="text-ink font-semibold hover:text-m-red flex items-center gap-2 transition-colors">
+             <Link to="/shop" className="text-ink font-semibold hover:text-primary flex items-center gap-2 transition-colors">
               View All Products <ArrowRight size={18} />
             </Link>
           </motion.div>
@@ -278,11 +252,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="py-24 bg-surface-elevated border-y border-hairline relative overflow-hidden">
-        {/* decorative blur */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-m-red/10 rounded-full blur-[100px] pointer-events-none" />
-        
+      {/* Newsletter / CTA */}
+      <section className="py-24 bg-surface-card border-y border-hairline relative overflow-hidden">
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
              variants={fadeUpVariant}
@@ -291,21 +262,15 @@ export default function Home() {
              viewport={{ once: true, margin: "-100px" }}
              className="max-w-4xl mx-auto text-center"
           >
-             <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Join the UniformKart Family</h2>
-             <p className="text-lg text-body-text font-light mb-10 max-w-2xl mx-auto">
-               Subscribe for updates on new school additions, exclusive offers, and early access to winter wear sales.
+             <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Ovi Global Uniform</h2>
+             <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
+               Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
              </p>
-             <form className="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
-                <input 
-                  type="email" 
-                  placeholder="Your email address"
-                  className="flex-1 bg-canvas border border-hairline-strong rounded-full px-6 py-4 text-ink outline-none focus:border-ink transition-all placeholder:text-muted"
-                />
-                <button type="button" className="btn-secondary whitespace-nowrap">
-                  Subscribe
-                </button>
-             </form>
-             <p className="text-xs text-muted mt-6 font-light">By subscribing, you agree to our privacy policy and terms of service.</p>
+             <div className="flex justify-center">
+                <Link to="/contact" className="bg-ink text-canvas hover:scale-105 active:scale-95 transition-all shadow-[0_8px_30px_rgba(255,255,255,0.1)] rounded-full py-4 px-8 text-lg font-bold inline-flex items-center justify-center">
+                  Contact Us Now
+                </Link>
+             </div>
           </motion.div>
         </div>
       </section>

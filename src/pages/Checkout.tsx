@@ -17,7 +17,7 @@ export default function Checkout() {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
          <Helmet>
-           <title>Order Confirmed | UniformKart</title>
+           <title>Order Confirmed | Ovi Global Uniform</title>
          </Helmet>
          <motion.div 
            initial={{ scale: 0.8, opacity: 0, y: 40 }}
@@ -29,7 +29,7 @@ export default function Checkout() {
                <CheckCircle2 size={40} />
             </div>
             <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
-            <p className="text-muted mb-8 text-lg">Thank you for choosing UniformKart. Your order #UK-{Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year.</p>
+            <p className="text-muted mb-8 text-lg">Thank you for choosing Ovi Global Uniform. Your order #UK-{Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year.</p>
             <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                Return Home
             </Link>
@@ -42,7 +42,7 @@ export default function Checkout() {
     return (
       <div className="pt-32 pb-24 text-center min-h-[70vh] flex flex-col items-center justify-center">
          <Helmet>
-           <title>Checkout | UniformKart</title>
+           <title>Checkout | Ovi Global Uniform</title>
          </Helmet>
          <motion.h1 
            initial={{ opacity: 0, y: 20 }}
@@ -65,7 +65,7 @@ export default function Checkout() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Secure Checkout | UniformKart</title>
+        <title>Secure Checkout | Ovi Global Uniform</title>
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
         

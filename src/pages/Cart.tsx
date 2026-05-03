@@ -26,7 +26,7 @@ export default function Cart() {
     return (
       <div className="pt-32 pb-24 container mx-auto px-4 flex flex-col items-center min-h-screen bg-canvas">
         <Helmet>
-          <title>Your Cart is Empty | UniformKart</title>
+          <title>Your Cart is Empty | Ovi Global Uniform</title>
         </Helmet>
         <motion.div 
           initial={{ opacity: 0, scale: 0.8 }}
@@ -68,7 +68,7 @@ export default function Cart() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen">
       <Helmet>
-        <title>Your Cart ({items.length}) | UniformKart</title>
+        <title>Your Cart ({items.length}) | Ovi Global Uniform</title>
       </Helmet>
       <div className="container mx-auto px-4">
         <motion.h1 

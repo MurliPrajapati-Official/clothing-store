@@ -1,7 +1,7 @@
-import { Routes, Route, Link } from 'react-router-dom';
+import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
 import { HelmetProvider } from 'react-helmet-async';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -11,6 +11,14 @@ import ProductDetail from './pages/ProductDetail';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import Account from './pages/Account';
+import About from './pages/About';
+import Blog from './pages/Blog';
+import Contact from './pages/Contact';
+import SizeGuide from './pages/SizeGuide';
+import TrackOrder from './pages/TrackOrder';
+import ReturnPolicy from './pages/ReturnPolicy';
+import TermsConditions from './pages/TermsConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
 
 // Placeholder components for other pages
 const Placeholder = ({ name }: { name: string }) => (
@@ -21,8 +29,11 @@ const Placeholder = ({ name }: { name: string }) => (
 );
 
 export default function App() {
+  const { pathname, search } = useLocation();
+  const [lenis, setLenis] = useState<Lenis | null>(null);
+
   useEffect(() => {
-    const lenis = new Lenis({
+    const lenisInstance = new Lenis({
       duration: 1.2,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
@@ -31,18 +42,27 @@ export default function App() {
       wheelMultiplier: 1,
       touchMultiplier: 2,
     });
+    setLenis(lenisInstance);
 
     function raf(time: number) {
-      lenis.raf(time);
+      lenisInstance.raf(time);
       requestAnimationFrame(raf);
     }
 
     requestAnimationFrame(raf);
 
     return () => {
-      lenis.destroy();
+      lenisInstance.destroy();
     };
   }, []);
+
+  useEffect(() => {
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: true });
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, search, lenis]);
 
   return (
     <HelmetProvider>
@@ -54,6 +74,14 @@ export default function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:slug" element={<ProductDetail />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/about" element={<About />} />
+            <Route path="/blog" element={<Blog />} />
+            <Route path="/contact" element={<Contact />} />
+            <Route path="/size-guide" element={<SizeGuide />} />
+            <Route path="/track-order" element={<TrackOrder />} />
+            <Route path="/return-policy" element={<ReturnPolicy />} />
+            <Route path="/terms" element={<TermsConditions />} />
+            <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/schools" element={<Placeholder name="Our Schools" />} />
             <Route path="/schools/:slug" element={<Placeholder name="School Details" />} />
             <Route path="/wishlist" element={<Placeholder name="My Wishlist" />} />

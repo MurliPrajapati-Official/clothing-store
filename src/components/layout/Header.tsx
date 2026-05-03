@@ -23,11 +23,12 @@ export default function Header() {
   }, [location]);
 
   return (
-    <motion.header 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-      className={cn(
+    <>
+      <motion.header 
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
         scrolled ? "bg-surface-card/90 backdrop-blur-md border-b border-hairline py-3 shadow-[0_2px_10px_rgba(0,0,0,0.5)]" : "bg-transparent border-transparent py-6"
       )}
@@ -45,33 +46,39 @@ export default function Header() {
         <Link to="/" className="flex items-center gap-2 group">
           {/* A Premium looking text-based logo or icon */}
           <div className="flex items-center justify-center w-10 h-10 bg-surface-elevated rounded-lg border border-hairline text-warning font-serif font-black text-xl group-hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.5)]">
-            U
+            O
           </div>
           <span className={cn(
             "font-extrabold text-2xl tracking-tight hidden sm:block transition-colors duration-300",
             scrolled ? "text-ink" : "text-ink"
           )}>
-            Uniform<span className="font-light text-ink">Kart</span>
+            Ovi Global<span className="font-light text-ink">Uniform</span>
           </span>
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden lg:flex items-center gap-10">
-          {['Home', 'Shop', 'Schools', 'Track Order'].map((item) => (
+        <nav className="hidden lg:flex items-center gap-8">
+          {[
+            { name: 'Home', path: '/' },
+            { name: 'Shop', path: '/shop' },
+            { name: 'About Us', path: '/about' },
+            { name: 'Blog', path: '/blog' },
+            { name: 'Contact Us', path: '/contact' }
+          ].map((item) => (
             <Link 
-              key={item}
-              to={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}
+              key={item.name}
+              to={item.path}
               className={cn(
-                "text-[15px] font-medium transition-colors hover:text-m-red relative group",
-                location.pathname === (item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`)
+                "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap",
+                location.pathname === item.path
                   ? "text-m-red"
                   : "text-body-text"
               )}
             >
-              {item}
+              {item.name}
               <span className={cn(
                 "absolute -bottom-1 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
-                location.pathname === (item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`) && "w-full"
+                location.pathname === item.path && "w-full"
               )} />
             </Link>
           ))}
@@ -115,94 +122,117 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Mobile Drawer */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsMenuOpen(false)}
-              className="fixed inset-0 bg-canvas/80 backdrop-blur-sm z-[60]"
-            />
-            <motion.div 
-              initial={{ x: '-100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '-100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-canvas border-r border-hairline z-[70] p-8 shadow-2xl flex flex-col"
-            >
-              <div className="flex items-center justify-between mb-12">
-                 <div className="flex items-center gap-2">
-                    <div className="flex items-center justify-center w-8 h-8 bg-surface-elevated border border-hairline rounded-lg text-warning font-serif font-black text-lg">
-                      U
-                    </div>
-                    <span className="font-extrabold text-xl tracking-tight text-ink">
-                      Uniform<span className="font-light">Kart</span>
-                    </span>
-                 </div>
-                <button onClick={() => setIsMenuOpen(false)} className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
+    </motion.header>
 
-              <div className="flex flex-col gap-6">
-                {['Home', 'Shop', 'Schools', 'Track Order', 'Bulk Inquiries'].map((item) => (
-                  <Link 
-                    key={item}
-                    to={item === 'Home' ? '/' : `/${item.toLowerCase().replace(' ', '-')}`}
-                    className="text-xl font-medium text-ink hover:text-m-red transition-colors"
-                  >
-                    {item}
-                  </Link>
-                ))}
-              </div>
-
-              <div className="mt-auto grid grid-cols-2 gap-6 pt-8 border-t border-hairline">
-                <Link to="/wishlist" className="flex items-center gap-3 font-medium text-muted hover:text-ink transition-colors">
-                    <Heart size={20} />
-                    Wishlist
-                </Link>
-                <Link to="/account" className="flex items-center gap-3 font-medium text-muted hover:text-ink transition-colors">
-                    <User size={20} />
-                    Account
-                </Link>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      {/* Search Overlay */}
-      <AnimatePresence>
-        {isSearchOpen && (
+    {/* Search Overlay */}
+    <AnimatePresence>
+      {isSearchOpen && (
+        <>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsSearchOpen(false)}
+            className="fixed inset-0 bg-transparent z-[55]"
+          />
           <motion.div 
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="absolute top-full left-0 right-0 bg-surface-card border-b border-hairline shadow-xl p-6"
+            className="fixed top-[88px] left-0 right-0 bg-transparent p-6 z-[60]"
           >
-            <div className="container mx-auto">
-              <div className="relative max-w-2xl mx-auto">
-                <input 
-                  autoFocus
-                  type="text" 
-                  placeholder="Search for uniforms, schools, accessories..."
-                  className="w-full bg-canvas border-2 border-hairline rounded-full px-14 py-4 focus:border-ink text-ink outline-none font-medium transition-all"
-                />
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted" size={20} />
-                <button 
-                  onClick={() => setIsSearchOpen(false)}
-                  className="absolute right-6 top-1/2 -translate-y-1/2 text-muted hover:text-m-red transition-colors p-1"
+          <div className="container mx-auto">
+            <div className="relative max-w-2xl mx-auto">
+              <input 
+                autoFocus
+                type="text" 
+                placeholder="Search for uniforms, schools, accessories..."
+                className="w-full bg-transparent border-2 border-hairline rounded-full px-14 py-4 focus:border-ink text-ink outline-none font-medium transition-all shadow-lg backdrop-blur-md"
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    setIsSearchOpen(false);
+                    window.location.href = `/shop?q=${encodeURIComponent(e.currentTarget.value)}`;
+                  }
+                }}
+              />
+              <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted" size={20} />
+              <button 
+                onClick={() => setIsSearchOpen(false)}
+                className="absolute right-6 top-1/2 -translate-y-1/2 text-muted hover:text-m-red transition-colors p-1"
+              >
+                <X size={20} />
+              </button>
+            </div>
+          </div>
+        </motion.div>
+        </>
+      )}
+    </AnimatePresence>
+
+    {/* Mobile Drawer */}
+    <AnimatePresence>
+      {isMenuOpen && (
+        <>
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setIsMenuOpen(false)}
+            className="fixed inset-0 bg-canvas/80 backdrop-blur-sm z-[60]"
+          />
+          <motion.div 
+            initial={{ x: '-100%' }}
+            animate={{ x: 0 }}
+            exit={{ x: '-100%' }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-canvas border-r border-hairline z-[70] p-8 shadow-2xl flex flex-col"
+          >
+            <div className="flex items-center justify-between mb-12">
+               <div className="flex items-center gap-2">
+                  <div className="flex items-center justify-center w-8 h-8 bg-surface-elevated border border-hairline rounded-lg text-warning font-serif font-black text-lg">
+                    O
+                  </div>
+                  <span className="font-extrabold text-xl tracking-tight text-ink">
+                    Ovi Global<span className="font-light">Uniform</span>
+                  </span>
+               </div>
+              <button onClick={() => setIsMenuOpen(false)} className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors">
+                <X size={24} />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              {[
+                { name: 'Home', path: '/' },
+                { name: 'Shop', path: '/shop' },
+                { name: 'About Us', path: '/about' },
+                { name: 'Blog', path: '/blog' },
+                { name: 'Contact Us', path: '/contact' }
+              ].map((item) => (
+                <Link 
+                  key={item.name}
+                  to={item.path}
+                  className="text-xl font-medium text-ink hover:text-m-red transition-colors"
                 >
-                  <X size={20} />
-                </button>
-              </div>
+                  {item.name}
+                </Link>
+              ))}
+            </div>
+
+            <div className="mt-auto grid grid-cols-2 gap-6 pt-8 border-t border-hairline">
+              <Link to="/wishlist" className="flex items-center gap-3 font-medium text-muted hover:text-ink transition-colors">
+                  <Heart size={20} />
+                  Wishlist
+              </Link>
+              <Link to="/account" className="flex items-center gap-3 font-medium text-muted hover:text-ink transition-colors">
+                  <User size={20} />
+                  Account
+              </Link>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.header>
+        </>
+      )}
+    </AnimatePresence>
+    </>
   );
 }

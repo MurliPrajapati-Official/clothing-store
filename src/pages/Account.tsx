@@ -12,7 +12,7 @@ export default function Account() {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex items-center justify-center">
         <Helmet>
-          <title>Sign In & Register | UniformKart</title>
+          <title>Sign In & Register | Ovi Global Uniform</title>
           <meta name="description" content="Log in to your account or create a new one to track orders and manage profile." />
         </Helmet>
         <motion.div 
@@ -83,7 +83,7 @@ export default function Account() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>My Account | UniformKart</title>
+        <title>My Account | Ovi Global Uniform</title>
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
          
@@ -145,7 +145,7 @@ export default function Account() {
                      </div>
                      <div>
                        <label className="block text-sm font-semibold text-ink mb-2">Phone Number</label>
-                       <input type="tel" defaultValue="+91 98765 43210" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
+                       <input type="tel" defaultValue="07004301436" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
                      </div>
                      <div className="md:col-span-2 pt-4">
                        <button type="button" className="btn-primary">Save Changes</button>

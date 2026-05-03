@@ -28,9 +28,9 @@ export default function ProductCard({ product }: ProductCardProps) {
         hidden: { opacity: 0, y: 30, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
       }}
-      className="group bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:-translate-y-2 transition-all duration-500 border border-hairline"
+      className="group bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_15px_40px_rgba(0,0,0,0.6)] hover:-translate-y-2 transition-all duration-500 border border-hairline h-full flex flex-col"
     >
-      <Link to={`/product/${product.slug}`} className="block">
+      <Link to={`/product/${product.slug}`} className="flex flex-col h-full">
         <div className="relative aspect-[4/5] overflow-hidden bg-canvas">
           <img 
             src={product.images[0]} 
@@ -69,7 +69,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           </div>
         </div>
 
-        <div className="p-5">
+        <div className="p-5 flex-1 flex flex-col text-left">
           <div className="flex items-center gap-1 mb-2">
             <div className="flex">
                {[...Array(5)].map((_, i) => (
@@ -81,7 +81,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           <h3 className="font-semibold text-ink text-[15px] group-hover:text-m-red transition-colors line-clamp-2 mb-2 leading-tight">
             {product.name}
           </h3>
-          <div className="flex items-baseline gap-3">
+          <div className="flex items-baseline gap-3 mt-auto pt-2">
             <span className="text-lg font-bold text-ink">
               {formatCurrency(product.price)}
             </span>
