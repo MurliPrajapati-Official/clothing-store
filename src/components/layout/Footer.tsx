@@ -28,9 +28,6 @@ export default function Footer() {
         >
           <motion.div variants={fadeUpVariant}>
             <Link to="/" className="flex items-center gap-2 mb-6">
-              <div className="flex items-center justify-center w-10 h-10 bg-surface-card border border-hairline rounded-lg text-ink font-serif font-black text-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-                O
-              </div>
               <span className="font-extrabold text-2xl tracking-tight text-ink">
                 Ovi Global<span className="font-light">Uniform</span>
               </span>

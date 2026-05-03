@@ -33,28 +33,25 @@ export default function Header() {
         scrolled ? "bg-surface-card/90 backdrop-blur-md border-b border-hairline py-3 shadow-[0_2px_10px_rgba(0,0,0,0.5)]" : "bg-transparent border-transparent py-6"
       )}
     >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        {/* Mobile Menu Toggle */}
-        <button 
-          className="lg:hidden p-2 text-ink"
-          onClick={() => setIsMenuOpen(true)}
-        >
-          <Menu size={24} />
-        </button>
+      <div className="container mx-auto px-4 flex items-center justify-between gap-4">
+        <div className="flex items-center gap-2">
+          {/* Mobile Menu Toggle */}
+          <button 
+            className="lg:hidden p-2 -ml-2 text-ink hover:bg-surface-elevated rounded-full transition-colors"
+            onClick={() => setIsMenuOpen(true)}
+          >
+            <Menu size={24} />
+          </button>
 
-        {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          {/* A Premium looking text-based logo or icon */}
-          <div className="flex items-center justify-center w-10 h-10 bg-surface-elevated rounded-lg border border-hairline text-warning font-serif font-black text-xl group-hover:scale-105 transition-transform shadow-[0_4px_14px_rgba(0,0,0,0.5)]">
-            O
-          </div>
-          <span className={cn(
-            "font-extrabold text-2xl tracking-tight hidden sm:block transition-colors duration-300",
-            scrolled ? "text-ink" : "text-ink"
-          )}>
-            Ovi Global<span className="font-light text-ink">Uniform</span>
-          </span>
-        </Link>
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <span className={cn(
+              "font-extrabold text-xl sm:text-2xl tracking-tight transition-colors duration-300 text-ink"
+            )}>
+              Ovi Global<span className="font-light text-ink hidden xs:inline">Uniform</span>
+            </span>
+          </Link>
+        </div>
 
         {/* Desktop Nav */}
         <nav className="hidden lg:flex items-center gap-8">
@@ -187,15 +184,12 @@ export default function Header() {
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-canvas border-r border-hairline z-[70] p-8 shadow-2xl flex flex-col"
           >
-            <div className="flex items-center justify-between mb-12">
-               <div className="flex items-center gap-2">
-                  <div className="flex items-center justify-center w-8 h-8 bg-surface-elevated border border-hairline rounded-lg text-warning font-serif font-black text-lg">
-                    O
-                  </div>
-                  <span className="font-extrabold text-xl tracking-tight text-ink">
-                    Ovi Global<span className="font-light">Uniform</span>
-                  </span>
-               </div>
+             <div className="flex items-center justify-between mb-12">
+                <Link to="/" className="flex items-center gap-2">
+                   <span className="font-extrabold text-xl tracking-tight text-ink">
+                     Ovi Global<span className="font-light">Uniform</span>
+                   </span>
+                </Link>
               <button onClick={() => setIsMenuOpen(false)} className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors">
                 <X size={24} />
               </button>

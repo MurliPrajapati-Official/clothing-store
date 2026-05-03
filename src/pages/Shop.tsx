@@ -360,7 +360,7 @@ export default function Shop() {
              </div>
           </motion.aside>
 
-          <main className="flex-1">
+          <main className="flex-1 min-w-0">
              <motion.div 
                initial={{ opacity: 0, y: -20 }}
                animate={{ opacity: 1, y: 0 }}
@@ -393,7 +393,7 @@ export default function Shop() {
                   initial="hidden"
                   whileInView="visible"
                   viewport={{ once: true, margin: "-50px" }}
-                  className="grid grid-rows-2 grid-flow-col auto-cols-[85vw] sm:auto-cols-[45%] md:auto-cols-[40%] gap-4 overflow-x-auto snap-x snap-mandatory pb-8 lg:grid-rows-none lg:grid-flow-row lg:auto-cols-auto lg:overflow-x-visible lg:snap-none lg:grid-cols-2 lg:pb-0 xl:grid-cols-3"
+                  className="grid grid-rows-2 grid-flow-col auto-cols-[85vw] sm:auto-cols-[45%] md:auto-cols-[40%] gap-4 overflow-x-auto snap-x snap-mandatory pb-8 -mx-4 px-4 lg:mx-0 lg:px-0 lg:grid-rows-none lg:grid-flow-row lg:auto-cols-auto lg:overflow-x-visible lg:snap-none lg:grid-cols-2 lg:pb-0 xl:grid-cols-3"
                 >
                   {filteredProducts.map((product) => (
                     <motion.div variants={fadeUpVariant} key={product.id} className="snap-start h-full">
