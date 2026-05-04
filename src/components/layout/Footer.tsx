@@ -27,8 +27,13 @@ export default function Footer() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-20"
         >
           <motion.div variants={fadeUpVariant}>
-            <Link to="/" className="flex items-center gap-2 mb-6">
-              <span className="font-extrabold text-2xl tracking-tight text-ink">
+            <Link to="/" className="flex items-center gap-3 mb-6">
+              <img 
+                src="/images/logo.png" 
+                alt="Uniform trends" 
+                className="h-12 w-auto object-contain" 
+              />
+              <span className="font-black text-2xl tracking-tight text-ink">
                 Uniform trends
               </span>
             </Link>

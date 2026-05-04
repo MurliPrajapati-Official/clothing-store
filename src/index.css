@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #ffffff;
+  --color-primary: #2ecc71;
   --color-ink: #f8f9fa;
   --color-body-text: #a0aab2;
   /* Cooler gray for a sleek, modern feel */
@@ -17,15 +17,15 @@
   --color-surface-soft: #161a1f;
   --color-on-primary: #000000;
   --color-on-dark: #ffffff;
-  --color-m-blue-light: #338cf0;
-  /* Brightened slightly for dark mode glow */
-  --color-m-blue-dark: #1c69d4;
+  --color-m-green-light: #2ecc71;
+  /* Sophisticated logo green */
+  --color-m-green-dark: #1b4332;
   --color-m-red: #ff4d4d;
-  --color-bmw-blue: #1c69d4;
-  --color-electric-blue: #0a66de;
+  --color-brand-green: #2ecc71;
+  --color-electric-green: #00ff88;
   --color-carbon-gray: #1b1e23;
   /* Richer carbon tone */
-  --color-warning: #facc15;
+  --color-warning: #ff4d4d;
   --color-success: #22c55e;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
@@ -110,7 +110,7 @@
   }
 
   .btn-secondary {
-    @apply h-12 px-8 rounded-full bg-electric-blue text-white font-medium flex items-center justify-center transition-all hover:bg-m-blue-dark hover:scale-105 active:scale-95 shadow-lg shadow-electric-blue/20;
+    @apply h-12 px-8 rounded-full bg-m-green-dark text-white font-medium flex items-center justify-center transition-all hover:bg-m-green-light hover:text-canvas hover:scale-105 active:scale-95 shadow-lg shadow-m-green-dark/20;
   }
 
   .btn-outline {

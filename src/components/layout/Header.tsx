@@ -50,10 +50,13 @@ export default function Header() {
               </button>
   
               {/* Logo */}
-              <Link to="/" className="flex items-center gap-2 group">
-                <span className={cn(
-                  "font-extrabold text-xl sm:text-2xl tracking-tight transition-colors duration-300 text-ink"
-                )}>
+              <Link to="/" className="flex items-center gap-3 group">
+                <img 
+                  src="/images/logo.png" 
+                  alt="Uniform trends" 
+                  className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
+                />
+                <span className="font-black text-2xl sm:text-3xl tracking-tighter text-ink hidden sm:block">
                   Uniform trends
                 </span>
               </Link>
