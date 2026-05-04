@@ -34,6 +34,8 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
         hidden: { opacity: 0, y: 30, scale: 0.95 },
         visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
       }}
+      initial={false}
+      animate="visible"
       className="group bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(0,0,0,0.6)] hover:-translate-y-2 transition-all duration-500 border border-hairline h-full flex flex-col"
     >
       <Link to={`/product/${product.slug}`} className="flex flex-col h-full">

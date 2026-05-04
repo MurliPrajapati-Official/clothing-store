@@ -29,11 +29,11 @@ export default function Footer() {
           <motion.div variants={fadeUpVariant}>
             <Link to="/" className="flex items-center gap-2 mb-6">
               <span className="font-extrabold text-2xl tracking-tight text-ink">
-                Ovi Global<span className="font-light">Uniform</span>
+                Uniform trends
               </span>
             </Link>
             <p className="text-body-text mb-8 leading-relaxed font-light text-[15px]">
-              Ovi Global Uniform is a trusted manufacturer and supplier of specialized uniforms. We manufacture uniforms that combine all-day comfort with long-lasting durability.
+              Uniform trends is a trusted brand by Walrie Exclusive Apparel (W E A), a premier manufacturer and supplier of specialized uniforms. We manufacture uniforms that combine all-day comfort with long-lasting durability.
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
@@ -48,7 +48,7 @@ export default function Footer() {
           <motion.div variants={fadeUpVariant}>
             <h4 className="text-[15px] font-bold mb-6 text-ink tracking-wide">Category</h4>
             <ul className="space-y-4 text-body-text font-light">
-              {['School & College Uniforms', 'Hospital Staff Uniforms', 'Admin Uniforms & Dresses'].map((item) => (
+              {['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'].map((item) => (
                 <li key={item}>
                   <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-warning transition-colors block">{item}</Link>
                 </li>
@@ -91,7 +91,7 @@ export default function Footer() {
               </li>
               <li className="flex gap-4 items-center">
                 <Mail className="text-warning shrink-0" size={20} />
-                <span>contact@oviglobaluniform.com</span>
+                <span>contact@uniformtrendsbywea.com</span>
               </li>
             </ul>
             <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm">
@@ -117,7 +117,7 @@ export default function Footer() {
           className="pt-8 border-t border-hairline flex flex-col md:flex-row justify-between items-center gap-6"
         >
           <p className="text-muted text-[13px] font-light uppercase tracking-wider">
-            © {new Date().getFullYear()} OVI GLOBAL UNIFORM. ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} WALRIE EXCLUSIVE APPAREL (W E A). ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-4">
             {/* Payment Icons */}

@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, ReactNode } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, SlidersHorizontal, X, Search } from 'lucide-react';
+import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, List } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
@@ -14,11 +14,6 @@ const fadeUpVariant = {
   visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
 };
 
-const slideRightVariant = {
-  hidden: { opacity: 0, x: -40 },
-  visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
-};
-
 const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
@@ -27,30 +22,90 @@ const staggerContainer = {
   }
 };
 
+interface FilterDropdownProps {
+  label: string;
+  icon?: ReactNode;
+  current: string;
+  options: { id: string; name: string }[];
+  onSelect: (id: string) => void;
+}
+
+function FilterDropdown({ label, icon, current, options, onSelect }: FilterDropdownProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className="relative">
+      <button 
+        onClick={() => setIsOpen(!isOpen)}
+        onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+        className={cn(
+          "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-xl text-sm font-medium transition-all min-w-[160px] justify-between",
+          isOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+        )}
+      >
+        <span className="flex items-center gap-2 text-ink">
+          {icon && <span className="text-primary">{icon}</span>}
+          <span className="text-muted mr-1">{label}:</span>
+          {current}
+        </span>
+        <ChevronDown size={14} className={cn("text-muted transition-transform duration-300", isOpen && "rotate-180")} />
+      </button>
+
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+          >
+            <div className="max-h-64 overflow-y-auto scrollbar-hide space-y-1">
+              {options.map((opt) => (
+                <button
+                  key={opt.id}
+                  onClick={() => {
+                    onSelect(opt.id);
+                    setIsOpen(false);
+                  }}
+                  className={cn(
+                    "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
+                    current === opt.name || current === opt.id ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                  )}
+                >
+                  {opt.name}
+                  {(current === opt.name || current === opt.id) && <Check size={14} />}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 export default function Shop() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState(searchParams.get('q') || '');
   const [sortBy, setSortBy] = useState('popular');
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const categoryFilter = searchParams.get('category');
+  const categoryFilter = searchParams.getAll('category');
   const schoolFilter = searchParams.get('school');
   const gradeFilter = searchParams.get('grade');
   const genderFilter = searchParams.get('gender');
 
   useEffect(() => {
-    const q = searchParams.get('q');
-    if (q !== null) {
-      setSearchQuery(q);
-    }
+    setSearchQuery(searchParams.get('q') || '');
   }, [searchParams]);
 
   const filteredProducts = PRODUCTS.filter((product) => {
-    if (categoryFilter && product.category !== categoryFilter) return false;
-    if (schoolFilter && product.schoolId !== schoolFilter) return false;
-    if (gradeFilter && product.grade !== gradeFilter && product.grade !== 'All') return false;
-    if (genderFilter && product.gender !== genderFilter && product.gender !== 'unisex') return false;
+    if (categoryFilter.length > 0 && !categoryFilter.includes(product.category)) return false;
+    if (schoolFilter && schoolFilter !== 'all' && product.schoolId !== schoolFilter) return false;
+    if (gradeFilter && gradeFilter !== 'All' && product.grade !== gradeFilter && product.grade !== 'All') return false;
+    if (genderFilter && genderFilter !== 'All' && product.gender !== genderFilter.toLowerCase() && product.gender !== 'unisex') return false;
 
     if (searchQuery) {
       const lowerQuery = searchQuery.toLowerCase();
@@ -63,6 +118,8 @@ export default function Shop() {
   }).sort((a, b) => {
     if (sortBy === 'price-asc') return a.price - b.price;
     if (sortBy === 'price-desc') return b.price - a.price;
+    if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+    if (sortBy === 'newest') return b.id.localeCompare(a.id);
     return 0;
   });
 
@@ -74,7 +131,7 @@ export default function Shop() {
 
   const handleFilterChange = (key: string, value: string) => {
     const newParams = new URLSearchParams(searchParams);
-    if (newParams.get(key) === value) {
+    if (value === 'all' || value === 'All') {
       newParams.delete(key);
     } else {
       newParams.set(key, value);
@@ -82,367 +139,302 @@ export default function Shop() {
     setSearchParams(newParams);
   };
 
+  const handleToggleCategory = (cat: string) => {
+    const newParams = new URLSearchParams(searchParams);
+    const current = newParams.getAll('category');
+    if (current.includes(cat)) {
+      const filtered = current.filter(c => c !== cat);
+      newParams.delete('category');
+      filtered.forEach(c => newParams.append('category', c));
+    } else {
+      newParams.append('category', cat);
+    }
+    setSearchParams(newParams);
+  };
+
+  const getSortLabel = (id: string) => {
+    const labels: Record<string, string> = {
+      'popular': 'Relevance',
+      'price-asc': 'Price: Low to High',
+      'price-desc': 'Price: High to Low',
+      'newest': 'Newest Arrivals',
+      'name-asc': 'Name: A-Z'
+    };
+    return labels[id] || 'Relevance';
+  };
+
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
       <Helmet>
-        <title>{categoryFilter ? `${categoryFilter} | Shop Ovi Global Uniform` : 'Shop All | Ovi Global Uniform'}</title>
-        <meta name="description" content="Browse our premium selection of school uniforms, accessories, and shoes." />
+        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} | Shop Uniform trends` : 'Shop All | Uniform trends'}</title>
+        <meta name="description" content="Browse our premium selection of specialized uniforms for all sectors." />
       </Helmet>
 
-      {/* Mobile Filter Overlay */}
-      <AnimatePresence>
-        {isFilterOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsFilterOpen(false)}
-              className="fixed inset-0 bg-transparent z-[60] lg:hidden"
-            />
-            <motion.div
-              initial={{ opacity: 0, x: '100%' }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 right-0 w-[85vw] sm:w-[400px] bg-surface-card border-l border-hairline shadow-[0_0_40px_rgba(0,0,0,0.8)] z-[70] flex flex-col lg:hidden"
-            >
-              <div className="flex items-center justify-between p-6 border-b border-hairline-strong">
-                <h3 className="text-xl font-bold text-ink">Filters</h3>
-                <button onClick={() => setIsFilterOpen(false)} className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors">
-                  <X size={20} />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h4 className="font-bold text-ink">Selected Filters</h4>
-                  <button onClick={() => { clearFilters(); setIsFilterOpen(false); }} className="text-sm font-medium text-m-red hover:text-red-700">Clear All</button>
-                </div>
-                <div className="space-y-8">
-                  <div>
-                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
-                    <div className="space-y-3">
-                      {SCHOOLS.map(school => (
-                        <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative flex items-center justify-center">
-                            <input
-                              type="checkbox"
-                              name="mobile-school"
-                              checked={schoolFilter === school.id}
-                              onChange={() => handleFilterChange('school', school.id)}
-                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                            />
-                          </div>
-                          <span className={cn(
-                            "text-sm font-medium transition-colors",
-                            schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
-                          )}>{school.name}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
-                    <div className="space-y-3">
-                      {CATEGORIES.map(cat => (
-                        <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative flex items-center justify-center">
-                            <input
-                              type="checkbox"
-                              name="mobile-category"
-                              checked={categoryFilter === cat}
-                              onChange={() => handleFilterChange('category', cat)}
-                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                            />
-                          </div>
-                          <span className={cn(
-                            "text-sm font-medium transition-colors",
-                            categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
-                          )}>{cat}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
-                    <div className="space-y-3">
-                      {['Primary', 'Secondary', 'All'].map(grade => (
-                        <label key={grade} className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative flex items-center justify-center">
-                            <input
-                              type="checkbox"
-                              name="mobile-grade"
-                              checked={gradeFilter === grade}
-                              onChange={() => handleFilterChange('grade', grade)}
-                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                            />
-                          </div>
-                          <span className={cn(
-                            "text-sm font-medium transition-colors",
-                            gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
-                          )}>{grade}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
-                    <div className="space-y-3">
-                      {['boys', 'girls', 'unisex'].map(gender => (
-                        <label key={gender} className="flex items-center gap-3 cursor-pointer group">
-                          <div className="relative flex items-center justify-center">
-                            <input
-                              type="checkbox"
-                              name="mobile-gender"
-                              checked={genderFilter === gender}
-                              onChange={() => handleFilterChange('gender', gender)}
-                              className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                            />
-                          </div>
-                          <span className={cn(
-                            "text-sm font-medium transition-colors capitalize",
-                            genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
-                          )}>{gender}</span>
-                        </label>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="border-b border-hairline mb-10 pt-10 pb-8 bg-surface-card shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
-      >
+      {/* Hero / Header Section */}
+      <div className="bg-surface-card border-b border-hairline py-12">
         <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row items-end justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-2 text-muted text-sm font-medium mb-4">
-                <span>Home</span>
-                <span className="w-1 h-1 bg-text-muted rounded-full" />
-                <span className="text-ink">Shop</span>
-              </div>
-              <h1 className="text-4xl md:text-5xl font-bold text-ink tracking-tight">
-                {categoryFilter ? categoryFilter : 'All Products'}
-              </h1>
+          <div className="max-w-4xl">
+            <div className="flex items-center gap-2 text-primary text-sm font-bold uppercase tracking-widest mb-4">
+              <span>Catalog</span>
+              <span className="w-1.5 h-1.5 bg-muted rounded-full" />
+              <span className="text-muted">Specialized Attire</span>
             </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-ink tracking-tight mb-6">
+              Specialized <span className="text-primary">Uniform</span> Catalog
+            </h1>
+            <p className="text-xl text-muted font-light leading-relaxed max-w-2xl">
+              Precision-engineered garments for academic, medical, and industrial excellence. Filter through our premium collection to find your perfect fit.
+            </p>
+          </div>
+        </div>
+      </div>
 
-            <div className="flex items-center gap-4 w-full md:w-auto">
-              <div className="relative flex-1 md:w-80">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                <input
-                  type="text"
-                  placeholder="Search products..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-canvas border border-hairline py-3 pl-12 pr-4 text-base outline-none focus:border-ink transition-all text-ink rounded-full"
+      {/* Filter Bar */}
+      <div className="bg-surface-card border-b border-hairline py-6 mb-10 shadow-sm">
+        <div className="container mx-auto px-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              {/* Dropdowns Group */}
+              <div className="flex flex-wrap items-center gap-3">
+                <FilterDropdown 
+                  label="School" 
+                  current={schoolFilter ? SCHOOLS.find(s => s.id === schoolFilter)?.name || 'All Schools' : 'All Schools'}
+                  options={[
+                    { id: 'all', name: 'All Schools' },
+                    ...SCHOOLS.map(s => ({ id: s.id, name: s.name }))
+                  ]}
+                  onSelect={(id) => handleFilterChange('school', id)}
                 />
+
+                {/* Category Multi-select Dropdown */}
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsCategoryOpen(!isCategoryOpen)}
+                    onBlur={() => setTimeout(() => setIsCategoryOpen(false), 200)}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-xl text-sm font-medium transition-all min-w-[160px] justify-between",
+                      isCategoryOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+                    )}
+                  >
+                    <span className="flex items-center gap-2 text-ink">
+                      <span className="text-muted">Category:</span>
+                      {categoryFilter.length === 0 ? 'All' : `${categoryFilter.length} Selected`}
+                    </span>
+                    <ChevronDown size={14} className={cn("text-muted transition-transform duration-300", isCategoryOpen && "rotate-180")} />
+                  </button>
+                  <AnimatePresence>
+                    {isCategoryOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+                      >
+                        <div className="max-h-64 overflow-y-auto scrollbar-hide space-y-1">
+                          {CATEGORIES.map(cat => (
+                            <button 
+                              key={cat}
+                              onClick={() => handleToggleCategory(cat)}
+                              className={cn(
+                                "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
+                                categoryFilter.includes(cat) ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                              )}
+                            >
+                              {cat}
+                              {categoryFilter.includes(cat) && <Check size={14} />}
+                            </button>
+                          ))}
+                        </div>
+                        {categoryFilter.length > 0 && (
+                          <button 
+                            onClick={() => {
+                              const p = new URLSearchParams(searchParams);
+                              p.delete('category');
+                              setSearchParams(p);
+                            }}
+                            className="w-full mt-2 py-2 text-[11px] font-bold text-m-red uppercase tracking-wider border-t border-hairline hover:bg-m-red/5 rounded-b-lg"
+                          >
+                            Reset Categories
+                          </button>
+                        )}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                <FilterDropdown 
+                  label="Grade" 
+                  current={gradeFilter || 'All'}
+                  options={[
+                    { id: 'All', name: 'All Grades' },
+                    { id: 'Primary', name: 'Primary' },
+                    { id: 'Secondary', name: 'Secondary' }
+                  ]}
+                  onSelect={(id) => handleFilterChange('grade', id)}
+                />
+
+                <FilterDropdown 
+                  label="Gender" 
+                  current={genderFilter ? genderFilter.charAt(0).toUpperCase() + genderFilter.slice(1) : 'All'}
+                  options={[
+                    { id: 'All', name: 'All Genders' },
+                    { id: 'boys', name: 'Boys' },
+                    { id: 'girls', name: 'Girls' },
+                    { id: 'unisex', name: 'Unisex' }
+                  ]}
+                  onSelect={(id) => handleFilterChange('gender', id)}
+                />
+
+                {(schoolFilter || categoryFilter.length > 0 || gradeFilter || genderFilter) && (
+                  <button 
+                    onClick={clearFilters}
+                    className="text-xs font-bold text-m-red uppercase tracking-widest hover:underline ml-2"
+                  >
+                    Clear All
+                  </button>
+                )}
               </div>
-              <button
-                onClick={() => setIsFilterOpen(true)}
-                className="lg:hidden p-3 bg-surface-card text-ink border border-hairline rounded-xl hover:bg-surface-card flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.5)] active:scale-95 transition-transform"
-              >
-                <Filter size={18} />
-              </button>
+
+              {/* Search & Sort Group */}
+              <div className="flex items-center gap-3 ml-auto w-full md:w-auto">
+                <div className="relative flex-1 md:w-64 group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-primary transition-colors" size={16} />
+                  <input
+                    type="text"
+                    placeholder="Search..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full bg-surface-card border border-hairline py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary transition-all text-ink rounded-xl"
+                  />
+                </div>
+
+                <div className="relative">
+                  <button 
+                    onClick={() => setIsSortOpen(!isSortOpen)}
+                    onBlur={() => setTimeout(() => setIsSortOpen(false), 200)}
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-2.5 bg-surface-card border rounded-xl text-sm font-medium transition-all min-w-[180px] justify-between",
+                      isSortOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+                    )}
+                  >
+                    <span className="flex items-center gap-2 text-ink">
+                      <SlidersHorizontal size={14} className="text-primary" />
+                      {getSortLabel(sortBy)}
+                    </span>
+                    <ChevronDown size={14} className={cn("text-muted transition-transform duration-300", isSortOpen && "rotate-180")} />
+                  </button>
+                  <AnimatePresence>
+                    {isSortOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute top-full right-0 mt-2 w-56 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+                      >
+                        {[
+                          { id: 'popular', name: 'Relevance' },
+                          { id: 'price-asc', name: 'Price: Low to High' },
+                          { id: 'price-desc', name: 'Price: High to Low' },
+                          { id: 'newest', name: 'Newest Arrivals' },
+                          { id: 'name-asc', name: 'Name: A-Z' }
+                        ].map(opt => (
+                          <button 
+                            key={opt.id}
+                            onClick={() => {
+                              setSortBy(opt.id);
+                              setIsSortOpen(false);
+                            }}
+                            className={cn(
+                              "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
+                              sortBy === opt.id ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                            )}
+                          >
+                            {opt.name}
+                            {sortBy === opt.id && <Check size={14} />}
+                          </button>
+                        ))}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </div>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
       <div className="container mx-auto px-4">
-        <div className="flex gap-10">
-          <motion.aside
-            variants={slideRightVariant}
-            initial="hidden"
-            animate="visible"
-            className="hidden lg:block w-72 shrink-0"
-          >
-            <div className="sticky top-28 bg-surface-card p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline">
-              <div className="flex items-center justify-between mb-8">
-                <h3 className="font-bold text-xl text-ink">Filters</h3>
-                <button onClick={clearFilters} className="text-sm font-medium text-m-red hover:text-red-700 transition-colors">Clear All</button>
-              </div>
-              <div className="space-y-8">
-                <div>
-                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By School</h4>
-                  <div className="space-y-3">
-                    {SCHOOLS.map(school => (
-                      <label key={school.id} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            name="school"
-                            checked={schoolFilter === school.id}
-                            onChange={() => handleFilterChange('school', school.id)}
-                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                          />
-                        </div>
-                        <span className={cn(
-                          "text-sm font-medium transition-colors",
-                          schoolFilter === school.id ? "text-ink" : "text-muted group-hover:text-ink"
-                        )}>{school.name}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Category</h4>
-                  <div className="space-y-3">
-                    {CATEGORIES.map(cat => (
-                      <label key={cat} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            name="category"
-                            checked={categoryFilter === cat}
-                            onChange={() => handleFilterChange('category', cat)}
-                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                          />
-                        </div>
-                        <span className={cn(
-                          "text-sm font-medium transition-colors",
-                          categoryFilter === cat ? "text-ink" : "text-muted group-hover:text-ink"
-                        )}>{cat}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Grade Level</h4>
-                  <div className="space-y-3">
-                    {['Primary', 'Secondary', 'All'].map(grade => (
-                      <label key={grade} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            name="grade"
-                            checked={gradeFilter === grade}
-                            onChange={() => handleFilterChange('grade', grade)}
-                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                          />
-                        </div>
-                        <span className={cn(
-                          "text-sm font-medium transition-colors",
-                          gradeFilter === grade ? "text-ink" : "text-muted group-hover:text-ink"
-                        )}>{grade}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h4 className="text-sm font-bold text-ink mb-4 border-b border-hairline pb-2">By Gender</h4>
-                  <div className="space-y-3">
-                    {['boys', 'girls', 'unisex'].map(gender => (
-                      <label key={gender} className="flex items-center gap-3 cursor-pointer group">
-                        <div className="relative flex items-center justify-center">
-                          <input
-                            type="checkbox"
-                            name="gender"
-                            checked={genderFilter === gender}
-                            onChange={() => handleFilterChange('gender', gender)}
-                            className="w-4 h-4 text-ink focus:ring-navy border-gray-300 cursor-pointer rounded-sm"
-                          />
-                        </div>
-                        <span className={cn(
-                          "text-sm font-medium transition-colors capitalize",
-                          genderFilter === gender ? "text-ink" : "text-muted group-hover:text-ink"
-                        )}>{gender}</span>
-                      </label>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.aside>
-
-          <main className="flex-1 min-w-0">
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-surface-card p-4 border border-hairline flex flex-wrap items-center justify-between mb-8 rounded-xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] gap-4"
-            >
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted">Showing</span>
-                <span className="text-base font-bold text-ink">{filteredProducts.length} items</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2">
-                  <SlidersHorizontal size={18} className="text-muted" />
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="bg-canvas border-none text-sm font-medium text-ink outline-none py-2 px-4 rounded-lg cursor-pointer"
-                  >
-                    <option value="popular">Sort by: Popularity</option>
-                    <option value="price-asc">Price: Low to High</option>
-                    <option value="price-desc">Price: High to Low</option>
-                  </select>
-                </div>
-              </div>
-            </motion.div>
-
-            {filteredProducts.length > 0 ? (
-              <>
-                {/* Mobile Carousel */}
-                <motion.div
-                  variants={staggerContainer}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
-                  className="lg:hidden flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory pb-8 scrollbar-hide"
-                >
-                  <div className="grid grid-rows-2 grid-flow-col gap-4 auto-cols-[min(80vw,300px)]">
-                    {filteredProducts.map((product) => (
-                      <motion.div variants={fadeUpVariant} key={product.id} className="snap-start">
-                        <ProductCard product={product} onQuickView={setQuickViewProduct} />
-                      </motion.div>
-                    ))}
-                  </div>
-                </motion.div>
-
-                {/* Desktop Grid */}
-                <motion.div
-                  variants={staggerContainer}
-                  initial="hidden"
-                  whileInView="visible"
-                  viewport={{ once: true, margin: "-50px" }}
-                  className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 gap-8"
-                >
-                  {filteredProducts.map((product) => (
-                    <motion.div variants={fadeUpVariant} key={product.id}>
-                      <ProductCard product={product} onQuickView={setQuickViewProduct} />
-                    </motion.div>
-                  ))}
-                </motion.div>
-              </>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="py-24 text-center bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline"
-              >
-                <div className="w-20 h-20 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Search className="text-muted" size={32} />
-                </div>
-                <h3 className="text-2xl font-bold text-ink mb-2">No Products Found</h3>
-                <p className="text-muted mb-6">We couldn't find any items matching your selected filters.</p>
-                <button onClick={clearFilters} className="btn-outline">
-                  Clear All Filters
-                </button>
-              </motion.div>
-            )}
-          </main>
+        <div className="mb-8 flex items-center justify-between">
+          <div className="text-sm text-muted">
+            Showing <span className="text-ink font-bold">{filteredProducts.length}</span> items
+          </div>
         </div>
+
+        {filteredProducts.length > 0 ? (
+          <>
+            {/* Mobile Dual Independent Carousels */}
+            <div className="lg:hidden space-y-6 pb-8">
+              {/* Row 1 */}
+              <motion.div
+                variants={staggerContainer}
+                initial={false}
+                animate="visible"
+                className="flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory scrollbar-hide"
+              >
+                {filteredProducts.filter((_, i) => i % 2 === 0).map((product) => (
+                  <div key={product.id} className="snap-start min-w-[min(70vw,260px)]">
+                    <ProductCard product={product} onQuickView={setQuickViewProduct} />
+                  </div>
+                ))}
+              </motion.div>
+
+              {/* Row 2 */}
+              <motion.div
+                variants={staggerContainer}
+                initial={false}
+                animate="visible"
+                className="flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory scrollbar-hide"
+              >
+                {filteredProducts.filter((_, i) => i % 2 !== 0).map((product) => (
+                  <div key={product.id} className="snap-start min-w-[min(70vw,260px)]">
+                    <ProductCard product={product} onQuickView={setQuickViewProduct} />
+                  </div>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Desktop Grid */}
+            <motion.div
+              variants={staggerContainer}
+              initial={false}
+              animate="visible"
+              className="hidden lg:grid lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mb-12"
+            >
+              {filteredProducts.map((product) => (
+                <motion.div variants={fadeUpVariant} key={product.id}>
+                  <ProductCard product={product} onQuickView={setQuickViewProduct} />
+                </motion.div>
+              ))}
+            </motion.div>
+          </>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="py-24 text-center bg-surface-card rounded-3xl shadow-xl border border-hairline max-w-2xl mx-auto"
+          >
+            <div className="w-24 h-24 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+              <Search className="text-muted" size={40} />
+            </div>
+            <h3 className="text-3xl font-bold text-ink mb-3">No Products Found</h3>
+            <p className="text-lg text-muted mb-8 px-8">We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters.</p>
+            <button onClick={clearFilters} className="btn-primary">
+              Clear All Filters
+            </button>
+          </motion.div>
+        )}
       </div>
+
       <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
     </div>
   );

@@ -12,7 +12,7 @@ export default function Account() {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex items-center justify-center">
         <Helmet>
-          <title>Sign In & Register | Ovi Global Uniform</title>
+          <title>Sign In & Register | Uniform trends</title>
           <meta name="description" content="Log in to your account or create a new one to track orders and manage profile." />
         </Helmet>
         <motion.div 
@@ -83,7 +83,7 @@ export default function Account() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>My Account | Ovi Global Uniform</title>
+        <title>My Account | Uniform trends</title>
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
          

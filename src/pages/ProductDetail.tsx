@@ -54,7 +54,7 @@ export default function ProductDetail() {
   return (
     <div className="pt-32 pb-24 bg-canvas text-body-text min-h-screen">
       <Helmet>
-        <title>{product.name} | Ovi Global Uniform</title>
+        <title>{product.name} | Uniform trends</title>
         <meta name="description" content={product.description} />
       </Helmet>
       <div className="container mx-auto px-4">

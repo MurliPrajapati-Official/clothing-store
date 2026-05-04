@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Search, ShoppingBag, User, Heart, Menu, X, ChevronRight } from 'lucide-react';
+import { Search, ShoppingBag, User, Heart, Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../../store/cartStore';
@@ -12,6 +12,11 @@ export default function Header() {
   const location = useLocation();
     const { getTotalItems, setDrawerOpen } = useCartStore();
     const totalItems = getTotalItems();
+    
+    const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
+    const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
+
+    const categories = ['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'];
   
     useEffect(() => {
       const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -49,16 +54,80 @@ export default function Header() {
                 <span className={cn(
                   "font-extrabold text-xl sm:text-2xl tracking-tight transition-colors duration-300 text-ink"
                 )}>
-                  Ovi Global<span className="font-light text-ink hidden xs:inline">Uniform</span>
+                  Uniform trends
                 </span>
               </Link>
             </div>
   
             {/* Desktop Nav */}
             <nav className="hidden lg:flex items-center gap-8">
+              <Link
+                to="/"
+                className={cn(
+                  "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
+                  location.pathname === '/' ? "text-m-red" : "text-body-text"
+                )}
+              >
+                Home
+                <span className={cn(
+                  "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                  location.pathname === '/' && "w-full"
+                )} />
+              </Link>
+
+              {/* Shop Mega Menu Trigger */}
+              <div 
+                className="relative group"
+                onMouseEnter={() => setIsShopDropdownOpen(true)}
+                onMouseLeave={() => setIsShopDropdownOpen(false)}
+              >
+                <Link
+                  to="/shop"
+                  className={cn(
+                    "text-[15px] font-medium transition-colors hover:text-m-red flex items-center gap-1 group whitespace-nowrap h-10",
+                    location.pathname === '/shop' ? "text-m-red" : "text-body-text"
+                  )}
+                >
+                  Shop
+                  <ChevronDown size={14} className={cn("transition-transform duration-300", isShopDropdownOpen && "rotate-180")} />
+                  <span className={cn(
+                    "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                    location.pathname === '/shop' && "w-full"
+                  )} />
+                </Link>
+
+                {/* Desktop Dropdown */}
+                <AnimatePresence>
+                  {isShopDropdownOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
+                      className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden py-4 z-50"
+                    >
+                      <div className="px-6 py-2 mb-2">
+                        <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">Shop by Category</h4>
+                      </div>
+                      <div className="flex flex-col">
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat}
+                            to={`/shop?category=${encodeURIComponent(cat)}`}
+                            onClick={() => setIsShopDropdownOpen(false)}
+                            className="px-6 py-3 text-[14px] font-medium text-body-text hover:text-ink hover:bg-surface-elevated transition-colors flex items-center justify-between group/item"
+                          >
+                            {cat}
+                            <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                          </Link>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
               {[
-                { name: 'Home', path: '/' },
-                { name: 'Shop', path: '/shop' },
                 { name: 'About Us', path: '/about' },
                 { name: 'Blog', path: '/blog' },
                 { name: 'Contact Us', path: '/contact' }
@@ -67,7 +136,7 @@ export default function Header() {
                   key={item.name}
                   to={item.path}
                   className={cn(
-                    "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap",
+                    "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
                     location.pathname === item.path
                       ? "text-m-red"
                       : "text-body-text"
@@ -188,7 +257,7 @@ export default function Header() {
               <div className="flex items-center justify-between p-8 mb-4">
                 <Link to="/" className="flex items-center gap-2">
                   <span className="font-extrabold text-xl tracking-tight text-ink">
-                    Ovi Global<span className="font-light">Uniform</span>
+                    Uniform trends
                   </span>
                 </Link>
                 <button 
@@ -200,9 +269,69 @@ export default function Header() {
               </div>
 
               <nav className="flex flex-col px-4">
+                {/* Mobile Home */}
+                <Link
+                  to="/"
+                  className={cn(
+                    "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all",
+                    location.pathname === '/' ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
+                  )}
+                >
+                  Home
+                  <ChevronRight size={18} className={cn("transition-transform", location.pathname === '/' ? "translate-x-0" : "-translate-x-2 opacity-0")} />
+                </Link>
+
+                {/* Mobile Shop with Accordion */}
+                <div className="flex flex-col">
+                  <button
+                    onClick={() => setIsMobileShopOpen(!isMobileShopOpen)}
+                    className={cn(
+                      "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
+                      location.pathname.startsWith('/shop') ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
+                    )}
+                  >
+                    Shop
+                    <ChevronDown size={18} className={cn("transition-transform duration-300", isMobileShopOpen && "rotate-180")} />
+                  </button>
+                  <AnimatePresence>
+                    {isMobileShopOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden bg-surface-elevated/30 rounded-2xl mx-2 mb-2"
+                      >
+                        {categories.map((cat) => (
+                          <Link
+                            key={cat}
+                            to={`/shop?category=${encodeURIComponent(cat)}`}
+                            onClick={() => {
+                              setIsMenuOpen(false);
+                              setIsMobileShopOpen(false);
+                            }}
+                            className="flex items-center justify-between px-6 py-3 text-base font-medium text-muted hover:text-ink transition-colors"
+                          >
+                            {cat}
+                            <ChevronRight size={16} />
+                          </Link>
+                        ))}
+                        <Link
+                          to="/shop"
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setIsMobileShopOpen(false);
+                          }}
+                          className="flex items-center justify-between px-6 py-3 text-base font-bold text-primary hover:text-ink transition-colors border-t border-hairline/50 mt-2"
+                        >
+                          View All Shop
+                          <ArrowRight size={16} />
+                        </Link>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
                 {[
-                  { name: 'Home', path: '/' },
-                  { name: 'Shop', path: '/shop' },
                   { name: 'About Us', path: '/about' },
                   { name: 'Blog', path: '/blog' },
                   { name: 'Contact Us', path: '/contact' }
@@ -221,7 +350,7 @@ export default function Header() {
                       )}
                     >
                       {item.name}
-                      <ChevronRight size={18} className={cn("transition-transform", location.pathname === item.path ? "translate-x-0" : "-translate-x-2 opacity-0 group-hover:opacity-100")} />
+                      <ChevronRight size={18} className={cn("transition-transform", location.pathname === item.path ? "translate-x-0" : "-translate-x-2 opacity-0")} />
                     </Link>
                   </motion.div>
                 ))}

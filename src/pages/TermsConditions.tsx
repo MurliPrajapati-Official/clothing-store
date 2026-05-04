@@ -5,7 +5,7 @@ export default function TermsConditions() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Terms & Conditions | Ovi Global Uniform</title>
+        <title>Terms & Conditions | Uniform trends</title>
       </Helmet>
       <div className="container-custom max-w-4xl">
         <motion.div
@@ -23,12 +23,12 @@ export default function TermsConditions() {
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">2. Use of License</h2>
-              <p>Permission is granted to temporarily download one copy of the materials (information or software) on Ovi Global Uniform's website for personal, non-commercial transitory viewing only.</p>
+              <p>Permission is granted to temporarily download one copy of the materials (information or software) on Uniform trends's website for personal, non-commercial transitory viewing only.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">3. Disclaimer</h2>
-              <p>The materials on Ovi Global Uniform's website are provided on an 'as is' basis. Ovi Global Uniform makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+              <p>The materials on Uniform trends's website are provided on an 'as is' basis. Walrie Exclusive Apparel (W E A) makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
             </section>
 
             <section>

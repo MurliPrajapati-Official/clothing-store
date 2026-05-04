@@ -5,7 +5,7 @@ export default function ReturnPolicy() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Return Policy | Ovi Global Uniform</title>
+        <title>Return Policy | Uniform trends</title>
       </Helmet>
       <div className="container-custom max-w-4xl">
         <motion.div

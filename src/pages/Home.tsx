@@ -33,8 +33,8 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Ovi Global Uniform | Dress for Excellence</title>
-        <meta name="description" content="Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration." />
+        <title>Uniform trends | Dress for Excellence</title>
+        <meta name="description" content="Premium, durable, and comfortable uniforms by Uniform trends, a brand of Walrie Exclusive Apparel (W E A)." />
       </Helmet>
 
       {/* Cinematic Hero Section */}
@@ -70,10 +70,10 @@ export default function Home() {
             </span>
             <h1 className="text-4xl sm:text-5xl md:text-[76px] font-bold text-ink leading-[1.05] mb-6 tracking-tight">
               Dress for Excellence with <br />
-              Ovi Global Uniform.
+              Uniform trends.
             </h1>
             <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
-              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
+              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration by Walrie Exclusive Apparel (W E A).
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -95,19 +95,19 @@ export default function Home() {
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-20px" }}
               className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
             >
-              Welcome to Ovi Global Uniform
+              Welcome to Uniform trends
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true, margin: "-20px" }}
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Ovi Global Uniform, we believe that the right attire fosters unity, professionalism, and confidence.
+              At Uniform trends, a brand of Walrie Exclusive Apparel (W E A), we believe that the right attire fosters unity, professionalism, and confidence.
               Whether you are equipping the next generation of students or outfitting dedicated healthcare heroes,
               we manufacture uniforms that combine all-day comfort with long-lasting durability.
             </motion.p>
@@ -162,7 +162,7 @@ export default function Home() {
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-20px" }}
             className="text-center mb-16"
           >
             <h2 className="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4">Our Products</h2>
@@ -173,46 +173,88 @@ export default function Home() {
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            viewport={{ once: true, margin: "-20px" }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
           >
-            {/* Category 1 */}
+            {/* Category 1: School */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="https://picsum.photos/seed/school-uniform/800/1000" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <img src="/products/school_1.png" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">School & College Uniforms</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">School Uniforms</h3>
                 <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                  Fostering equality and pride. Shirts, trousers, blazers, and sports uniforms built for the classroom and beyond.
+                  Durable, comfortable, and professional attire for the next generation of leaders.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('School & College Uniforms')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                <Link to={`/shop?category=${encodeURIComponent('School')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
                   Explore Category <ArrowUpRight size={18} />
                 </Link>
               </div>
             </motion.div>
 
-            {/* Category 2 */}
+            {/* Category 2: College */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="https://picsum.photos/seed/hospital-uniform/800/1000" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <img src="/products/college_1.png" alt="College Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Hospital Staff Uniforms</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">College Wear</h3>
                 <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                  Hygiene, flexibility, and comfort. Medical scrubs, lab coats, and staff tunics for healthcare heroes.
+                  Modern varsity jackets and formal attire for higher education excellence.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Hospital Staff Uniforms')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                <Link to={`/shop?category=${encodeURIComponent('College')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
                   Explore Category <ArrowUpRight size={18} />
                 </Link>
               </div>
             </motion.div>
 
-            {/* Category 3 */}
+            {/* Category 3: Corporate */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="https://picsum.photos/seed/admin-uniform/800/1000" alt="Admin Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" referrerPolicy="no-referrer" />
+              <img src="/products/corporate_1.png" alt="Corporate Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Admin Uniforms & Dresses</h3>
+                <h3 className="text-2xl font-bold text-white mb-2">Corporate Attire</h3>
                 <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
-                  Make a lasting first impression. Corporate suits, formal shirts, receptionist dresses, and accessories.
+                  Sharp business suits and professional outfits for modern administrative excellence.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Admin Uniforms & Dresses')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                <Link to={`/shop?category=${encodeURIComponent('Corporate')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Category 4: Hospital */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="/products/hospital_1.png" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Healthcare Heroes</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Premium surgical scrubs and lab coats designed for hygiene and comfort.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Hospital')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Category 5: Hotels */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="/products/hotel_1.png" alt="Hotel Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Hotels & Hospitality</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Elegant front-desk and culinary uniforms for a superior hospitality experience.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Hotels')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
+                  Explore Category <ArrowUpRight size={18} />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Category 6: Factory */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="/products/factory_1.png" alt="Factory Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
+                <h3 className="text-2xl font-bold text-white mb-2">Industrial & Factory</h3>
+                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Rugged, heavy-duty safety gear and uniforms for industrial environments.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Factory')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
                   Explore Category <ArrowUpRight size={18} />
                 </Link>
               </div>
@@ -228,7 +270,7 @@ export default function Home() {
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-20px" }}
             className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
           >
             <div>
@@ -244,7 +286,7 @@ export default function Home() {
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-20px" }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {PRODUCTS.filter(p => p.isFeatured).map((product) => (
@@ -263,10 +305,10 @@ export default function Home() {
             variants={fadeUpVariant}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true, margin: "-20px" }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Ovi Global Uniform</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Walrie Exclusive Apparel (W E A)</h2>
             <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
               Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
             </p>

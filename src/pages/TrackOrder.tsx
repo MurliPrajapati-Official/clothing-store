@@ -21,7 +21,7 @@ export default function TrackOrder() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Track Order | Ovi Global Uniform</title>
+        <title>Track Order | Uniform trends</title>
       </Helmet>
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div 

@@ -20,8 +20,8 @@ export default function Contact() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Contact Us | Ovi Global Uniform</title>
-        <meta name="description" content="Get in touch with Ovi Global Uniform for bulk orders, custom designs, and inquiries." />
+        <title>Contact Us | Uniform trends</title>
+        <meta name="description" content="Get in touch with Uniform trends and Walrie Exclusive Apparel (W E A) for bulk orders and inquiries." />
       </Helmet>
 
       <div className="container-custom max-w-7xl">
@@ -30,7 +30,7 @@ export default function Contact() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Ovi Global Uniform</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Uniform trends</h1>
           <p className="text-lg text-muted max-w-2xl mx-auto font-light">
             Ready to upgrade your institution's wardrobe? Contact us today to discuss bulk orders, custom designs, and fabric swatches. Our team is ready to assist you.
           </p>
@@ -65,7 +65,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-lg font-bold text-ink mb-1">Email</h3>
                   <p className="text-muted font-light mb-2">Our friendly team is here to help.</p>
-                  <a href="mailto:contact@oviglobaluniform.com" className="text-primary font-medium hover:underline">contact@oviglobaluniform.com</a>
+                  <a href="mailto:contact@uniformtrendsbywea.com" className="text-primary font-medium hover:underline">contact@uniformtrendsbywea.com</a>
                 </div>
               </div>
             </div>
@@ -79,7 +79,7 @@ export default function Contact() {
                   <h3 className="text-lg font-bold text-ink mb-1">Office</h3>
                   <p className="text-muted font-light mb-2">Come say hello at our HQ.</p>
                   <address className="not-italic text-ink font-medium">
-                    Ovi Global Uniform<br />
+                    Walrie Exclusive Apparel (W E A)<br />
                     Industrial Area<br />
                     Ranchi, Jharkhand<br />
                     India
@@ -135,9 +135,12 @@ export default function Contact() {
                   <label className="text-sm font-semibold text-ink">Category of Interest</label>
                   <select required className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors appearance-none">
                     <option value="" disabled selected>Select a category...</option>
-                    <option value="school">School & College Uniforms</option>
+                    <option value="school">School Uniforms</option>
+                    <option value="college">College Wear</option>
+                    <option value="corporate">Corporate Attire</option>
                     <option value="hospital">Hospital Staff Uniforms</option>
-                    <option value="admin">Admin & Corporate Wear</option>
+                    <option value="hotels">Hotels & Hospitality</option>
+                    <option value="factory">Industrial & Factory</option>
                   </select>
                 </div>
 

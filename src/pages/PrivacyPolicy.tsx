@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Privacy Policy | Ovi Global Uniform</title>
+        <title>Privacy Policy | Uniform trends</title>
       </Helmet>
       <div className="container-custom max-w-4xl">
         <motion.div
@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
           <div className="prose prose-invert max-w-none space-y-8 text-lg font-light leading-relaxed">
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">1. Introduction</h2>
-              <p>Welcome to Ovi Global Uniform. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
+              <p>Welcome to Uniform trends. We are committed to protecting your personal information and your right to privacy as part of Walrie Exclusive Apparel (W E A). If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
             </section>
 
             <section>
@@ -38,7 +38,7 @@ export default function PrivacyPolicy() {
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">5. Contact Us</h2>
-              <p>If you have questions or comments about this policy, you may email us at privacy@oviglobal.com or by post to our business address.</p>
+              <p>If you have questions or comments about this policy, you may email us at privacy@uniformtrendsbywea.com or by post to our business address.</p>
             </section>
           </div>
         </motion.div>

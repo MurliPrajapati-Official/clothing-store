@@ -6,8 +6,8 @@ export default function About() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>About Us | Ovi Global Uniform</title>
-        <meta name="description" content="About Ovi Global Uniform - A trusted manufacturer and supplier of specialized uniforms across various sectors." />
+        <title>About Us | Uniform trends</title>
+        <meta name="description" content="About Uniform trends - A brand of Walrie Exclusive Apparel (W E A), trusted manufacturer and supplier of specialized uniforms." />
       </Helmet>
 
       <div className="container mx-auto px-4">
@@ -17,9 +17,9 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto text-center mb-20"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Ovi Global Uniform</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Uniform trends</h1>
           <p className="text-xl text-muted font-light leading-relaxed">
-            Ovi Global Uniform is a trusted manufacturer and supplier of specialized uniforms. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring, we have expanded our vision to provide top-tier uniform solutions across various sectors.
+            Uniform trends is a specialized brand by Walrie Exclusive Apparel (W E A), a trusted manufacturer and supplier of uniforms across various sectors. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring at Walrie Exclusive Apparel, we provide top-tier uniform solutions.
           </p>
         </motion.div>
 
