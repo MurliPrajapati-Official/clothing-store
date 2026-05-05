@@ -28,7 +28,7 @@ export default function TermsConditions() {
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">3. Disclaimer</h2>
-              <p>The materials on Uniform trends's website are provided on an 'as is' basis. Walrie Exclusive Apparel (W E A) makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+              <p>The materials on Uniform trends's website are provided on an 'as is' basis. By WEA makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
             </section>
 
             <section>

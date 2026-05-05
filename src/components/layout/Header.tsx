@@ -53,11 +53,11 @@ export default function Header() {
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
                   src="/images/logo.png" 
-                  alt="Uniform trends" 
+                  alt="Ovi Global Uniforms - Best School & Corporate Uniforms in Ranchi" 
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
                 <span className="font-black text-2xl sm:text-3xl tracking-tighter text-ink hidden sm:block">
-                  Uniform trends
+                  Ovi Global
                 </span>
               </Link>
             </div>
@@ -260,7 +260,7 @@ export default function Header() {
               <div className="flex items-center justify-between p-8 mb-4">
                 <Link to="/" className="flex items-center gap-2">
                   <span className="font-extrabold text-xl tracking-tight text-ink">
-                    Uniform trends
+                    Ovi Global
                   </span>
                 </Link>
                 <button 

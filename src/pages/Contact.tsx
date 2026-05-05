@@ -20,8 +20,8 @@ export default function Contact() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Contact Us | Uniform trends</title>
-        <meta name="description" content="Get in touch with Uniform trends and Walrie Exclusive Apparel (W E A) for bulk orders and inquiries." />
+        <title>Contact Ovi Global Ranchi | Custom Bulk Uniform Orders</title>
+        <meta name="description" content="Get in touch with Ovi Global in Ranchi for bulk orders of school, hospital, and corporate uniforms. High-quality custom tailoring by WALRIE." />
       </Helmet>
 
       <div className="container-custom max-w-7xl">
@@ -30,7 +30,7 @@ export default function Contact() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Uniform trends</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Ovi Global</h1>
           <p className="text-lg text-muted max-w-2xl mx-auto font-light">
             Ready to upgrade your institution's wardrobe? Contact us today to discuss bulk orders, custom designs, and fabric swatches. Our team is ready to assist you.
           </p>
@@ -79,9 +79,9 @@ export default function Contact() {
                   <h3 className="text-lg font-bold text-ink mb-1">Office</h3>
                   <p className="text-muted font-light mb-2">Come say hello at our HQ.</p>
                   <address className="not-italic text-ink font-medium">
-                    Walrie Exclusive Apparel (W E A)<br />
-                    Industrial Area<br />
-                    Ranchi, Jharkhand<br />
+                    Ovi Global (by WALRIE)<br />
+                    Industrial Area, Kokar<br />
+                    Ranchi, Jharkhand 834001<br />
                     India
                   </address>
                 </div>

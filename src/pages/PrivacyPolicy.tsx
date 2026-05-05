@@ -18,7 +18,7 @@ export default function PrivacyPolicy() {
           <div className="prose prose-invert max-w-none space-y-8 text-lg font-light leading-relaxed">
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">1. Introduction</h2>
-              <p>Welcome to Uniform trends. We are committed to protecting your personal information and your right to privacy as part of Walrie Exclusive Apparel (W E A). If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
+              <p>Welcome to Uniform trends. We are committed to protecting your personal information and your right to privacy as part of By WEA. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
             </section>
 
             <section>

@@ -56,6 +56,57 @@ export default function ProductDetail() {
       <Helmet>
         <title>{product.name} | Uniform trends</title>
         <meta name="description" content={product.description} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.name,
+            "image": product.images.map(img => `https://oviglobaluniform.pages.dev${img}`),
+            "description": product.description,
+            "brand": {
+              "@type": "Brand",
+              "name": "Ovi Global"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://oviglobaluniform.pages.dev/product/${product.slug}`,
+              "priceCurrency": "INR",
+              "price": product.price,
+              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
+            },
+            "aggregateRating": {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating,
+              "reviewCount": product.reviewsCount
+            }
+          })}
+        </script>
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              {
+                "@type": "ListItem",
+                "position": 1,
+                "name": "Home",
+                "item": "https://oviglobaluniform.pages.dev/"
+              },
+              {
+                "@type": "ListItem",
+                "position": 2,
+                "name": "Shop",
+                "item": "https://oviglobaluniform.pages.dev/shop"
+              },
+              {
+                "@type": "ListItem",
+                "position": 3,
+                "name": product.name,
+                "item": `https://oviglobaluniform.pages.dev/product/${product.slug}`
+              }
+            ]
+          })}
+        </script>
       </Helmet>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}

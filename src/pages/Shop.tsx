@@ -166,8 +166,8 @@ export default function Shop() {
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
       <Helmet>
-        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} | Shop Uniform trends` : 'Shop All | Uniform trends'}</title>
-        <meta name="description" content="Browse our premium selection of specialized uniforms for all sectors." />
+        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Ovi Global Ranchi` : 'Shop All Uniforms | Ovi Global Ranchi'}</title>
+        <meta name="description" content="Browse Ovi Global's premium selection of specialized school, hospital, and corporate uniforms in Ranchi. Bulk orders and custom tailoring available." />
       </Helmet>
 
       {/* Hero / Header Section */}

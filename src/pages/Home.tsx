@@ -33,8 +33,9 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Uniform trends | Dress for Excellence</title>
-        <meta name="description" content="Premium, durable, and comfortable uniforms by Uniform trends, a brand of Walrie Exclusive Apparel (W E A)." />
+        <title>Best School & Corporate Uniforms in Ranchi | Ovi Global</title>
+        <meta name="description" content="Ovi Global by WALRIE provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices in Ranchi. Experience the perfect fit today." />
+        <link rel="canonical" href="https://oviglobaluniform.pages.dev/" />
       </Helmet>
 
       {/* Cinematic Hero Section */}
@@ -69,11 +70,11 @@ export default function Home() {
               Premium Manufacturer & Supplier
             </span>
             <h1 className="text-4xl sm:text-5xl md:text-[76px] font-bold text-ink leading-[1.05] mb-6 tracking-tight">
-              Dress for Excellence with <br />
-              Uniform trends.
+              Best School & Corporate <br />
+              Uniforms in Ranchi.
             </h1>
             <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
-              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration by Walrie Exclusive Apparel (W E A).
+              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration (by WALRIE).
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -98,7 +99,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-20px" }}
               className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
             >
-              Welcome to Uniform trends
+              Welcome to Ovi Global
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -107,9 +108,11 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Uniform trends, a brand of Walrie Exclusive Apparel (W E A), we believe that the right attire fosters unity, professionalism, and confidence.
-              Whether you are equipping the next generation of students or outfitting dedicated healthcare heroes,
-              we manufacture uniforms that combine all-day comfort with long-lasting durability.
+              At Ovi Global (by WALRIE), we believe that the right attire fosters unity, professionalism, and confidence.
+              As Ranchi's leading uniform manufacturer, we specialize in high-performance garments for schools, 
+              hospitals, and industrial sectors across Jharkhand. Whether you are equipping the next generation of students 
+              or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with 
+              unmatched durability for the demanding Ranchi climate.
             </motion.p>
           </div>
 
@@ -308,7 +311,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-20px" }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Walrie Exclusive Apparel (W E A)</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner By WEA</h2>
             <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
               Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
             </p>

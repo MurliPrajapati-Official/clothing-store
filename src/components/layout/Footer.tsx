@@ -30,15 +30,15 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-3 mb-6">
               <img 
                 src="/images/logo.png" 
-                alt="Uniform trends" 
+                alt="Ovi Global Uniforms - Premium Manufacturer in Ranchi" 
                 className="h-12 w-auto object-contain" 
               />
               <span className="font-black text-2xl tracking-tight text-ink">
-                Uniform trends
+                Ovi Global
               </span>
             </Link>
             <p className="text-body-text mb-8 leading-relaxed font-light text-[15px]">
-              Uniform trends is a trusted brand by Walrie Exclusive Apparel (W E A), a premier manufacturer and supplier of specialized uniforms. We manufacture uniforms that combine all-day comfort with long-lasting durability.
+              Ovi Global is a premium uniform manufacturer and supplier in Ranchi, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
@@ -88,7 +88,7 @@ export default function Footer() {
             <ul className="space-y-6 font-light text-body-text mb-8">
               <li className="flex gap-4 items-start">
                 <MapPin className="text-warning shrink-0 mt-1" size={20} />
-                <span>WALRIE - Exclusive Gown Store<br />Ranchi, Jharkhand, India</span>
+                <span>Ovi Global (by WALRIE)<br />Industrial Area, Kokar<br />Ranchi, Jharkhand 834001</span>
               </li>
               <li className="flex gap-4 items-center">
                 <Phone className="text-warning shrink-0" size={20} />
@@ -101,7 +101,7 @@ export default function Footer() {
             </ul>
             <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm">
               <iframe
-                src="https://maps.google.com/maps?q=WALRIE+-+Exclusive+Gown+Store&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                src="https://maps.google.com/maps?q=By+WEA+-+Exclusive+Gown+Store&t=&z=15&ie=UTF8&iwloc=&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -114,6 +114,39 @@ export default function Footer() {
           </motion.div>
         </motion.div>
 
+        {/* SEO Keyword Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="pt-12 mt-12 border-t border-hairline grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
+        >
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Uniforms in Ranchi</h5>
+            <p className="text-[12px] text-muted leading-relaxed font-light">
+              Providing premium school uniforms, corporate suits, and medical scrubs across Ranchi, Jamshedpur, and Dhanbad.
+            </p>
+          </div>
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Specialized Manufacturing</h5>
+            <p className="text-[12px] text-muted leading-relaxed font-light">
+              Custom tailoring for healthcare professionals, industrial factory workers, and luxury hotel staff in Jharkhand.
+            </p>
+          </div>
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Bulk Order Supply</h5>
+            <p className="text-[12px] text-muted leading-relaxed font-light">
+              Trusted supplier for large educational institutions and corporate administrative offices with door-step delivery.
+            </p>
+          </div>
+          <div>
+            <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Quality & Comfort</h5>
+            <p className="text-[12px] text-muted leading-relaxed font-light">
+              Using anti-microbial, breathable, and durable fabrics designed by the experts at WALRIE Exclusive.
+            </p>
+          </div>
+        </motion.div>
+
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -122,7 +155,7 @@ export default function Footer() {
           className="pt-8 border-t border-hairline flex flex-col md:flex-row justify-between items-center gap-6"
         >
           <p className="text-muted text-[13px] font-light uppercase tracking-wider">
-            © {new Date().getFullYear()} WALRIE EXCLUSIVE APPAREL (W E A). ALL RIGHTS RESERVED.
+            © {new Date().getFullYear()} By WEA. ALL RIGHTS RESERVED.
           </p>
           <div className="flex gap-4">
             {/* Payment Icons */}
