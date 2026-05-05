@@ -9,7 +9,7 @@ const BLOG_POSTS = [
     title: 'The Psychology of School Uniforms: How What Students Wear Impacts Learning',
     excerpt: 'Discussing focus, equality, and discipline in modern classroom environments.',
     image: 'https://picsum.photos/seed/blog1/800/500',
-    date: 'Nov 12, 2026',
+    date: 'Apr 20, 2026',
     author: 'Editorial Team',
     category: 'Education'
   },
@@ -18,7 +18,7 @@ const BLOG_POSTS = [
     title: 'Cotton vs. Blended Fabrics: Choosing the Right Material for Hospital Scrubs',
     excerpt: 'Highlighting breathability, stain resistance, and washability for healthcare professionals.',
     image: 'https://picsum.photos/seed/blog2/800/500',
-    date: 'Oct 28, 2026',
+    date: 'Mar 15, 2026',
     author: 'Product Team',
     category: 'Healthcare'
   },
@@ -27,7 +27,7 @@ const BLOG_POSTS = [
     title: 'How to Maintain Your Corporate Uniform for Long-Lasting Wear',
     excerpt: 'Providing tips on washing, ironing, and storing admin outfits to stay sharp all day.',
     image: 'https://picsum.photos/seed/blog3/800/500',
-    date: 'Oct 15, 2026',
+    date: 'Feb 10, 2026',
     author: 'Care Advisors',
     category: 'Corporate'
   }

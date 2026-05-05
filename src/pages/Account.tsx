@@ -15,6 +15,7 @@ export default function Account() {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [authError, setAuthError] = useState('');
+  const [successMsg, setSuccessMsg] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
   const [orders, setOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
@@ -70,8 +71,11 @@ export default function Account() {
           }
         });
         if (error) throw error;
-        alert('Registration successful! You can now log in.');
+        setSuccessMsg('Registration successful! Please check your email to confirm your account.');
         setAuthMode('login');
+        setEmail('');
+        setPassword('');
+        setFullName('');
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
@@ -80,7 +84,11 @@ export default function Account() {
         if (error) throw error;
       }
     } catch (err: any) {
-      setAuthError(err.message);
+      if (err.message.includes('Email not confirmed')) {
+        setAuthError('Please check your email and click the confirmation link before logging in.');
+      } else {
+        setAuthError(err.message);
+      }
     } finally {
       setAuthLoading(false);
     }
@@ -117,6 +125,11 @@ export default function Account() {
               {authError && (
                 <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm">
                   {authError}
+                </div>
+              )}
+              {successMsg && (
+                <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 rounded-xl text-sm">
+                  {successMsg}
                 </div>
               )}
               {authMode === 'register' && (
@@ -250,9 +263,9 @@ export default function Account() {
                   {ordersLoading ? (
                     <p className="text-muted text-center py-8">Loading your orders...</p>
                   ) : orders.length === 0 ? (
-                    <div className="text-center py-8 bg-canvas rounded-xl border border-hairline">
-                       <p className="text-muted mb-4">You haven't placed any orders yet.</p>
-                       <Link to="/shop" className="btn-primary inline-block">Start Shopping</Link>
+                    <div className="flex flex-col items-center justify-center py-16 bg-canvas rounded-xl border border-hairline">
+                       <p className="text-muted mb-6">You haven't placed any orders yet.</p>
+                       <Link to="/shop" className="btn-primary px-8">Start Shopping</Link>
                     </div>
                   ) : (
                     <div className="space-y-4">

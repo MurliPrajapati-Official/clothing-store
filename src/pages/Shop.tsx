@@ -469,14 +469,14 @@ export default function Shop() {
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="py-24 text-center bg-surface-card rounded-3xl shadow-xl border border-hairline max-w-2xl mx-auto"
+            className="py-32 px-12 text-center bg-surface-card rounded-3xl shadow-xl border border-hairline max-w-2xl mx-auto my-12"
           >
-            <div className="w-24 h-24 bg-canvas rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
+            <div className="w-24 h-24 bg-canvas rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
               <Search className="text-muted" size={40} />
             </div>
-            <h3 className="text-3xl font-bold text-ink mb-3">No Products Found</h3>
-            <p className="text-lg text-muted mb-8 px-8">We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters.</p>
-            <button onClick={clearFilters} className="btn-primary">
+            <h3 className="text-3xl font-bold text-ink mb-4">No Products Found</h3>
+            <p className="text-lg text-muted mb-10 max-w-md mx-auto">We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters.</p>
+            <button onClick={clearFilters} className="btn-primary px-10">
               Clear All Filters
             </button>
           </motion.div>

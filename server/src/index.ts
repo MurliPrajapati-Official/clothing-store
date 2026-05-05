@@ -44,6 +44,27 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
 });
 
+// Admin Stats route
+app.get('/api/stats', async (req: Request, res: Response) => {
+  try {
+    const { count: productCount, error: pError } = await supabase
+      .from('products')
+      .select('*', { count: 'exact', head: true });
+
+    // Note: auth.admin requires Service Role Key which we have on backend
+    const { data: { users }, error: uError } = await supabase.auth.admin.listUsers();
+
+    if (pError || uError) throw pError || uError;
+
+    res.json({
+      totalProducts: productCount || 0,
+      totalUsers: users.length || 0
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 
