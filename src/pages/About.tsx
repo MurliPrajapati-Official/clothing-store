@@ -6,8 +6,8 @@ export default function About() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>About Ovi Global | Premium Uniforms in Ranchi</title>
-        <meta name="description" content="Ovi Global by WALRIE is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms in Ranchi." />
+        <title>About Uniform Trends | Premium Uniforms in Ranchi</title>
+        <meta name="description" content="Uniform Trends By WEA is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms in Ranchi." />
       </Helmet>
 
       <div className="container mx-auto px-4">
@@ -17,9 +17,9 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto text-center mb-20"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Ovi Global</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Uniform Trends</h1>
           <p className="text-xl text-muted font-light leading-relaxed">
-            Ovi Global is a specialized uniform manufacturer in Ranchi (by WALRIE), providing high-quality attire for various sectors. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring, we provide top-tier uniform solutions.
+            Uniform Trends is a specialized uniform manufacturer in Ranchi (By WEA), providing high-quality attire for various sectors. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring, we provide top-tier uniform solutions.
           </p>
         </motion.div>
 
@@ -63,15 +63,15 @@ export default function About() {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto mb-24"
         >
-          <h2 className="text-3xl font-bold text-ink mb-8 text-center tracking-tight">Why Choose Ovi Global in Ranchi?</h2>
+          <h2 className="text-3xl font-bold text-ink mb-8 text-center tracking-tight">Why Choose Uniform Trends in Ranchi?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-8">
             <div>
               <h4 className="font-bold text-ink mb-2">Local Manufacturing Excellence</h4>
               <p className="text-muted text-sm font-light leading-relaxed">Our Ranchi-based facility ensures fast turnaround times and personalized service for all institutions in Jharkhand.</p>
             </div>
             <div>
-              <h4 className="font-bold text-ink mb-2">WALRIE Quality Standards</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Leveraging the legacy of WALRIE Gown Store, we use premium fabrics that last 2x longer than standard uniforms.</p>
+              <h4 className="font-bold text-ink mb-2">By WEA Quality Standards</h4>
+              <p className="text-muted text-sm font-light leading-relaxed">Leveraging the legacy of By WEA, we use premium fabrics that last 2x longer than standard uniforms.</p>
             </div>
             <div>
               <h4 className="font-bold text-ink mb-2">Custom Tailoring for All</h4>

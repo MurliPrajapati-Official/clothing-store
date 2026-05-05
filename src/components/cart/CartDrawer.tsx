@@ -83,8 +83,12 @@ export default function CartDrawer() {
               ) : (
                 items.map((item) => (
                   <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4 group">
-                    <div className="w-24 h-32 bg-canvas rounded-xl overflow-hidden shrink-0 border border-hairline">
-                      <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                    <div className="w-24 h-32 bg-canvas rounded-xl overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
+                      {item.images && item.images.length > 0 ? (
+                        <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-2xl font-bold text-muted/30 uppercase">{item.name.charAt(0)}</span>
+                      )}
                     </div>
                     <div className="flex-1 flex flex-col min-w-0">
                       <div className="flex justify-between items-start gap-2 mb-1">

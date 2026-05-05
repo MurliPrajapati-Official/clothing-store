@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, useScroll, useTransform } from 'motion/react';
 import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
-import { PRODUCTS } from '../constants';
 import { Product } from '../types';
 
 const fadeUpVariant = {
@@ -28,14 +27,25 @@ export default function Home() {
   const heroY = useTransform(scrollY, [0, 1000], [0, 400]);
   const heroTextY = useTransform(scrollY, [0, 500], [0, 150]);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
+
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        // Just take the first 4 products for the homepage showcase
+        setFeaturedProducts(data.slice(0, 4));
+      })
+      .catch(err => console.error("Failed to load featured products", err));
+  }, []);
 
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Best School & Corporate Uniforms in Ranchi | Ovi Global</title>
-        <meta name="description" content="Ovi Global by WALRIE provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices in Ranchi. Experience the perfect fit today." />
-        <link rel="canonical" href="https://oviglobaluniform.pages.dev/" />
+        <title>Best School & Corporate Uniforms in Ranchi | Uniform Trends</title>
+        <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices in Ranchi. Experience the perfect fit today." />
+        <link rel="canonical" href="https://uniformtrends.pages.dev/" />
       </Helmet>
 
       {/* Cinematic Hero Section */}
@@ -99,7 +109,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-20px" }}
               className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
             >
-              Welcome to Ovi Global
+              Welcome to Uniform Trends
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -108,7 +118,7 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Ovi Global (by WALRIE), we believe that the right attire fosters unity, professionalism, and confidence.
+              At Uniform Trends (By WEA), we believe that the right attire fosters unity, professionalism, and confidence.
               As Ranchi's leading uniform manufacturer, we specialize in high-performance garments for schools, 
               hospitals, and industrial sectors across Jharkhand. Whether you are equipping the next generation of students 
               or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with 
@@ -292,11 +302,17 @@ export default function Home() {
             viewport={{ once: true, margin: "-20px" }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           >
-            {PRODUCTS.filter(p => p.isFeatured).map((product) => (
-              <motion.div key={product.id} variants={fadeUpVariant}>
-                <ProductCard product={product} onQuickView={setQuickViewProduct} />
-              </motion.div>
-            ))}
+            {featuredProducts.length === 0 ? (
+              <div className="col-span-full py-12 text-center text-muted">
+                Loading products...
+              </div>
+            ) : (
+              featuredProducts.map((product) => (
+                <motion.div key={product.id} variants={fadeUpVariant}>
+                  <ProductCard product={product} onQuickView={setQuickViewProduct} />
+                </motion.div>
+              ))
+            )}
           </motion.div>
         </div>
       </section>

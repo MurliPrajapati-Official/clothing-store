@@ -1,14 +1,100 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { User, Mail, Lock, ShoppingBag, Settings, LogOut, ChevronRight, Package, MapPin } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
 
 export default function Account() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  
+  // Form fields
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [fullName, setFullName] = useState('');
+  const [authError, setAuthError] = useState('');
+  const [authLoading, setAuthLoading] = useState(false);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
-  if (!isLoggedIn) {
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsLoading(false);
+      if (session?.user) {
+        fetchOrders(session.user.id);
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session?.user) {
+        fetchOrders(session.user.id);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const fetchOrders = async (userId: string) => {
+    try {
+      setOrdersLoading(true);
+      const response = await fetch(`http://localhost:5000/api/orders/user/${userId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      }
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    } finally {
+      setOrdersLoading(false);
+    }
+  };
+
+  const handleAuth = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthLoading(true);
+    setAuthError('');
+
+    try {
+      if (authMode === 'register') {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: fullName }
+          }
+        });
+        if (error) throw error;
+        alert('Registration successful! You can now log in.');
+        setAuthMode('login');
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (error) throw error;
+      }
+    } catch (err: any) {
+      setAuthError(err.message);
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
+  if (isLoading) {
+    return <div className="pt-32 min-h-screen bg-canvas text-center">Loading...</div>;
+  }
+
+  if (!session) {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex items-center justify-center">
         <Helmet>
@@ -27,13 +113,18 @@ export default function Account() {
               {authMode === 'login' ? 'Sign in to access your orders and profile.' : 'Join us for a premium shopping experience.'}
            </p>
 
-           <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); setIsLoggedIn(true); }}>
+           <form className="space-y-5" onSubmit={handleAuth}>
+              {authError && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-sm">
+                  {authError}
+                </div>
+              )}
               {authMode === 'register' && (
                 <div>
                   <label className="block text-sm font-semibold text-ink mb-2">Full Name</label>
                   <div className="relative">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                    <input required type="text" placeholder="John Doe" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                    <input required value={fullName} onChange={e => setFullName(e.target.value)} type="text" placeholder="John Doe" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
                   </div>
                 </div>
               )}
@@ -41,14 +132,14 @@ export default function Account() {
                 <label className="block text-sm font-semibold text-ink mb-2">Email Address</label>
                 <div className="relative">
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                  <input required type="email" placeholder="you@example.com" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                  <input required value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
                 </div>
               </div>
               <div>
                 <label className="block text-sm font-semibold text-ink mb-2">Password</label>
                 <div className="relative">
                   <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                  <input required type="password" placeholder="••••••••" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                  <input required value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="••••••••" minLength={6} className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
                 </div>
               </div>
 
@@ -58,8 +149,8 @@ export default function Account() {
                 </div>
               )}
 
-              <button type="submit" className="btn-primary w-full mt-4">
-                 {authMode === 'login' ? 'Sign In' : 'Register'}
+              <button type="submit" disabled={authLoading} className="btn-primary w-full mt-4 disabled:opacity-70">
+                 {authLoading ? 'Processing...' : (authMode === 'login' ? 'Sign In' : 'Register')}
               </button>
            </form>
 
@@ -91,12 +182,12 @@ export default function Account() {
             <aside className="lg:col-span-1">
                <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-6 sticky top-28">
                  <div className="flex items-center gap-4 mb-8 pb-6 border-b border-hairline">
-                    <div className="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold shadow-[0_2px_10px_rgba(255,255,255,0.1)]">
-                       JD
+                    <div className="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold shadow-[0_2px_10px_rgba(255,255,255,0.1)] uppercase">
+                       {session.user.user_metadata?.full_name?.substring(0, 2) || session.user.email?.substring(0, 2)}
                     </div>
                     <div>
-                       <h3 className="font-bold text-ink">John Doe</h3>
-                       <p className="text-sm text-muted">john@example.com</p>
+                       <h3 className="font-bold text-ink">{session.user.user_metadata?.full_name || 'My Account'}</h3>
+                       <p className="text-sm text-muted">{session.user.email}</p>
                     </div>
                  </div>
 
@@ -118,7 +209,7 @@ export default function Account() {
                        Settings
                     </button>
                     <div className="h-px bg-surface-elevated my-2" />
-                    <button onClick={() => setIsLoggedIn(false)} className="flex items-center gap-3 w-full p-3 rounded-xl text-m-red hover:bg-surface-card hover:bg-m-red/10 font-medium transition-colors">
+                    <button onClick={handleLogout} className="flex items-center gap-3 w-full p-3 rounded-xl text-m-red hover:bg-surface-card hover:bg-m-red/10 font-medium transition-colors">
                        <LogOut size={18} />
                        Logout
                     </button>
@@ -133,19 +224,19 @@ export default function Account() {
                   <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
                      <div>
                        <label className="block text-sm font-semibold text-ink mb-2">First Name</label>
-                       <input type="text" defaultValue="John" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
+                       <input type="text" defaultValue={session.user.user_metadata?.full_name?.split(' ')[0] || ''} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
                      </div>
                      <div>
                        <label className="block text-sm font-semibold text-ink mb-2">Last Name</label>
-                       <input type="text" defaultValue="Doe" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
+                       <input type="text" defaultValue={session.user.user_metadata?.full_name?.split(' ')[1] || ''} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
                      </div>
                      <div>
                        <label className="block text-sm font-semibold text-ink mb-2">Email Address</label>
-                       <input type="email" defaultValue="john@example.com" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
+                       <input type="email" disabled defaultValue={session.user.email} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none opacity-60" />
                      </div>
                      <div>
                        <label className="block text-sm font-semibold text-ink mb-2">Phone Number</label>
-                       <input type="tel" defaultValue="07004301436" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
+                       <input type="tel" defaultValue={session.user.phone || ''} placeholder="Add your phone number" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none" />
                      </div>
                      <div className="md:col-span-2 pt-4">
                        <button type="button" className="btn-primary">Save Changes</button>
@@ -156,31 +247,54 @@ export default function Account() {
                <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8">
                   <h2 className="text-2xl font-bold text-ink mb-6">Recent Orders</h2>
                   
-                  <div className="border border-hairline rounded-xl overflow-hidden">
-                     <div className="bg-canvas p-4 flex justify-between items-center border-b border-hairline">
-                        <div>
-                           <p className="text-xs text-muted font-medium mb-1">Order #UK-29481</p>
-                           <p className="text-sm font-bold text-ink">Placed on Oct 24, 2026</p>
-                        </div>
-                        <div className="text-right">
-                           <span className="inline-block px-3 py-1 bg-success/20 text-success font-semibold text-xs rounded-full">Delivered</span>
-                        </div>
-                     </div>
-                     <div className="p-4 flex items-center justify-between">
-                        <div className="flex gap-4 items-center">
-                           <div className="w-16 h-16 bg-canvas rounded-md overflow-hidden shrink-0">
-                              <img src="https://picsum.photos/seed/shirt1/200/200" alt="Item" className="w-full h-full object-cover" />
+                  {ordersLoading ? (
+                    <p className="text-muted text-center py-8">Loading your orders...</p>
+                  ) : orders.length === 0 ? (
+                    <div className="text-center py-8 bg-canvas rounded-xl border border-hairline">
+                       <p className="text-muted mb-4">You haven't placed any orders yet.</p>
+                       <Link to="/shop" className="btn-primary inline-block">Start Shopping</Link>
+                    </div>
+                  ) : (
+                    <div className="space-y-4">
+                      {orders.map((order: any) => (
+                        <div key={order.id} className="border border-hairline rounded-xl overflow-hidden">
+                           <div className="bg-canvas p-4 flex justify-between items-center border-b border-hairline">
+                              <div>
+                                 <p className="text-xs text-muted font-medium mb-1">Order #{order.id.substring(0,8)}</p>
+                                 <p className="text-sm font-bold text-ink">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
+                              </div>
+                              <div className="text-right">
+                                 <span className="inline-block px-3 py-1 bg-primary/20 text-primary font-semibold text-xs rounded-full uppercase">
+                                   {order.status}
+                                 </span>
+                              </div>
                            </div>
-                           <div>
-                              <p className="font-semibold text-ink line-clamp-1">DPS Boys White Shirt</p>
-                              <p className="text-sm text-muted mt-1">Size: 28 • Qty: 2</p>
-                           </div>
+                           
+                           {/* Show the first item as a summary */}
+                           {order.order_items && order.order_items.length > 0 && (
+                             <div className="p-4 flex items-center justify-between">
+                                <div className="flex gap-4 items-center">
+                                   <div className="w-16 h-16 bg-canvas rounded-md overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
+                                      {order.order_items[0].products?.images?.length > 0 ? (
+                                        <img src={order.order_items[0].products.images[0]} alt="Item" className="w-full h-full object-cover" />
+                                      ) : (
+                                        <span className="text-xl font-bold text-muted/30 uppercase">{order.order_items[0].products?.name?.charAt(0)}</span>
+                                      )}
+                                   </div>
+                                   <div>
+                                      <p className="font-semibold text-ink line-clamp-1">{order.order_items[0].products?.name || 'Product'}</p>
+                                      <p className="text-sm text-muted mt-1">Qty: {order.order_items[0].quantity} {order.order_items.length > 1 ? `(+${order.order_items.length - 1} more items)` : ''}</p>
+                                   </div>
+                                </div>
+                                <div className="font-bold text-ink">
+                                   ₹{order.total_amount}
+                                </div>
+                             </div>
+                           )}
                         </div>
-                        <Link to="/account/orders/UK-29481" className="p-2 text-muted hover:text-ink transition-colors">
-                           <ChevronRight />
-                        </Link>
-                     </div>
-                  </div>
+                      ))}
+                    </div>
+                  )}
 
                   <div className="mt-4 text-center">
                     <button className="text-sm font-bold text-ink hover:text-m-red transition-colors inline-flex items-center gap-1">

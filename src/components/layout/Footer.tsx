@@ -30,15 +30,15 @@ export default function Footer() {
             <Link to="/" className="flex items-center gap-3 mb-6">
               <img 
                 src="/images/logo.png" 
-                alt="Ovi Global Uniforms - Premium Manufacturer in Ranchi" 
+                alt="Uniform Trends Uniforms - Premium Manufacturer in Ranchi" 
                 className="h-12 w-auto object-contain" 
               />
               <span className="font-black text-2xl tracking-tight text-ink">
-                Ovi Global
+                Uniform Trends
               </span>
             </Link>
             <p className="text-body-text mb-8 leading-relaxed font-light text-[15px]">
-              Ovi Global is a premium uniform manufacturer and supplier in Ranchi, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
+              Uniform Trends is a premium uniform manufacturer and supplier in Ranchi, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
             </p>
             <div className="flex gap-4">
               <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
@@ -88,7 +88,7 @@ export default function Footer() {
             <ul className="space-y-6 font-light text-body-text mb-8">
               <li className="flex gap-4 items-start">
                 <MapPin className="text-warning shrink-0 mt-1" size={20} />
-                <span>Ovi Global (by WALRIE)<br />Industrial Area, Kokar<br />Ranchi, Jharkhand 834001</span>
+                <span>Uniform Trends (By WEA)<br />Industrial Area, Kokar<br />Ranchi, Jharkhand 834001</span>
               </li>
               <li className="flex gap-4 items-center">
                 <Phone className="text-warning shrink-0" size={20} />
@@ -142,7 +142,7 @@ export default function Footer() {
           <div>
             <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Quality & Comfort</h5>
             <p className="text-[12px] text-muted leading-relaxed font-light">
-              Using anti-microbial, breathable, and durable fabrics designed by the experts at WALRIE Exclusive.
+              Using anti-microbial, breathable, and durable fabrics designed by the experts at By WEA.
             </p>
           </div>
         </motion.div>

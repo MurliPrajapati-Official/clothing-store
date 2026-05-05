@@ -37,8 +37,8 @@ export default function Blog() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Ovi Global Journal | Uniform Insights in Ranchi</title>
-        <meta name="description" content="Industry insights, news, and tips from Ovi Global (by WALRIE) - the experts in Ranchi uniforms." />
+        <title>Uniform Trends Journal | Uniform Insights in Ranchi</title>
+        <meta name="description" content="Industry insights, news, and tips from Uniform Trends (By WEA) - the experts in Ranchi uniforms." />
       </Helmet>
 
       <div className="container mx-auto px-4">
@@ -47,7 +47,7 @@ export default function Blog() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">The Ovi Global Journal</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">The Uniform Trends Journal</h1>
           <p className="text-lg text-muted max-w-2xl mx-auto font-light">Industry Insights, News, and Tips on Specialized Uniforms.</p>
         </motion.div>
 

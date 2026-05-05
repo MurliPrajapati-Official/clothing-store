@@ -56,13 +56,17 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             </button>
 
             {/* Gallery Section */}
-            <div className="w-full md:w-1/2 bg-canvas aspect-[4/5] md:aspect-auto overflow-hidden">
-              <img
-                src={product.images[0]}
-                alt={product.name}
-                className="w-full h-full object-cover"
-                referrerPolicy="no-referrer"
-              />
+            <div className="w-full md:w-1/2 bg-canvas aspect-[4/5] md:aspect-auto overflow-hidden flex items-center justify-center border-b md:border-b-0 md:border-r border-hairline">
+              {product.images && product.images.length > 0 ? (
+                <img
+                  src={product.images[0]}
+                  alt={product.name}
+                  className="w-full h-full object-cover"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="text-6xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
+              )}
             </div>
 
             {/* Info Section */}

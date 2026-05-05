@@ -5,9 +5,10 @@ import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, L
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
-import { PRODUCTS, SCHOOLS, CATEGORIES } from '../constants';
+import { SCHOOLS, CATEGORIES } from '../constants';
 import { Product } from '../types';
 import { cn } from '../lib/utils';
+import { Loader2 } from 'lucide-react';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 60, scale: 0.95 },
@@ -97,11 +98,52 @@ export default function Shop() {
   const gradeFilter = searchParams.get('grade');
   const genderFilter = searchParams.get('gender');
 
+  const [products, setProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     setSearchQuery(searchParams.get('q') || '');
   }, [searchParams]);
 
-  const filteredProducts = PRODUCTS.filter((product) => {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch('http://localhost:5000/api/products');
+        if (!response.ok) throw new Error('Failed to fetch products');
+        const data = await response.json();
+        
+        // Map database snake_case to frontend camelCase
+        const mappedProducts: Product[] = data.map((item: any) => ({
+          id: item.id,
+          name: item.name,
+          slug: item.slug,
+          price: Number(item.price),
+          originalPrice: item.original_price ? Number(item.original_price) : undefined,
+          description: item.description,
+          category: item.category,
+          schoolId: item.school_id,
+          images: item.images || [],
+          sizes: item.sizes || [],
+          gender: item.gender,
+          grade: item.grade,
+          inStock: item.in_stock,
+          rating: Number(item.rating) || 0,
+          reviewsCount: item.reviews_count || 0,
+          isFeatured: item.is_featured
+        }));
+        
+        setProducts(mappedProducts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const filteredProducts = products.filter((product) => {
     if (categoryFilter.length > 0 && !categoryFilter.includes(product.category)) return false;
     if (schoolFilter && schoolFilter !== 'all' && product.schoolId !== schoolFilter) return false;
     if (gradeFilter && gradeFilter !== 'All' && product.grade !== gradeFilter && product.grade !== 'All') return false;
@@ -166,8 +208,8 @@ export default function Shop() {
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
       <Helmet>
-        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Ovi Global Ranchi` : 'Shop All Uniforms | Ovi Global Ranchi'}</title>
-        <meta name="description" content="Browse Ovi Global's premium selection of specialized school, hospital, and corporate uniforms in Ranchi. Bulk orders and custom tailoring available." />
+        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends Ranchi` : 'Shop All Uniforms | Uniform Trends Ranchi'}</title>
+        <meta name="description" content="Browse Uniform Trends's premium selection of specialized school, hospital, and corporate uniforms in Ranchi. Bulk orders and custom tailoring available." />
       </Helmet>
 
       {/* Hero / Header Section */}
@@ -369,9 +411,14 @@ export default function Shop() {
             Showing <span className="text-ink font-bold">{filteredProducts.length}</span> items
           </div>
         </div>
-
-        {filteredProducts.length > 0 ? (
-          <>
+        <div className="flex-1">
+          {isLoading ? (
+            <div className="flex flex-col items-center justify-center py-20">
+              <Loader2 className="animate-spin text-primary mb-4" size={40} />
+              <p className="text-muted font-medium">Loading your products from the database...</p>
+            </div>
+          ) : filteredProducts.length > 0 ? (
+            <motion.div>
             {/* Mobile Dual Independent Carousels */}
             <div className="lg:hidden space-y-6 pb-8">
               {/* Row 1 */}
@@ -416,7 +463,7 @@ export default function Shop() {
                 </motion.div>
               ))}
             </motion.div>
-          </>
+          </motion.div>
         ) : (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -433,6 +480,7 @@ export default function Shop() {
             </button>
           </motion.div>
         )}
+        </div>
       </div>
 
       <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />

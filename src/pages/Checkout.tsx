@@ -1,17 +1,64 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, CheckCircle2, CreditCard, Wallet, Truck, ShieldCheck } from 'lucide-react';
+import { ChevronRight, CheckCircle2, CreditCard, Wallet, Truck, ShieldCheck, Loader2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { formatCurrency, cn } from '../lib/utils';
+import { supabase } from '../lib/supabase';
 
 export default function Checkout() {
   const { items, getTotalPrice, clearCart } = useCartStore();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [orderComplete, setOrderComplete] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [address, setAddress] = useState('');
+  const [orderId, setOrderId] = useState<string>('');
+  const [userId, setUserId] = useState<string | null>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session?.user) {
+        setUserId(session.user.id);
+      }
+    });
+  }, []);
 
   const total = getTotalPrice();
+
+  const handlePlaceOrder = async () => {
+    setIsSubmitting(true);
+    try {
+      const orderData = {
+        user_id: userId,
+        total_amount: total,
+        shipping_address: address || '123 Test Street, Default City', // Fallback for dev
+        items: items.map(item => ({
+          productId: item.id,
+          quantity: item.quantity,
+          price: item.price
+        }))
+      };
+
+      const response = await fetch('http://localhost:5000/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      if (!response.ok) throw new Error('Checkout failed');
+      
+      const result = await response.json();
+      setOrderId(result.orderId);
+      clearCart();
+      setOrderComplete(true);
+    } catch (error) {
+      console.error(error);
+      alert('Failed to place order. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (orderComplete) {
     return (
@@ -29,7 +76,7 @@ export default function Checkout() {
                <CheckCircle2 size={40} />
             </div>
             <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
-            <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform trends. Your order #UK-{Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year By WEA.</p>
+            <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0,8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year By WEA.</p>
             <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
                Return Home
             </Link>
@@ -121,7 +168,7 @@ export default function Checkout() {
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-ink mb-2">Delivery Address</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
+                        <input required type="text" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
                         <input type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" placeholder="Apartment, suite, etc. (optional)" />
                       </div>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -223,8 +270,12 @@ export default function Checkout() {
                    <div className="space-y-6 mb-10">
                      {items.map(item => (
                         <div key={`${item.id}-${item.selectedSize}`} className="flex gap-6 items-center">
-                           <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0">
-                             <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
+                           <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0 flex items-center justify-center border border-hairline">
+                             {item.images && item.images.length > 0 ? (
+                               <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
+                             ) : (
+                               <span className="text-xl font-bold text-muted/30 uppercase">{item.name.charAt(0)}</span>
+                             )}
                            </div>
                            <div className="flex-1">
                              <h4 className="font-bold text-ink line-clamp-2">{item.name}</h4>
@@ -245,7 +296,7 @@ export default function Checkout() {
                          <h4 className="font-bold text-ink mb-3">Shipping Detail</h4>
                          <p className="text-body-text text-sm leading-relaxed">
                            Arjun Sharma<br />
-                           123 Sector 4, RK Puram<br />
+                           {address || '123 Default Street'}<br />
                            New Delhi, 110022
                          </p>
                       </div>
@@ -264,13 +315,13 @@ export default function Checkout() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="button" 
-                        onClick={() => {
-                          clearCart();
-                          setOrderComplete(true);
-                        }} 
-                        className="btn-primary w-full border border-transparent shadow-[0_4px_14px_0_rgba(10,37,64,0.5)]"
+                        onClick={handlePlaceOrder} 
+                        disabled={isSubmitting}
+                        className="btn-primary w-full border border-transparent flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(10,37,64,0.5)] disabled:opacity-70"
                      >
-                        Place Order Now
+                        {isSubmitting ? (
+                          <><Loader2 className="animate-spin" size={20} /> Processing...</>
+                        ) : 'Place Order Now'}
                      </motion.button>
                    </div>
                  </motion.div>

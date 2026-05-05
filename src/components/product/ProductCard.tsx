@@ -40,12 +40,18 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
     >
       <Link to={`/product/${product.slug}`} className="flex flex-col h-full">
         <div className="relative aspect-[4/5] overflow-hidden bg-canvas">
-          <img
-            src={product.images[0]}
-            alt={product.name}
-            className="h-full w-full object-cover transition-transform duration-[800ms] group-hover:scale-110"
-            referrerPolicy="no-referrer"
-          />
+          {product.images && product.images.length > 0 ? (
+            <img
+              src={product.images[0]}
+              alt={product.name}
+              className="h-full w-full object-cover transition-transform duration-[800ms] group-hover:scale-110"
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <div className="h-full w-full flex items-center justify-center bg-surface-card transition-transform duration-[800ms] group-hover:scale-110 border-b border-hairline">
+               <span className="text-4xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
+            </div>
+          )}
 
           <div className="absolute top-4 left-4 flex flex-col gap-2">
             {product.originalPrice && (

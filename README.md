@@ -1,4 +1,4 @@
-# Ovi Global Uniform
+# Uniform Trends (By WEA)
 
 Premium manufacturer and supplier of specialized uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
 

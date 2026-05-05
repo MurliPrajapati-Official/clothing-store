@@ -15,6 +15,7 @@ import Account from './pages/Account';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import AdminDashboard from './pages/AdminDashboard';
 import SizeGuide from './pages/SizeGuide';
 import TrackOrder from './pages/TrackOrder';
 import ReturnPolicy from './pages/ReturnPolicy';
@@ -88,6 +89,7 @@ export default function App() {
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiesPolicy />} />
+            <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/schools" element={<Placeholder name="Our Schools" />} />
             <Route path="/schools/:slug" element={<Placeholder name="School Details" />} />
             <Route path="/wishlist" element={<Placeholder name="My Wishlist" />} />

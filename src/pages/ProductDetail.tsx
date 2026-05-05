@@ -1,5 +1,5 @@
 import { useParams, Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -10,6 +10,7 @@ import { useWishlistStore } from '../store/wishlistStore';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
 import { Product } from '../types';
+import { Loader2 } from 'lucide-react';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -26,17 +27,73 @@ const staggerContainer = {
 
 export default function ProductDetail() {
   const { slug } = useParams();
-  const product = PRODUCTS.find((p) => p.slug === slug);
+  
+  const [product, setProduct] = useState<Product | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState('');
+
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [activeImage, setActiveImage] = useState(0);
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        setIsLoading(true);
+        const response = await fetch(`http://localhost:5000/api/products/${slug}`);
+        if (!response.ok) throw new Error('Product not found');
+        const data = await response.json();
+        
+        setProduct({
+          id: data.id,
+          name: data.name,
+          slug: data.slug,
+          price: Number(data.price),
+          originalPrice: data.original_price ? Number(data.original_price) : undefined,
+          description: data.description,
+          category: data.category,
+          schoolId: data.school_id,
+          images: data.images || [],
+          sizes: data.sizes || [],
+          gender: data.gender,
+          grade: data.grade,
+          inStock: data.in_stock,
+          rating: Number(data.rating) || 0,
+          reviewsCount: data.reviews_count || 0,
+          isFeatured: data.is_featured
+        });
+      } catch (err: any) {
+        setError(err.message);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (slug) fetchProduct();
+  }, [slug]);
+
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
-  if (!product) return <div className="pt-32 text-center font-bold text-3xl text-ink bg-canvas min-h-screen">Product Not Found</div>;
+  if (isLoading) {
+    return (
+      <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
+        <Loader2 className="animate-spin text-primary mb-4" size={48} />
+        <p className="text-muted text-lg">Loading product details...</p>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="pt-32 text-center font-bold text-3xl text-ink bg-canvas min-h-screen">
+        {error || 'Product Not Found'}
+        <Link to="/shop" className="block text-lg text-primary mt-4 hover:underline">Return to Shop</Link>
+      </div>
+    );
+  }
 
   const school = SCHOOLS.find(s => s.id === product.schoolId);
   const exists = isInWishlist(product.id);
@@ -61,15 +118,15 @@ export default function ProductDetail() {
             "@context": "https://schema.org",
             "@type": "Product",
             "name": product.name,
-            "image": product.images.map(img => `https://oviglobaluniform.pages.dev${img}`),
+            "image": product.images.map(img => `https://uniformtrends.pages.dev${img}`),
             "description": product.description,
             "brand": {
               "@type": "Brand",
-              "name": "Ovi Global"
+              "name": "Uniform Trends"
             },
             "offers": {
               "@type": "Offer",
-              "url": `https://oviglobaluniform.pages.dev/product/${product.slug}`,
+              "url": `https://uniformtrends.pages.dev/product/${product.slug}`,
               "priceCurrency": "INR",
               "price": product.price,
               "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
@@ -90,19 +147,19 @@ export default function ProductDetail() {
                 "@type": "ListItem",
                 "position": 1,
                 "name": "Home",
-                "item": "https://oviglobaluniform.pages.dev/"
+                "item": "https://uniformtrends.pages.dev/"
               },
               {
                 "@type": "ListItem",
                 "position": 2,
                 "name": "Shop",
-                "item": "https://oviglobaluniform.pages.dev/shop"
+                "item": "https://uniformtrends.pages.dev/shop"
               },
               {
                 "@type": "ListItem",
                 "position": 3,
                 "name": product.name,
-                "item": `https://oviglobaluniform.pages.dev/product/${product.slug}`
+                "item": `https://uniformtrends.pages.dev/product/${product.slug}`
               }
             ]
           })}
@@ -130,17 +187,21 @@ export default function ProductDetail() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-4"
           >
-            <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
-              <motion.img
-                key={activeImage}
-                initial={{ opacity: 0, scale: 1.1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.6 }}
-                src={product.images[activeImage]}
-                alt={product.name}
-                className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                referrerPolicy="no-referrer"
-              />
+            <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
+              {product.images && product.images.length > 0 ? (
+                <motion.img
+                  key={activeImage}
+                  initial={{ opacity: 0, scale: 1.1 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.6 }}
+                  src={product.images[activeImage]}
+                  alt={product.name}
+                  className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
+                  referrerPolicy="no-referrer"
+                />
+              ) : (
+                <span className="text-6xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
+              )}
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -153,20 +214,23 @@ export default function ProductDetail() {
                 <Heart size={20} fill={exists ? "currentColor" : "none"} />
               </motion.button>
             </div>
-            <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-              {product.images.map((img, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveImage(idx)}
-                  className={cn(
-                    "w-20 h-20 overflow-hidden rounded-xl border-2 transition-all shrink-0",
-                    activeImage === idx ? "border-ink shadow-[0_4px_20px_rgba(0,0,0,0.5)]" : "border-transparent opacity-70 hover:opacity-100"
-                  )}
-                >
-                  <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                </button>
-              ))}
-            </div>
+            
+            {product.images && product.images.length > 1 && (
+              <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                {product.images.map((img, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveImage(idx)}
+                    className={cn(
+                      "w-20 h-20 overflow-hidden rounded-xl border-2 transition-all shrink-0",
+                      activeImage === idx ? "border-ink shadow-[0_4px_20px_rgba(0,0,0,0.5)]" : "border-transparent opacity-70 hover:opacity-100"
+                    )}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Info */}
