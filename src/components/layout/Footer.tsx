@@ -101,7 +101,7 @@ export default function Footer() {
             </ul>
             <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm">
               <iframe
-                src="https://maps.google.com/maps?q=By+WEA+-+Exclusive+Gown+Store&t=&z=15&ie=UTF8&iwloc=&output=embed"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3663.155455325852!2d85.3332913!3d23.367912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e0!3m2!1sen!2sin!4v1714900000000!5m2!1sen!2sin"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
