@@ -177,22 +177,13 @@ export default function Footer() {
                     <Phone className="text-warning shrink-0" size={20} />
                     <span>07004301436</span>
                   </li>
-                  <li className="flex gap-4 items-center">
+                  <li className="flex gap-4 items-center overflow-hidden">
                     <Mail className="text-warning shrink-0" size={20} />
-                    <span>contact@uniformtrendsbywea.com</span>
+                    <span className="break-all sm:break-normal">contact@uniformtrendsbywea.com</span>
                   </li>
                 </ul>
-                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm">
-                  <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3663.155455325852!2d85.3332913!3d23.367912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e0!3m2!1sen!2sin!4v1714900000000!5m2!1sen!2sin"
-                    width="100%"
-                    height="100%"
-                    style={{ border: 0 }}
-                    allowFullScreen
-                    loading="lazy"
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="Store Location"
-                  />
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated flex items-center justify-center">
+                  <p className="text-muted text-sm font-medium">Pan-India Service & Delivery</p>
                 </div>
               </>
             )}

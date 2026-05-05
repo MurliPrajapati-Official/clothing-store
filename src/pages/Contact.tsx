@@ -90,7 +90,6 @@ export default function Contact() {
                   <p className="text-muted font-light mb-2">Come say hello at our HQ.</p>
                   <address className="not-italic text-ink font-medium">
                     Uniform Trends (By WEA)<br />
-                    India Office<br />
                     India
                   </address>
                 </div>

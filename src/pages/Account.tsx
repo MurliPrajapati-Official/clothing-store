@@ -204,7 +204,7 @@ export default function Account() {
                     </div>
                     <div>
                        <h3 className="font-bold text-ink">{session.user.user_metadata?.full_name || 'My Account'}</h3>
-                       <p className="text-sm text-muted">{session.user.email}</p>
+                       <p className="text-sm text-muted break-all">{session.user.email}</p>
                     </div>
                  </div>
 
