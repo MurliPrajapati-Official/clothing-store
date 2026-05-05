@@ -87,7 +87,7 @@ export default function Account() {
       if (err.message.includes('Email not confirmed')) {
         setAuthError('Please check your email and click the confirmation link before logging in.');
       } else {
-        setAuthError(err.message);
+        setAuthError('Invalid email or password. Please try again.');
       }
     } finally {
       setAuthLoading(false);

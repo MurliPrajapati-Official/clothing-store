@@ -45,6 +45,12 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
       in_stock, is_featured
     } = req.body;
 
+    // Server-side validation
+    if (!name || name.length < 3) return res.status(400).json({ error: 'Valid product name is required' });
+    if (!price || isNaN(Number(price))) return res.status(400).json({ error: 'A valid numeric price is required' });
+    if (!category) return res.status(400).json({ error: 'Category is required' });
+    if (!req.file) return res.status(400).json({ error: 'Product image is required' });
+
     const file = req.file;
     let imageUrls: string[] = [];
 
