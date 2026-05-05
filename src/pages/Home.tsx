@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
 import ProductSkeleton from '../components/product/ProductSkeleton';
 import QuickViewModal from '../components/product/QuickViewModal';
+import HomeSkeleton from '../components/layout/HomeSkeleton';
 import { Product } from '../types';
 
 const fadeUpVariant = {
@@ -29,23 +30,31 @@ export default function Home() {
   const heroTextY = useTransform(scrollY, [0, 500], [0, 150]);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   useEffect(() => {
-    fetch('http://localhost:5000/api/products')
+    setIsLoading(false);
+
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    fetch(`${apiUrl}/api/products`)
       .then(res => res.json())
       .then(data => {
-        // Just take the first 4 products for the homepage showcase
         setFeaturedProducts(data.slice(0, 4));
       })
       .catch(err => console.error("Failed to load featured products", err));
+
   }, []);
+
+  if (isLoading) {
+    return <HomeSkeleton />;
+  }
 
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Best School & Corporate Uniforms in Ranchi | Uniform Trends</title>
-        <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices in Ranchi. Experience the perfect fit today." />
+        <title>Best School & Corporate Uniforms in India | Uniform Trends</title>
+        <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices across India. Experience the perfect fit today." />
         <link rel="canonical" href="https://uniformtrends.pages.dev/" />
       </Helmet>
 
@@ -82,7 +91,7 @@ export default function Home() {
             </span>
             <h1 className="text-4xl sm:text-5xl md:text-[76px] font-bold text-ink leading-[1.05] mb-6 tracking-tight">
               Best School & Corporate <br />
-              Uniforms in Ranchi.
+              Uniforms in India.
             </h1>
             <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
               Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration (by WALRIE).
@@ -120,10 +129,10 @@ export default function Home() {
               className="text-lg text-muted leading-relaxed font-light"
             >
               At Uniform Trends (By WEA), we believe that the right attire fosters unity, professionalism, and confidence.
-              As Ranchi's leading uniform manufacturer, we specialize in high-performance garments for schools, 
-              hospitals, and industrial sectors across Jharkhand. Whether you are equipping the next generation of students 
+              As a leading national uniform manufacturer, we specialize in high-performance garments for schools, 
+              hospitals, and industrial sectors across India. Whether you are equipping the next generation of students 
               or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with 
-              unmatched durability for the demanding Ranchi climate.
+              unmatched durability for the demanding climates.
             </motion.p>
           </div>
 

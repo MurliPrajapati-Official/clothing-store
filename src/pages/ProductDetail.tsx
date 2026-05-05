@@ -1,7 +1,7 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
+import { ArrowLeft, Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS, SCHOOLS } from '../constants';
 import { formatCurrency, cn } from '../lib/utils';
@@ -9,8 +9,8 @@ import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
+import ProductDetailSkeleton from '../components/product/ProductDetailSkeleton';
 import { Product } from '../types';
-import { Loader2 } from 'lucide-react';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -42,7 +42,8 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        const response = await fetch(`http://localhost:5000/api/products/${slug}`);
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        const response = await fetch(`${apiUrl}/api/products/${slug}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
         
@@ -78,12 +79,7 @@ export default function ProductDetail() {
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
 
   if (isLoading) {
-    return (
-      <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
-        <Loader2 className="animate-spin text-primary mb-4" size={48} />
-        <p className="text-muted text-lg font-medium tracking-tight">Preparing uniform details...</p>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (error || !product) {
@@ -113,73 +109,26 @@ export default function ProductDetail() {
       <Helmet>
         <title>{product.name} | Uniform trends</title>
         <meta name="description" content={product.description} />
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Product",
-            "name": product.name,
-            "image": product.images.map(img => `https://uniformtrends.pages.dev${img}`),
-            "description": product.description,
-            "brand": {
-              "@type": "Brand",
-              "name": "Uniform Trends"
-            },
-            "offers": {
-              "@type": "Offer",
-              "url": `https://uniformtrends.pages.dev/product/${product.slug}`,
-              "priceCurrency": "INR",
-              "price": product.price,
-              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"
-            },
-            "aggregateRating": {
-              "@type": "AggregateRating",
-              "ratingValue": product.rating,
-              "reviewCount": product.reviewsCount
-            }
-          })}
-        </script>
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-              {
-                "@type": "ListItem",
-                "position": 1,
-                "name": "Home",
-                "item": "https://uniformtrends.pages.dev/"
-              },
-              {
-                "@type": "ListItem",
-                "position": 2,
-                "name": "Shop",
-                "item": "https://uniformtrends.pages.dev/shop"
-              },
-              {
-                "@type": "ListItem",
-                "position": 3,
-                "name": product.name,
-                "item": `https://uniformtrends.pages.dev/product/${product.slug}`
-              }
-            ]
-          })}
-        </script>
       </Helmet>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 text-sm font-medium text-muted mb-12"
+          className="mb-12"
         >
-          <Link to="/" className="hover:text-ink transition-colors">Home</Link>
-          <ChevronRight size={14} />
-          <Link to="/shop" className="hover:text-ink transition-colors">Shop</Link>
-          <ChevronRight size={14} />
-          <span className="text-ink">{product.name}</span>
+          <Link 
+            to="/shop" 
+            className="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors font-medium group"
+          >
+            <div className="w-10 h-10 rounded-full bg-surface-card border border-hairline flex items-center justify-center group-hover:border-primary transition-colors">
+              <ArrowLeft size={18} />
+            </div>
+            <span>Back to Shop</span>
+          </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
           {/* Gallery */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -352,34 +301,32 @@ export default function ProductDetail() {
           </motion.div>
         </div>
 
-        {/* Related Products */}
-        {relatedProducts.length > 0 && (
-          <motion.section
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-            className="mt-32 pt-20 border-t border-hairline-strong"
+        {/* Related Products Section (Static from constant for now) */}
+        <motion.section
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8 }}
+          className="mt-32 pt-20 border-t border-hairline-strong"
+        >
+          <div className="flex items-end justify-between mb-12">
+            <h2 className="text-3xl font-bold text-ink tracking-tight">You Might Also Like</h2>
+            <Link to="/shop" className="text-ink font-semibold hover:text-m-red">View More</Link>
+          </div>
+          <motion.div
+            variants={staggerContainer}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            <div className="flex items-end justify-between mb-12">
-              <h2 className="text-3xl font-bold text-ink tracking-tight">You Might Also Like</h2>
-              <Link to={`/schools/${school?.slug}`} className="text-ink font-semibold hover:text-m-red">View More</Link>
-            </div>
-            <motion.div
-              variants={staggerContainer}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
-            >
-              {relatedProducts.map(p => (
-                <motion.div key={p.id} variants={fadeUpVariant}>
-                  <ProductCard product={p} onQuickView={setQuickViewProduct} />
-                </motion.div>
-              ))}
-            </motion.div>
-          </motion.section>
-        )}
+            {PRODUCTS.slice(0, 4).map(p => (
+              <motion.div key={p.id} variants={fadeUpVariant}>
+                <ProductCard product={p} onQuickView={setQuickViewProduct} />
+              </motion.div>
+            ))}
+          </motion.div>
+        </motion.section>
       </div>
 
       {/* Size Chart Modal */}

@@ -2,6 +2,10 @@ import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import BlogSkeleton from '../components/blog/BlogSkeleton';
+
+import Skeleton from '../components/ui/Skeleton';
 
 const BLOG_POSTS = [
   {
@@ -34,64 +38,88 @@ const BLOG_POSTS = [
 ];
 
 export default function Blog() {
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
+
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Uniform Trends Journal | Uniform Insights in Ranchi</title>
-        <meta name="description" content="Industry insights, news, and tips from Uniform Trends (By WEA) - the experts in Ranchi uniforms." />
+        <title>Uniform Trends Journal | Uniform Insights in India</title>
+        <meta name="description" content="Industry insights, news, and tips from Uniform Trends (By WEA) - the national experts in premium uniforms." />
       </Helmet>
 
       <div className="container mx-auto px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-16"
-        >
-          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">The Uniform Trends Journal</h1>
-          <p className="text-lg text-muted max-w-2xl mx-auto font-light">Industry Insights, News, and Tips on Specialized Uniforms.</p>
-        </motion.div>
+        <div className="text-center mb-16">
+          {isLoading ? (
+            <div className="space-y-6 max-w-2xl mx-auto">
+              <Skeleton className="w-full h-12 md:h-16" />
+              <Skeleton className="w-3/4 h-6 mx-auto" />
+            </div>
+          ) : (
+            <>
+              <motion.div 
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+              >
+                <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">The Uniform Trends Journal</h1>
+                <p className="text-lg text-muted max-w-2xl mx-auto font-light">Industry Insights, News, and Tips on Specialized Uniforms.</p>
+              </motion.div>
+            </>
+          )}
+        </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {BLOG_POSTS.map((post, index) => (
-            <motion.article 
-              key={post.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              className="bg-surface-card rounded-3xl overflow-hidden border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)] group hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all"
-            >
-              <div className="aspect-[16/10] overflow-hidden">
-                <img 
-                  src={post.image} 
-                  alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-primary mb-4">
-                  <span>{post.category}</span>
+          {isLoading ? (
+            <>
+              {[...Array(3)].map((_, i) => (
+                <BlogSkeleton key={i} />
+              ))}
+            </>
+          ) : (
+            BLOG_POSTS.map((post, index) => (
+              <motion.article 
+                key={post.id}
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="bg-surface-card rounded-3xl overflow-hidden border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)] group hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all"
+              >
+                <div className="aspect-[16/10] overflow-hidden">
+                  <img 
+                    src={post.image} 
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    referrerPolicy="no-referrer"
+                  />
                 </div>
-                <h3 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-muted font-light mb-6 line-clamp-2">
-                  {post.excerpt}
-                </p>
-                <div className="flex items-center justify-between mt-auto">
-                  <div className="flex items-center gap-4 text-sm text-muted font-medium">
-                    <div className="flex items-center gap-1">
-                      <Calendar size={14} />
-                      {post.date}
-                    </div>
+                <div className="p-8">
+                  <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-primary mb-4">
+                    <span>{post.category}</span>
                   </div>
-                  <button className="text-ink group-hover:text-primary transition-colors">
-                    <ArrowRight size={20} />
-                  </button>
+                  <h3 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-muted font-light mb-6 line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                  <div className="flex items-center justify-between mt-auto">
+                    <div className="flex items-center gap-4 text-sm text-muted font-medium">
+                      <div className="flex items-center gap-1">
+                        <Calendar size={14} />
+                        {post.date}
+                      </div>
+                    </div>
+                    <button className="text-ink group-hover:text-primary transition-colors">
+                      <ArrowRight size={20} />
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </motion.article>
-          ))}
+              </motion.article>
+            ))
+          )}
         </div>
       </div>
     </div>

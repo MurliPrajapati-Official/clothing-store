@@ -4,195 +4,224 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../../store/cartStore';
 import { cn } from '../../lib/utils';
+import Skeleton from '../ui/Skeleton';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const location = useLocation();
-    const { getTotalItems, setDrawerOpen } = useCartStore();
-    const totalItems = getTotalItems();
-    
-    const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
-    const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
-    const navigate = useNavigate();
+  const { getTotalItems, setDrawerOpen } = useCartStore();
+  const totalItems = getTotalItems();
+  
+  const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
+  const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
+  const navigate = useNavigate();
 
-    const categories = ['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'];
-  
-    useEffect(() => {
-      const handleScroll = () => setScrolled(window.scrollY > 20);
-      window.addEventListener('scroll', handleScroll);
-      return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
-  
-    useEffect(() => {
-      setIsMenuOpen(false);
-    }, [location]);
-  
-    return (
-      <>
-        <motion.header
-          initial={{ y: -100 }}
-          animate={{ y: 0 }}
-          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-          className={cn(
-            "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-            scrolled ? "bg-surface-card/90 backdrop-blur-md border-b border-hairline py-3 shadow-[0_2px_10px_rgba(0,0,0,0.5)]" : "bg-transparent border-transparent py-6"
-          )}
-        >
-          <div className="container mx-auto px-4 flex items-center justify-between gap-4">
-            <div className="flex items-center gap-2">
-              {/* Mobile Menu Toggle */}
-              <button
-                className="lg:hidden p-2 -ml-2 text-ink hover:bg-surface-elevated rounded-full transition-colors"
-                onClick={() => setIsMenuOpen(true)}
-              >
-                <Menu size={24} />
-              </button>
-  
-              {/* Logo */}
+  const categories = ['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'];
+
+  useEffect(() => {
+    setIsLoading(false);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [location.pathname]); // Re-trigger on page change for demo
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location]);
+
+  return (
+    <>
+      <motion.header
+        initial={{ y: -100 }}
+        animate={{ y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className={cn(
+          "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
+          scrolled || isLoading ? "bg-surface-card/90 backdrop-blur-md border-b border-hairline py-3 shadow-[0_2px_10px_rgba(0,0,0,0.5)]" : "bg-transparent border-transparent py-6"
+        )}
+      >
+        <div className="container mx-auto px-4 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            {/* Mobile Menu Toggle */}
+            <button
+              className="lg:hidden p-2 -ml-2 text-ink hover:bg-surface-elevated rounded-full transition-colors"
+              onClick={() => setIsMenuOpen(true)}
+            >
+              <Menu size={24} />
+            </button>
+
+            {/* Logo */}
+            {isLoading ? (
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl" />
+                <Skeleton className="h-8 w-32 sm:w-48 rounded-md hidden sm:block" />
+              </div>
+            ) : (
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
                   src="/images/logo.png" 
-                  alt="Uniform Trends Uniforms - Best School & Corporate Uniforms in Ranchi" 
+                  alt="Uniform Trends Uniforms - Best School & Corporate Uniforms in India" 
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
                 <span className="font-black text-2xl sm:text-3xl tracking-tighter text-ink hidden sm:block">
                   Uniform Trends
                 </span>
               </Link>
-            </div>
-  
-            {/* Desktop Nav */}
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link
-                to="/"
-                className={cn(
-                  "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
-                  location.pathname === '/' ? "text-m-red" : "text-body-text"
-                )}
-              >
-                Home
-                <span className={cn(
-                  "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
-                  location.pathname === '/' && "w-full"
-                )} />
-              </Link>
-
-              {/* Shop Mega Menu Trigger */}
-              <div 
-                className="relative group"
-                onMouseEnter={() => setIsShopDropdownOpen(true)}
-                onMouseLeave={() => setIsShopDropdownOpen(false)}
-              >
-                <Link
-                  to="/shop"
-                  className={cn(
-                    "text-[15px] font-medium transition-colors hover:text-m-red flex items-center gap-1 group whitespace-nowrap h-10",
-                    location.pathname === '/shop' ? "text-m-red" : "text-body-text"
-                  )}
-                >
-                  Shop
-                  <ChevronDown size={14} className={cn("transition-transform duration-300", isShopDropdownOpen && "rotate-180")} />
-                  <span className={cn(
-                    "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
-                    location.pathname === '/shop' && "w-full"
-                  )} />
-                </Link>
-
-                {/* Desktop Dropdown */}
-                <AnimatePresence>
-                  {isShopDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.2, ease: "easeOut" }}
-                      className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden py-4 z-50"
-                    >
-                      <div className="px-6 py-2 mb-2">
-                        <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">Shop by Category</h4>
-                      </div>
-                      <div className="flex flex-col">
-                        {categories.map((cat) => (
-                          <Link
-                            key={cat}
-                            to={`/shop?category=${encodeURIComponent(cat)}`}
-                            onClick={() => setIsShopDropdownOpen(false)}
-                            className="px-6 py-3 text-[14px] font-medium text-body-text hover:text-ink hover:bg-surface-elevated transition-colors flex items-center justify-between group/item"
-                          >
-                            {cat}
-                            <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
-                          </Link>
-                        ))}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
-
-              {[
-                { name: 'About Us', path: '/about' },
-                { name: 'Blog', path: '/blog' },
-                { name: 'Contact Us', path: '/contact' }
-              ].map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.path}
-                  className={cn(
-                    "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
-                    location.pathname === item.path
-                      ? "text-m-red"
-                      : "text-body-text"
-                  )}
-                >
-                  {item.name}
-                  <span className={cn(
-                    "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
-                    location.pathname === item.path && "w-full"
-                  )} />
-                </Link>
-              ))}
-            </nav>
-  
-            {/* Actions */}
-            <div className="flex items-center gap-2 sm:gap-4 text-ink">
-              <button
-                className="p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95"
-                onClick={() => setIsSearchOpen(!isSearchOpen)}
-              >
-                <Search size={22} />
-              </button>
-  
-              <Link to="/wishlist" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
-                <Heart size={22} />
-              </Link>
-  
-              <Link to="/account" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
-                <User size={22} />
-              </Link>
-  
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="group relative p-2 ml-2 flex items-center hover:scale-110 active:scale-95 transition-transform"
-              >
-                <ShoppingBag size={22} />
-                <AnimatePresence>
-                  {totalItems > 0 && (
-                    <motion.span
-                      initial={{ scale: 0 }}
-                      animate={{ scale: 1 }}
-                      exit={{ scale: 0 }}
-                      className="absolute top-0 right-0 bg-m-red text-white text-[10px] font-bold w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] ring-2 ring-white"
-                    >
-                      {totalItems}
-                    </motion.span>
-                  )}
-                </AnimatePresence>
-              </button>
-            </div>
+            )}
           </div>
 
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-8">
+            {isLoading ? (
+              <div className="flex items-center gap-8">
+                {[...Array(5)].map((_, i) => (
+                  <Skeleton key={i} className="h-4 w-16 rounded" />
+                ))}
+              </div>
+            ) : (
+              <>
+                <Link
+                  to="/"
+                  className={cn(
+                    "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
+                    location.pathname === '/' ? "text-m-red" : "text-body-text"
+                  )}
+                >
+                  Home
+                  <span className={cn(
+                    "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                    location.pathname === '/' && "w-full"
+                  )} />
+                </Link>
+
+                <div 
+                  className="relative group"
+                  onMouseEnter={() => setIsShopDropdownOpen(true)}
+                  onMouseLeave={() => setIsShopDropdownOpen(false)}
+                >
+                  <Link
+                    to="/shop"
+                    className={cn(
+                      "text-[15px] font-medium transition-colors hover:text-m-red flex items-center gap-1 group whitespace-nowrap h-10",
+                      location.pathname === '/shop' ? "text-m-red" : "text-body-text"
+                    )}
+                  >
+                    Shop
+                    <ChevronDown size={14} className={cn("transition-transform duration-300", isShopDropdownOpen && "rotate-180")} />
+                    <span className={cn(
+                      "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                      location.pathname === '/shop' && "w-full"
+                    )} />
+                  </Link>
+
+                  <AnimatePresence>
+                    {isShopDropdownOpen && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
+                        className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden py-4 z-50"
+                      >
+                        <div className="px-6 py-2 mb-2">
+                          <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">Shop by Category</h4>
+                        </div>
+                        <div className="flex flex-col">
+                          {categories.map((cat) => (
+                            <Link
+                              key={cat}
+                              to={`/shop?category=${encodeURIComponent(cat)}`}
+                              onClick={() => setIsShopDropdownOpen(false)}
+                              className="px-6 py-3 text-[14px] font-medium text-body-text hover:text-ink hover:bg-surface-elevated transition-colors flex items-center justify-between group/item"
+                            >
+                              {cat}
+                              <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                            </Link>
+                          ))}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+
+                {[
+                  { name: 'About Us', path: '/about' },
+                  { name: 'Blog', path: '/blog' },
+                  { name: 'Contact Us', path: '/contact' }
+                ].map((item) => (
+                  <Link
+                    key={item.name}
+                    to={item.path}
+                    className={cn(
+                      "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
+                      location.pathname === item.path
+                        ? "text-m-red"
+                        : "text-body-text"
+                    )}
+                  >
+                    {item.name}
+                    <span className={cn(
+                      "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                      location.pathname === item.path && "w-full"
+                    )} />
+                  </Link>
+                ))}
+              </>
+            )}
+          </nav>
+
+          {/* Actions */}
+          <div className="flex items-center gap-2 sm:gap-4 text-ink">
+            {isLoading ? (
+              <div className="flex items-center gap-4">
+                {[...Array(4)].map((_, i) => (
+                  <Skeleton key={i} className="h-6 w-6 rounded-full" />
+                ))}
+              </div>
+            ) : (
+              <>
+                <button
+                  className="p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95"
+                  onClick={() => setIsSearchOpen(!isSearchOpen)}
+                >
+                  <Search size={22} />
+                </button>
+
+                <Link to="/wishlist" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
+                  <Heart size={22} />
+                </Link>
+
+                <Link to="/account" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
+                  <User size={22} />
+                </Link>
+
+                <button
+                  onClick={() => setDrawerOpen(true)}
+                  className="group relative p-2 ml-2 flex items-center hover:scale-110 active:scale-95 transition-transform"
+                >
+                  <ShoppingBag size={22} />
+                  <AnimatePresence>
+                    {totalItems > 0 && (
+                      <motion.span
+                        initial={{ scale: 0 }}
+                        animate={{ scale: 1 }}
+                        exit={{ scale: 0 }}
+                        className="absolute top-0 right-0 bg-m-red text-white text-[10px] font-bold w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] ring-2 ring-white"
+                      >
+                        {totalItems}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </button>
+              </>
+            )}
+          </div>
+        </div>
       </motion.header>
 
       {/* Search Overlay */}
@@ -290,7 +319,7 @@ export default function Header() {
                   <button
                     onClick={() => setIsMobileShopOpen(!isMobileShopOpen)}
                     className={cn(
-                      "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
+                      "operator items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
                       location.pathname.startsWith('/shop') ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
                     )}
                   >

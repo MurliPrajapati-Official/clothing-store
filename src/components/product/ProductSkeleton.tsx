@@ -1,11 +1,10 @@
-import { motion } from 'motion/react';
+import Skeleton from '../ui/Skeleton';
 
 export default function ProductSkeleton() {
   return (
-    <div className="bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline h-full flex flex-col animate-pulse">
-      <div className="relative aspect-[4/5] bg-canvas overflow-hidden">
-        {/* Placeholder for image */}
-        <div className="h-full w-full bg-muted/20" />
+    <div className="bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline h-full flex flex-col">
+      <div className="relative aspect-[4/5] overflow-hidden">
+        <Skeleton className="h-full w-full" />
       </div>
 
       <div className="p-5 flex-1 flex flex-col space-y-4">
@@ -13,23 +12,26 @@ export default function ProductSkeleton() {
         <div className="flex items-center gap-1">
           <div className="flex gap-1">
             {[...Array(5)].map((_, i) => (
-              <div key={i} className="w-3 h-3 bg-muted/20 rounded-full" />
+              <Skeleton key={i} variant="circle" className="w-3 h-3" />
             ))}
           </div>
-          <div className="w-8 h-3 bg-muted/20 rounded ml-1" />
+          <Skeleton variant="text" className="w-8 h-3 ml-1" />
         </div>
 
-        {/* Title placeholder */}
+        {/* Title placeholder (Text variant) */}
         <div className="space-y-2">
-          <div className="h-4 bg-muted/20 rounded w-full" />
-          <div className="h-4 bg-muted/20 rounded w-3/4" />
+          <Skeleton variant="text" className="w-full h-5" />
+          <Skeleton variant="text" className="w-3/4 h-5" />
         </div>
 
         {/* Price placeholder */}
         <div className="flex items-baseline gap-3 mt-auto pt-2">
-          <div className="h-6 bg-muted/20 rounded w-20" />
-          <div className="h-4 bg-muted/20 rounded w-12" />
+          <Skeleton variant="text" className="w-20 h-7" />
+          <Skeleton variant="text" className="w-12 h-5" />
         </div>
+        
+        {/* CTA placeholder */}
+        <Skeleton className="w-full h-10 rounded-xl mt-2" />
       </div>
     </div>
   );

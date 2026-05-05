@@ -2,13 +2,15 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { User, Mail, Lock, ShoppingBag, Settings, LogOut, ChevronRight, Package, MapPin } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
+import AccountSkeleton from '../components/layout/AccountSkeleton';
 
 export default function Account() {
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
+  const navigate = useNavigate();
   
   // Form fields
   const [email, setEmail] = useState('');
@@ -44,7 +46,8 @@ export default function Account() {
   const fetchOrders = async (userId: string) => {
     try {
       setOrdersLoading(true);
-      const response = await fetch(`http://localhost:5000/api/orders/user/${userId}`);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`);
       if (response.ok) {
         const data = await response.json();
         setOrders(data);
@@ -96,10 +99,11 @@ export default function Account() {
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
+    navigate('/');
   };
 
   if (isLoading) {
-    return <div className="pt-32 min-h-screen bg-canvas text-center">Loading...</div>;
+    return <AccountSkeleton />;
   }
 
   if (!session) {
@@ -261,7 +265,11 @@ export default function Account() {
                   <h2 className="text-2xl font-bold text-ink mb-6">Recent Orders</h2>
                   
                   {ordersLoading ? (
-                    <p className="text-muted text-center py-8">Loading your orders...</p>
+                    <div className="space-y-4">
+                       {[...Array(2)].map((_, i) => (
+                         <div key={i} className="h-24 bg-canvas animate-pulse rounded-xl" />
+                       ))}
+                    </div>
                   ) : orders.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-16 bg-canvas rounded-xl border border-hairline">
                        <p className="text-muted mb-6">You haven't placed any orders yet.</p>
@@ -283,7 +291,6 @@ export default function Account() {
                               </div>
                            </div>
                            
-                           {/* Show the first item as a summary */}
                            {order.order_items && order.order_items.length > 0 && (
                              <div className="p-4 flex items-center justify-between">
                                 <div className="flex gap-4 items-center">

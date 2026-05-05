@@ -1,11 +1,17 @@
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import ContactSkeleton from '../components/layout/ContactSkeleton';
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    setIsLoading(false);
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -17,11 +23,15 @@ export default function Contact() {
     }, 1500);
   };
 
+  if (isLoading) {
+    return <ContactSkeleton />;
+  }
+
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Contact Uniform Trends Ranchi | Custom Bulk Uniform Orders</title>
-        <meta name="description" content="Get in touch with Uniform Trends in Ranchi for bulk orders of school, hospital, and corporate uniforms. High-quality custom tailoring By WEA." />
+        <title>Contact Uniform Trends | Custom Bulk Uniform Orders India</title>
+        <meta name="description" content="Get in touch with Uniform Trends for bulk orders of school, hospital, and corporate uniforms across India. High-quality custom tailoring By WEA." />
       </Helmet>
 
       <div className="container-custom max-w-7xl">
@@ -57,7 +67,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+            <div className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-[0_4px_20_rgba(0,0,0,0.02)]">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-surface-elevated rounded-full flex items-center justify-center shrink-0 text-primary">
                   <Mail size={24} />
@@ -70,7 +80,7 @@ export default function Contact() {
               </div>
             </div>
 
-            <div className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+            <div className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-[0_4px_20_rgba(0,0,0,0.02)]">
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 bg-surface-elevated rounded-full flex items-center justify-center shrink-0 text-primary">
                   <MapPin size={24} />
@@ -80,8 +90,7 @@ export default function Contact() {
                   <p className="text-muted font-light mb-2">Come say hello at our HQ.</p>
                   <address className="not-italic text-ink font-medium">
                     Uniform Trends (By WEA)<br />
-                    Industrial Area, Kokar<br />
-                    Ranchi, Jharkhand 834001<br />
+                    India Office 834001<br />
                     India
                   </address>
                 </div>
