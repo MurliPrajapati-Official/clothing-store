@@ -210,7 +210,7 @@ export default function AdminDashboard() {
                     {isLoading ? (
                       <tr><td colSpan={4} className="px-6 py-12 text-center text-muted">Loading inventory...</td></tr>
                     ) : products.length === 0 ? (
-                      <tr><td colSpan={4} className="px-6 py-12 text-center text-muted">No products in database yet.</td></tr>
+                      <tr><td colSpan={4} className="px-6 py-12 text-center text-muted">No products found in inventory.</td></tr>
                     ) : products.map(product => (
                       <tr key={product.id} className="hover:bg-canvas/50 transition-colors">
                         <td className="px-6 py-4">
@@ -265,7 +265,7 @@ export default function AdminDashboard() {
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-ink">Add New Product</h1>
-                <p className="text-muted font-light">Add uniforms to your Supabase database and storage.</p>
+                <p className="text-muted font-light">Add new uniforms to your catalog and cloud storage.</p>
               </div>
             </div>
 
@@ -343,7 +343,7 @@ export default function AdminDashboard() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    Saving to Database...
+                    Processing Product...
                   </>
                 ) : (
                   'Save Product to Store'

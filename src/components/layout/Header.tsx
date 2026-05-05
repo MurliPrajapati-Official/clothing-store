@@ -1,4 +1,4 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Search, ShoppingBag, User, Heart, Menu, X, ChevronRight, ChevronDown, ArrowRight } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -15,6 +15,7 @@ export default function Header() {
     
     const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
     const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
+    const navigate = useNavigate();
 
     const categories = ['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'];
   
@@ -221,7 +222,7 @@ export default function Header() {
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         setIsSearchOpen(false);
-                        window.location.href = `/shop?q=${encodeURIComponent(e.currentTarget.value)}`;
+                        navigate(`/shop?q=${encodeURIComponent(e.currentTarget.value)}`);
                       }
                     }}
                   />

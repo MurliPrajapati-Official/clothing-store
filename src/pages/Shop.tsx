@@ -4,6 +4,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, List } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
+import ProductSkeleton from '../components/product/ProductSkeleton';
 import QuickViewModal from '../components/product/QuickViewModal';
 import { SCHOOLS, CATEGORIES } from '../constants';
 import { Product } from '../types';
@@ -344,7 +345,7 @@ export default function Shop() {
                   <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-primary transition-colors" size={16} />
                   <input
                     type="text"
-                    placeholder="Search..."
+                    placeholder="Search for uniforms, schools, or styles..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     className="w-full bg-surface-card border border-hairline py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary transition-all text-ink rounded-xl"
@@ -414,9 +415,10 @@ export default function Shop() {
         </div>
         <div className="flex-1">
           {isLoading ? (
-            <div className="flex flex-col items-center justify-center py-20">
-              <Loader2 className="animate-spin text-primary mb-4" size={40} />
-              <p className="text-muted font-medium">Loading your products from the database...</p>
+            <div className="grid grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-8 mb-12">
+              {[...Array(8)].map((_, i) => (
+                <ProductSkeleton key={i} />
+              ))}
             </div>
           ) : filteredProducts.length > 0 ? (
             <motion.div>

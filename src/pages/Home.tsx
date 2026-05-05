@@ -4,6 +4,7 @@ import { motion, useScroll, useTransform } from 'motion/react';
 import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
+import ProductSkeleton from '../components/product/ProductSkeleton';
 import QuickViewModal from '../components/product/QuickViewModal';
 import { Product } from '../types';
 
@@ -303,9 +304,11 @@ export default function Home() {
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
           >
             {featuredProducts.length === 0 ? (
-              <div className="col-span-full py-12 text-center text-muted">
-                Loading products...
-              </div>
+              <>
+                {[...Array(4)].map((_, i) => (
+                  <ProductSkeleton key={i} />
+                ))}
+              </>
             ) : (
               featuredProducts.map((product) => (
                 <motion.div key={product.id} variants={fadeUpVariant}>

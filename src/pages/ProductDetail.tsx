@@ -81,7 +81,7 @@ export default function ProductDetail() {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
         <Loader2 className="animate-spin text-primary mb-4" size={48} />
-        <p className="text-muted text-lg">Loading product details...</p>
+        <p className="text-muted text-lg font-medium tracking-tight">Preparing uniform details...</p>
       </div>
     );
   }
