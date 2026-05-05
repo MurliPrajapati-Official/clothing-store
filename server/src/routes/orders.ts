@@ -1,10 +1,10 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { supabase } from '../index';
 
 const router = express.Router();
 
 // POST a new order (Checkout)
-router.post('/', async (req, res) => {
+router.post('/', async (req: Request, res: Response) => {
   try {
     const { user_id, total_amount, shipping_address, items } = req.body;
 
@@ -46,7 +46,7 @@ router.post('/', async (req, res) => {
 });
 
 // GET orders for a specific user
-router.get('/user/:userId', async (req, res) => {
+router.get('/user/:userId', async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('orders')

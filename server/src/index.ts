@@ -37,8 +37,10 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 import productRoutes from './routes/products';
 import orderRoutes from './routes/orders';
 
+import { Request, Response } from 'express';
+
 // Basic health check route
-app.get('/api/health', (req, res) => {
+app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
 });
 

@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import multer from 'multer';
 import { supabase } from '../index'; // Will need to ensure this works later
 
@@ -6,7 +6,7 @@ const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }); // Store file in memory for direct upload to Supabase
 
 // GET all products
-router.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('products')
@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
 });
 
 // GET single product by slug
-router.get('/:slug', async (req, res) => {
+router.get('/:slug', async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('products')
@@ -37,7 +37,7 @@ router.get('/:slug', async (req, res) => {
 });
 
 // POST a new product (Admin Only - Requires Auth later)
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', upload.single('image'), async (req: Request, res: Response) => {
   try {
     const {
       name, slug, price, original_price, description,
