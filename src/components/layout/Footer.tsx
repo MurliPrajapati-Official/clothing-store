@@ -227,7 +227,7 @@ export default function Footer() {
               <div>
                 <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Specialized Manufacturing</h5>
                 <p className="text-[12px] text-muted leading-relaxed font-light">
-                  Custom tailoring for healthcare professionals, industrial factory workers, and luxury hotel staff in Jharkhand.
+                  Custom tailoring for healthcare professionals, industrial factory workers, and luxury hotel staff across the nation.
                 </p>
               </div>
               <div>
