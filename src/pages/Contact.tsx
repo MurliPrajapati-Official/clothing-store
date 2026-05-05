@@ -123,11 +123,11 @@ export default function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Phone Number</label>
-                    <input required type="tel" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="07004301436" />
+                    <input required type="tel" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="+91xxxxxxxxxx" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Institution/Company Name</label>
-                    <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="Your School/Hospital" />
+                    <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="Enter" />
                   </div>
                 </div>
 

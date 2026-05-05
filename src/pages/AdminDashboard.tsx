@@ -1,12 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion } from 'motion/react';
-import { PlusCircle, Image as ImageIcon, Loader2 } from 'lucide-react';
+import { PlusCircle, Image as ImageIcon, Loader2, ShieldAlert } from 'lucide-react';
+import { supabase } from '../lib/supabase';
+import { useNavigate } from 'react-router-dom';
 
 export default function AdminDashboard() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+      
+      if (!session) {
+        setIsAdmin(false);
+        setTimeout(() => navigate('/account'), 3000);
+      } else if (adminEmail && session.user.email !== adminEmail) {
+        // If an admin email is defined, but the user doesn't match it
+        setIsAdmin(false);
+        setTimeout(() => navigate('/'), 3000);
+      } else {
+        setIsAdmin(true);
+      }
+    };
+    checkAuth();
+  }, [navigate]);
+
+  if (isAdmin === false) {
+    return (
+      <div className="pt-40 pb-24 min-h-screen bg-canvas text-center">
+        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
+          <ShieldAlert size={64} className="mx-auto text-m-red mb-6" />
+          <h1 className="text-3xl font-bold text-ink mb-4">Access Denied</h1>
+          <p className="text-muted mb-8">You do not have permission to view this page. Redirecting to login...</p>
+        </motion.div>
+      </div>
+    );
+  }
+
+  if (isAdmin === null) {
+    return <div className="pt-40 text-center text-muted">Checking authorization...</div>;
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
