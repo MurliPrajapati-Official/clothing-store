@@ -509,9 +509,15 @@ export default function Shop() {
               </div>
               <h3 className="text-3xl font-bold text-ink mb-4">No Products Found</h3>
               <p className="text-lg text-muted mb-10 max-w-md mx-auto">We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters.</p>
-              <button onClick={clearFilters} className="btn-primary px-10">
-                Clear All Filters
-              </button>
+              <div className="flex justify-center">
+                <button 
+                  onClick={clearFilters} 
+                  className="btn-primary px-10 py-4 rounded-xl flex items-center gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.1)] hover:scale-105 transition-transform"
+                >
+                  <RefreshCw size={18} />
+                  Clear All Filters
+                </button>
+              </div>
             </motion.div>
           )}
         </div>
