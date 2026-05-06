@@ -27,6 +27,7 @@ export default function Cart() {
       <div className="pt-32 pb-24 container mx-auto px-4 flex flex-col items-center min-h-screen bg-canvas">
         <Helmet>
           <title>Your Cart is Empty | Uniform trends</title>
+          <link rel="canonical" href="https://uniformtrends.pages.dev/cart" />
         </Helmet>
         <motion.div 
           initial={false}
@@ -69,6 +70,7 @@ export default function Cart() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen">
       <Helmet>
         <title>{`Your Cart (${items.length}) | Uniform trends`}</title>
+        <link rel="canonical" href="https://uniformtrends.pages.dev/cart" />
       </Helmet>
       <div className="container mx-auto px-4">
         <motion.h1 

@@ -191,6 +191,7 @@ export default function ProductDetail() {
       <Helmet>
         <title>{product.name} | Uniform trends</title>
         <meta name="description" content={product.description} />
+        <link rel="canonical" href={`https://uniformtrends.pages.dev/product/${product.slug}`} />
       </Helmet>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}
@@ -281,7 +282,7 @@ export default function ProductDetail() {
               <span className="text-sm font-medium text-muted">({product.reviewsCount} Reviews)</span>
             </motion.div>
 
-            <motion.h1 variants={fadeUpVariant} className="text-4xl md:text-5xl font-bold text-ink leading-tight mb-4 tracking-tight">
+            <motion.h1 variants={fadeUpVariant} className="text-2xl sm:text-4xl md:text-5xl font-bold text-ink leading-tight mb-4 tracking-tight break-words">
               {product.name}
             </motion.h1>
 

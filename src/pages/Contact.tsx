@@ -33,6 +33,7 @@ export default function Contact() {
       <Helmet>
         <title>Contact Uniform Trends | Custom Bulk Uniform Orders India</title>
         <meta name="description" content="Get in touch with Uniform Trends for bulk orders of school, hospital, and corporate uniforms across India. High-quality custom tailoring By WEA." />
+        <link rel="canonical" href="https://uniformtrends.pages.dev/contact" />
       </Helmet>
 
       <div className="container-custom max-w-7xl">

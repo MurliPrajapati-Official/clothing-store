@@ -6,6 +6,7 @@ export default function PrivacyPolicy() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>Privacy Policy | Uniform trends</title>
+        <link rel="canonical" href="https://uniformtrends.pages.dev/privacy" />
       </Helmet>
       <div className="container-custom max-w-4xl">
         <motion.div

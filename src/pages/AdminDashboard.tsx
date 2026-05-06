@@ -348,9 +348,10 @@ export default function AdminDashboard() {
                 <textarea 
                   name="description" 
                   required 
-                  rows={6} 
+                  rows={8} 
                   defaultValue={editingProduct?.description || ''} 
-                  className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors resize-y min-h-[150px] scrollbar-thin scrollbar-thumb-hairline scrollbar-track-transparent" 
+                  data-lenis-prevent
+                  className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors resize-y min-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline scrollbar-track-transparent" 
                   placeholder="Detailed product description including material, fit, and care instructions..."
                 ></textarea>
               </div>

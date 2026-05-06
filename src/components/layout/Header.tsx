@@ -65,7 +65,7 @@ export default function Header() {
             ) : (
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
-                  src="/images/logo.png" 
+                  src="/images/logo.webp" 
                   alt="Uniform Trends Uniforms - Best School & Corporate Uniforms in India" 
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
@@ -126,25 +126,43 @@ export default function Header() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        transition={{ duration: 0.2, ease: "easeOut" }}
-                        className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-[0_10px_40px_rgba(0,0,0,0.4)] overflow-hidden py-4 z-50"
+                        transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                        className="absolute top-full left-0 mt-2 w-[580px] bg-surface-card border border-hairline rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden p-8 z-50"
                       >
-                        <div className="px-6 py-2 mb-2">
-                          <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted">Shop by Category</h4>
+                        <div className="flex justify-between items-start mb-8">
+                          <div>
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">Our Collections</h4>
+                            <h2 className="text-xl font-bold text-ink tracking-tight">Explore Categories</h2>
+                          </div>
+                          <Link 
+                            to="/shop" 
+                            className="text-xs font-bold text-muted hover:text-primary transition-colors flex items-center gap-1"
+                            onClick={() => setIsShopDropdownOpen(false)}
+                          >
+                            View All <ArrowRight size={14} />
+                          </Link>
                         </div>
-                        <div className="flex flex-col">
+
+                        <div 
+                          data-lenis-prevent
+                          className="grid grid-cols-2 gap-x-10 gap-y-1 max-h-[50vh] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline pr-4"
+                        >
                           {categories.map((cat) => (
                             <Link
                               key={cat}
                               to={`/shop?category=${encodeURIComponent(cat)}`}
                               onClick={() => setIsShopDropdownOpen(false)}
-                              className="px-6 py-3 text-[14px] font-medium text-body-text hover:text-ink hover:bg-surface-elevated transition-colors flex items-center justify-between group/item"
+                              className="group/item py-3 flex items-center justify-between border-b border-hairline/30 hover:border-primary/30 transition-all"
                             >
-                              {cat}
-                              <ChevronRight size={14} className="opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                              <div className="flex flex-col">
+                                <span className="text-[14px] font-bold text-body-text group-hover/item:text-primary transition-colors">{cat}</span>
+                                <span className="text-[10px] text-muted font-medium opacity-0 -translate-y-1 group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all">View Products</span>
+                              </div>
+                              <ChevronRight size={14} className="text-muted opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 group-hover/item:text-primary transition-all" />
                             </Link>
                           ))}
                         </div>
+
                       </motion.div>
                     )}
                   </AnimatePresence>
@@ -286,7 +304,8 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-surface-card border-r border-hairline z-[70] shadow-2xl flex flex-col"
+              data-lenis-prevent
+              className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-surface-card border-r border-hairline z-[70] shadow-2xl flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-hairline"
             >
               <div className="flex items-center justify-between p-8 mb-4">
                 <Link to="/" className="flex items-center gap-2">

@@ -20,6 +20,7 @@ export default function About() {
       <Helmet>
         <title>About Uniform Trends | Premium Uniforms in India</title>
         <meta name="description" content="Uniform Trends By WEA is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms across India." />
+        <link rel="canonical" href="https://uniformtrends.pages.dev/about" />
       </Helmet>
 
       <div className="container mx-auto px-4">

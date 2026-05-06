@@ -58,7 +58,7 @@ export default function Footer() {
               <>
                 <Link to="/" className="flex items-center gap-3 mb-6">
                   <img 
-                    src="/images/logo.png" 
+                    src="/images/logo.webp" 
                     alt="Uniform Trends Uniforms - Premium Manufacturer in India" 
                     className="h-12 w-auto object-contain" 
                   />
@@ -82,7 +82,7 @@ export default function Footer() {
           </motion.div>
 
           {/* Category Column */}
-          <motion.div variants={fadeUpVariant}>
+          <motion.div variants={fadeUpVariant} className="lg:col-span-1">
             {isLoading ? (
               <div className="space-y-6">
                 <Skeleton variant="text" className="w-24 h-5 mb-6" />
@@ -95,13 +95,13 @@ export default function Footer() {
             ) : (
               <>
                 <h4 className="text-[15px] font-bold mb-6 text-ink tracking-wide">Category</h4>
-                <ul className="space-y-4 text-body-text font-light">
+                <ul className="grid grid-cols-2 gap-x-4 gap-y-4 text-body-text font-light">
                   {CATEGORIES.map((item) => (
                     <li key={item}>
-                      <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-warning transition-colors block">{item}</Link>
+                      <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-warning transition-colors block truncate">{item}</Link>
                     </li>
                   ))}
-                  <li>
+                  <li className="col-span-2">
                     <Link to={`/contact`} className="hover:text-warning transition-colors block">Custom Bulk Orders</Link>
                   </li>
                 </ul>

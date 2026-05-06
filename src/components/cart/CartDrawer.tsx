@@ -65,7 +65,7 @@ export default function CartDrawer() {
             </div>
 
             {/* Content */}
-            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+            <div className="flex-1 overflow-y-auto p-6 space-y-6" data-lenis-prevent>
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
                   <div className="w-20 h-20 bg-surface-elevated rounded-full flex items-center justify-center text-muted mb-6">

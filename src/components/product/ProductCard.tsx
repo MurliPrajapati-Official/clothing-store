@@ -95,7 +95,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
             </div>
             <span className="text-[11px] font-medium text-muted ml-1">({product.reviewsCount})</span>
           </div>
-          <h3 className="font-bold text-ink text-[16px] group-hover:text-m-red transition-colors line-clamp-2 mb-2 leading-tight tracking-tight">
+          <h3 className="font-bold text-ink text-[16px] group-hover:text-m-red transition-colors line-clamp-2 mb-2 leading-tight tracking-tight break-words">
             {product.name}
           </h3>
           <div className="flex items-baseline gap-3 mt-auto pt-2">

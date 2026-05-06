@@ -99,7 +99,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 <span className="text-xs font-bold text-ink ml-1">{product.rating}</span>
               </div>
 
-              <h2 className="text-2xl md:text-3xl font-bold text-ink mb-4 leading-tight tracking-tight">
+              <h2 className="text-2xl md:text-3xl font-bold text-ink mb-4 leading-tight tracking-tight break-words">
                 {product.name}
               </h2>
 
