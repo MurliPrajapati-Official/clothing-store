@@ -43,6 +43,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey);
 // Routes
 import productRoutes from './routes/products';
 import orderRoutes from './routes/orders';
+import reviewRoutes from './routes/reviews';
 
 import { Request, Response } from 'express';
 
@@ -74,6 +75,7 @@ app.get('/api/stats', async (req: Request, res: Response) => {
 
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/reviews', reviewRoutes);
 
 // Start Server
 app.listen(port, () => {

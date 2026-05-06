@@ -3,6 +3,7 @@ import { Facebook, Instagram, Twitter, MapPin, Phone, Mail } from 'lucide-react'
 import { motion } from 'motion/react';
 import { useState, useEffect } from 'react';
 import Skeleton from '../ui/Skeleton';
+import { CATEGORIES } from '../../constants';
 
 const staggerContainer = {
   hidden: { opacity: 0 },
@@ -95,7 +96,7 @@ export default function Footer() {
               <>
                 <h4 className="text-[15px] font-bold mb-6 text-ink tracking-wide">Category</h4>
                 <ul className="space-y-4 text-body-text font-light">
-                  {['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'].map((item) => (
+                  {CATEGORIES.map((item) => (
                     <li key={item}>
                       <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-warning transition-colors block">{item}</Link>
                     </li>
@@ -182,8 +183,17 @@ export default function Footer() {
                     <span className="break-all sm:break-normal">contact@uniformtrendsbywea.com</span>
                   </li>
                 </ul>
-                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated flex items-center justify-center">
-                  <p className="text-muted text-sm font-medium">Pan-India Service & Delivery</p>
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
+                  <iframe 
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3662.6644485542!2d85.3332913!3d23.367912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e0!3m2!1sen!2sin!4v1715010000000!5m2!1sen!2sin" 
+                    width="100%" 
+                    height="100%" 
+                    style={{ border: 0 }} 
+                    allowFullScreen 
+                    loading="lazy" 
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="WALRIE Store Location"
+                  ></iframe>
                 </div>
               </>
             )}

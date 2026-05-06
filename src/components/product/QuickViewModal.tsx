@@ -11,6 +11,27 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
+const parseDescription = (text: string) => {
+  if (!text) return null;
+  return text.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-bold text-ink">{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+};
+
+const splitDescription = (text: string) => {
+  if (!text) return { main: '', sub: '' };
+  const parts = text.split('#description#');
+  if (parts.length >= 3) {
+    const sub = parts[1];
+    const main = (parts[0] + parts.slice(2).join('')).trim();
+    return { main, sub };
+  }
+  return { main: text, sub: '' };
+};
+
 export default function QuickViewModal({ product, onClose }: QuickViewModalProps) {
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
@@ -89,8 +110,8 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                 )}
               </div>
 
-              <p className="text-body-text text-sm leading-relaxed mb-8 line-clamp-3">
-                {product.description}
+              <p className="text-body-text text-sm leading-relaxed mb-8 line-clamp-3 whitespace-pre-line">
+                {parseDescription(splitDescription(product.description).sub || product.description)}
               </p>
 
               {/* Size Selector */}

@@ -98,6 +98,106 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
   }
 });
 
+// UPDATE a product
+router.put('/:id', upload.single('image'), async (req: Request, res: Response) => {
+  try {
+    const {
+      name, slug, price, original_price, description,
+      category, school_id, sizes, gender, grade,
+      in_stock, is_featured, existing_images
+    } = req.body;
+
+    let imageUrls: string[] = existing_images ? JSON.parse(existing_images) : [];
+
+    // 1. Upload new image if present
+    if (req.file) {
+      const file = req.file;
+      const fileName = `${Date.now()}_${file.originalname}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('products')
+        .upload(fileName, file.buffer, {
+          contentType: file.mimetype,
+        });
+
+      if (uploadError) throw uploadError;
+
+      const { data: publicUrlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName);
+
+      if (publicUrlData) {
+         imageUrls = [publicUrlData.publicUrl]; // For now, replace images if a new one is uploaded
+      }
+    }
+
+    // 2. Update product in database
+    const { data: productData, error: dbError } = await supabase
+      .from('products')
+      .update({
+        name, slug, price, original_price, description,
+        category, school_id, 
+        sizes: sizes ? (Array.isArray(sizes) ? sizes : sizes.split(',')) : [],
+        gender, grade, 
+        in_stock: in_stock === 'true' || in_stock === true,
+        is_featured: is_featured === 'true' || is_featured === true,
+        images: imageUrls
+      })
+      .eq('id', req.params.id)
+      .select();
+
+    if (dbError) throw dbError;
+
+    res.json(productData[0]);
+  } catch (error: any) {
+    console.error("Error updating product:", error);
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// GET related products
+router.get('/related/:id', async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+
+    // 1. Get the current product's category
+    const { data: currentProduct, error: fetchError } = await supabase
+      .from('products')
+      .select('category')
+      .eq('id', id)
+      .single();
+
+    if (fetchError) throw fetchError;
+
+    // 2. Find related products in the same category, excluding current product
+    const { data: relatedProducts, error: relatedError } = await supabase
+      .from('products')
+      .select('*')
+      .eq('category', currentProduct.category)
+      .neq('id', id)
+      .order('rating', { ascending: false })
+      .limit(4);
+
+    if (relatedError) throw relatedError;
+
+    // 3. Fallback: If no related products in same category, get top rated products from any category
+    if (relatedProducts.length === 0) {
+      const { data: fallbackProducts, error: fallbackError } = await supabase
+        .from('products')
+        .select('*')
+        .neq('id', id)
+        .order('rating', { ascending: false })
+        .limit(4);
+      
+      if (fallbackError) throw fallbackError;
+      return res.json(fallbackProducts);
+    }
+
+    res.json(relatedProducts);
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 // DELETE a product
 router.delete('/:id', async (req: Request, res: Response) => {
   try {

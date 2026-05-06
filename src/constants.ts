@@ -243,5 +243,7 @@ export const CATEGORIES = [
   'Corporate',
   'Hospital',
   'Hotels',
-  'Factory'
+  'Factory',
+  'CCL/CIL',
+  'Defence'
 ];

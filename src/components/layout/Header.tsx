@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useCartStore } from '../../store/cartStore';
 import { cn } from '../../lib/utils';
 import Skeleton from '../ui/Skeleton';
+import { CATEGORIES } from '../../constants';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,7 +20,7 @@ export default function Header() {
   const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
   const navigate = useNavigate();
 
-  const categories = ['School', 'College', 'Corporate', 'Hospital', 'Hotels', 'Factory'];
+  const categories = CATEGORIES;
 
   useEffect(() => {
     setIsLoading(false);

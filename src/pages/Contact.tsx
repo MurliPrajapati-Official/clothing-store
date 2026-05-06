@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
 import ContactSkeleton from '../components/layout/ContactSkeleton';
+import { CATEGORIES } from '../constants';
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -143,12 +144,9 @@ export default function Contact() {
                   <label className="text-sm font-semibold text-ink">Category of Interest</label>
                   <select required className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors appearance-none">
                     <option value="" disabled selected>Select a category...</option>
-                    <option value="school">School Uniforms</option>
-                    <option value="college">College Wear</option>
-                    <option value="corporate">Corporate Attire</option>
-                    <option value="hospital">Hospital Staff Uniforms</option>
-                    <option value="hotels">Hotels & Hospitality</option>
-                    <option value="factory">Industrial & Factory</option>
+                    {CATEGORIES.map(cat => (
+                      <option key={cat} value={cat.toLowerCase()}>{cat} Uniforms</option>
+                    ))}
                   </select>
                 </div>
 

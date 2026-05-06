@@ -197,18 +197,18 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-20px" }}
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8"
           >
             {/* Category 1: School */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/school_1.png" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">School Uniforms</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">School Uniforms</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Durable, comfortable, and professional attire for the next generation of leaders.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('School')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('School')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -216,13 +216,13 @@ export default function Home() {
             {/* Category 2: College */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/college_1.png" alt="College Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">College Wear</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">College Wear</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Modern varsity jackets and formal attire for higher education excellence.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('College')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('College')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -230,13 +230,13 @@ export default function Home() {
             {/* Category 3: Corporate */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/corporate_1.png" alt="Corporate Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Corporate Attire</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Corporate Attire</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Sharp business suits and professional outfits for modern administrative excellence.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Corporate')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('Corporate')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -244,13 +244,13 @@ export default function Home() {
             {/* Category 4: Hospital */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/hospital_1.png" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Healthcare Heroes</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Healthcare Heroes</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Premium surgical scrubs and lab coats designed for hygiene and comfort.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Hospital')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('Hospital')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -258,13 +258,13 @@ export default function Home() {
             {/* Category 5: Hotels */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/hotel_1.png" alt="Hotel Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Hotels & Hospitality</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Hotels & Hospitality</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Elegant front-desk and culinary uniforms for a superior hospitality experience.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Hotels')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('Hotels')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -272,13 +272,41 @@ export default function Home() {
             {/* Category 6: Factory */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
               <img src="/products/factory_1.png" alt="Factory Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-8">
-                <h3 className="text-2xl font-bold text-white mb-2">Industrial & Factory</h3>
-                <p className="text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Industrial & Factory</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
                   Rugged, heavy-duty safety gear and uniforms for industrial environments.
                 </p>
-                <Link to={`/shop?category=${encodeURIComponent('Factory')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors">
-                  Explore Category <ArrowUpRight size={18} />
+                <Link to={`/shop?category=${encodeURIComponent('Factory')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Category 7: CCL/CIL */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="/products/ccl_cil_1.png" alt="CCL/CIL Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">CCL/CIL Specials</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Specialized heavy-duty uniforms and safety workwear for mining and PSU sectors.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('CCL/CIL')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Category 8: Defence */}
+            <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
+              <img src="/products/defence_1.png" alt="Defence Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
+                <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Defence</h3>
+                <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
+                  Tactical gear and high-performance uniforms for defence and paramilitary forces.
+                </p>
+                <Link to={`/shop?category=${encodeURIComponent('Defence')}`} className="inline-flex items-center gap-2 text-white font-medium hover:text-primary transition-colors text-sm md:text-base">
+                  Explore <ArrowUpRight size={16} />
                 </Link>
               </div>
             </motion.div>
@@ -310,7 +338,7 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-20px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8"
           >
             {featuredProducts.length === 0 ? (
               <>

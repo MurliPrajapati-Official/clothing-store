@@ -10,6 +10,7 @@ import { useWishlistStore } from '../store/wishlistStore';
 import ProductCard from '../components/product/ProductCard';
 import QuickViewModal from '../components/product/QuickViewModal';
 import ProductDetailSkeleton from '../components/product/ProductDetailSkeleton';
+import ProductReviews from '../components/product/ProductReviews';
 import { Product } from '../types';
 
 const fadeUpVariant = {
@@ -25,6 +26,28 @@ const staggerContainer = {
   }
 };
 
+const parseDescription = (text: string) => {
+  if (!text) return null;
+  return text.split(/(\*\*.*?\*\*)/g).map((part, i) => {
+    if (part.startsWith('**') && part.endsWith('**')) {
+      return <strong key={i} className="font-bold text-ink">{part.slice(2, -2)}</strong>;
+    }
+    return part;
+  });
+};
+
+const splitDescription = (text: string) => {
+  if (!text) return { main: '', sub: '' };
+  const parts = text.split('#description#');
+  if (parts.length >= 3) {
+    // Content between first two #description# tags is sub
+    const sub = parts[1];
+    const main = (parts[0] + parts.slice(2).join('')).trim();
+    return { main, sub };
+  }
+  return { main: text, sub: '' };
+};
+
 export default function ProductDetail() {
   const { slug } = useParams();
   
@@ -37,6 +60,7 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -65,6 +89,30 @@ export default function ProductDetail() {
           reviewsCount: data.reviews_count || 0,
           isFeatured: data.is_featured
         });
+
+        // Fetch related products dynamically
+        const relatedRes = await fetch(`${apiUrl}/api/products/related/${data.id}`);
+        if (relatedRes.ok) {
+          const relatedData = await relatedRes.json();
+          setRelatedProducts(relatedData.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            slug: p.slug,
+            price: Number(p.price),
+            originalPrice: p.original_price ? Number(p.original_price) : undefined,
+            description: p.description,
+            category: p.category,
+            schoolId: p.school_id,
+            images: p.images || [],
+            sizes: p.sizes || [],
+            gender: p.gender,
+            grade: p.grade,
+            inStock: p.in_stock,
+            rating: Number(p.rating) || 0,
+            reviewsCount: p.reviews_count || 0,
+            isFeatured: p.is_featured
+          })));
+        }
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -74,6 +122,31 @@ export default function ProductDetail() {
 
     if (slug) fetchProduct();
   }, [slug]);
+
+  const refreshProduct = () => {
+    if (slug) {
+      // Small timeout to allow Supabase to propagate changes if needed
+      setTimeout(() => {
+        const fetchProduct = async () => {
+          try {
+            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const response = await fetch(`${apiUrl}/api/products/${slug}`);
+            if (response.ok) {
+              const data = await response.json();
+              setProduct(prev => prev ? {
+                ...prev,
+                rating: Number(data.rating) || 0,
+                reviewsCount: data.reviews_count || 0,
+              } : null);
+            }
+          } catch (err) {
+            console.error("Failed to refresh product stats", err);
+          }
+        };
+        fetchProduct();
+      }, 500);
+    }
+  };
 
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
@@ -102,8 +175,6 @@ export default function ProductDetail() {
     addItem(product, selectedSize, quantity);
   };
 
-  const relatedProducts = PRODUCTS.filter(p => p.id !== product.id && p.schoolId === product.schoolId).slice(0, 4);
-
   return (
     <div className="pt-32 pb-24 bg-canvas text-body-text min-h-screen">
       <Helmet>
@@ -128,13 +199,13 @@ export default function ProductDetail() {
           </Link>
         </motion.div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">
           {/* Gallery */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-4"
+            className="space-y-4 lg:sticky lg:top-32 self-start"
           >
             <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
               {product.images && product.images.length > 0 ? (
@@ -222,9 +293,16 @@ export default function ProductDetail() {
               )}
             </motion.div>
 
-            <motion.p variants={fadeUpVariant} className="text-body-text text-lg leading-relaxed mb-10 font-light">
-              {product.description}
-            </motion.p>
+            {/* We will render the sub description here if it exists, otherwise the main one */}
+            {splitDescription(product.description).sub ? (
+              <motion.p variants={fadeUpVariant} className="text-body-text text-lg leading-relaxed mb-10 font-light whitespace-pre-line">
+                {parseDescription(splitDescription(product.description).sub)}
+              </motion.p>
+            ) : (
+              <motion.p variants={fadeUpVariant} className="text-body-text text-lg leading-relaxed mb-10 font-light whitespace-pre-line">
+                {parseDescription(product.description)}
+              </motion.p>
+            )}
 
             {/* Size Selector */}
             <motion.div variants={fadeUpVariant} className="mb-10">
@@ -283,6 +361,16 @@ export default function ProductDetail() {
               </motion.button>
             </motion.div>
 
+            {/* Main Description (the part outside #description# tags) */}
+            {splitDescription(product.description).sub && splitDescription(product.description).main && (
+              <motion.div variants={fadeUpVariant} className="mt-4 pt-6 border-t border-hairline-strong">
+                <h3 className="text-sm font-bold text-ink uppercase tracking-widest mb-4">Product Details</h3>
+                <p className="text-body-text text-base leading-relaxed whitespace-pre-line font-light">
+                  {parseDescription(splitDescription(product.description).main)}
+                </p>
+              </motion.div>
+            )}
+
             {/* Trust Badges */}
             <motion.div variants={fadeUpVariant} className="grid grid-cols-3 gap-4 pt-8 border-t border-hairline-strong">
               <div className="flex flex-col items-center text-center gap-3">
@@ -300,6 +388,15 @@ export default function ProductDetail() {
             </motion.div>
           </motion.div>
         </div>
+
+        {/* Product Reviews Section */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <ProductReviews productId={product.id} onReviewAdded={refreshProduct} />
+        </motion.div>
 
         {/* Related Products Section (Static from constant for now) */}
         <motion.section
@@ -320,11 +417,17 @@ export default function ProductDetail() {
             viewport={{ once: true }}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
           >
-            {PRODUCTS.slice(0, 4).map(p => (
-              <motion.div key={p.id} variants={fadeUpVariant}>
-                <ProductCard product={p} onQuickView={setQuickViewProduct} />
-              </motion.div>
-            ))}
+            {relatedProducts.length > 0 ? (
+              relatedProducts.map(p => (
+                <motion.div key={p.id} variants={fadeUpVariant}>
+                  <ProductCard product={p} onQuickView={setQuickViewProduct} />
+                </motion.div>
+              ))
+            ) : (
+              <div className="col-span-full py-12 text-center text-muted font-light italic">
+                No related products found in this category.
+              </div>
+            )}
           </motion.div>
         </motion.section>
       </div>

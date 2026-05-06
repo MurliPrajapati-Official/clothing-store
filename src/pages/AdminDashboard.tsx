@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
 import { Product } from '../types';
 import { formatCurrency, cn } from '../lib/utils';
+import { CATEGORIES } from '../constants';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'stats' | 'add' | 'manage'>('stats');
@@ -13,6 +14,7 @@ export default function AdminDashboard() {
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
   const [stats, setStats] = useState({ totalProducts: 0, totalUsers: 0 });
   const [products, setProducts] = useState<Product[]>([]);
@@ -61,6 +63,17 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleEditProduct = (product: Product) => {
+    setEditingProduct(product);
+    setActiveTab('add');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+    setActiveTab('manage');
+  };
+
   useEffect(() => {
     const checkAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
@@ -88,21 +101,33 @@ export default function AdminDashboard() {
     setSuccessMsg('');
 
     const formData = new FormData(e.currentTarget);
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
     
-    // We are expecting the backend on localhost:5000 during dev
+    if (editingProduct) {
+      // Add existing images if no new image is uploaded
+      formData.append('existing_images', JSON.stringify(editingProduct.images || []));
+    }
+
     try {
-      const response = await fetch('http://localhost:5000/api/products', {
-        method: 'POST',
-        body: formData, // Automatically handles multipart/form-data
+      const url = editingProduct 
+        ? `${apiUrl}/api/products/${editingProduct.id}`
+        : `${apiUrl}/api/products`;
+        
+      const response = await fetch(url, {
+        method: editingProduct ? 'PUT' : 'POST',
+        body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to add product');
+        throw new Error(errorData.error || `Failed to ${editingProduct ? 'update' : 'add'} product`);
       }
 
-      setSuccessMsg('Product added successfully!');
-      (e.target as HTMLFormElement).reset(); // Clear the form
+      setSuccessMsg(`Product ${editingProduct ? 'updated' : 'added'} successfully!`);
+      if (!editingProduct) (e.target as HTMLFormElement).reset();
+      setEditingProduct(null);
+      fetchProducts();
+      fetchStats();
     } catch (err: any) {
       setErrorMsg(err.message);
     } finally {
@@ -143,13 +168,16 @@ export default function AdminDashboard() {
               <Package size={18} /> Manage
             </button>
             <button 
-              onClick={() => setActiveTab('add')}
+              onClick={() => {
+                setEditingProduct(null);
+                setActiveTab('add');
+              }}
               className={cn(
                 "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
                 activeTab === 'add' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <PlusCircle size={18} /> Add New
+              <PlusCircle size={18} /> {editingProduct ? 'Editing' : 'Add New'}
             </button>
           </div>
         </div>
@@ -239,6 +267,9 @@ export default function AdminDashboard() {
                             <Link to={`/product/${product.slug}`} target="_blank" className="p-2 text-muted hover:text-primary transition-colors">
                               <ExternalLink size={18} />
                             </Link>
+                            <button onClick={() => handleEditProduct(product)} className="p-2 text-muted hover:text-primary transition-colors">
+                              <Edit size={18} />
+                            </button>
                             <button onClick={() => handleDeleteProduct(product.id)} className="p-2 text-muted hover:text-m-red transition-colors">
                               <Trash2 size={18} />
                             </button>
@@ -259,64 +290,79 @@ export default function AdminDashboard() {
             className="bg-surface-card p-8 md:p-10 rounded-3xl border border-hairline shadow-sm"
           >
             {/* The existing form logic */}
-            <div className="flex items-center gap-4 mb-8">
-              <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
-                <PlusCircle size={24} />
+            <div className="flex items-center justify-between mb-8">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+                  {editingProduct ? <Edit size={24} /> : <PlusCircle size={24} />}
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-ink">{editingProduct ? 'Edit Product' : 'Add New Product'}</h1>
+                  <p className="text-muted font-light">{editingProduct ? `Currently editing: ${editingProduct.name}` : 'Add new uniforms to your catalog and cloud storage.'}</p>
+                </div>
               </div>
-              <div>
-                <h1 className="text-3xl font-bold text-ink">Add New Product</h1>
-                <p className="text-muted font-light">Add new uniforms to your catalog and cloud storage.</p>
-              </div>
+              {editingProduct && (
+                <button 
+                  onClick={handleCancelEdit}
+                  className="px-6 py-2 bg-surface-elevated text-ink font-bold rounded-xl hover:bg-hairline transition-colors"
+                >
+                  Cancel Edit
+                </button>
+              )}
             </div>
 
             {errorMsg && (
               <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl">
                 {errorMsg}
               </div>
-            )
-            /* ... rest of the form ... */}
+            )}
 
             <form onSubmit={handleSubmit} className="space-y-6">
-              {/* Form fields same as before but inside the Add tab */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Product Name</label>
-                  <input name="name" type="text" required className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. Classic Boys Polo" />
+                  <input name="name" type="text" required defaultValue={editingProduct?.name || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. Classic Boys Polo" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Slug (URL friendly)</label>
-                  <input name="slug" type="text" required className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. classic-boys-polo" />
+                  <input name="slug" type="text" required defaultValue={editingProduct?.slug || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. classic-boys-polo" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Price (INR)</label>
-                  <input name="price" type="number" required className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="650" />
+                  <input name="price" type="number" required defaultValue={editingProduct?.price || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="650" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Category</label>
-                  <select name="category" required className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
-                    <option value="School">School</option>
-                    <option value="College">College</option>
-                    <option value="Corporate">Corporate</option>
-                    <option value="Hospital">Hospital</option>
-                    <option value="Hotels">Hotels</option>
-                    <option value="Factory">Factory</option>
+                  <select name="category" required defaultValue={editingProduct?.category || 'School'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
+                    {CATEGORIES.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
                   </select>
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-ink mb-2">Description</label>
-                <textarea name="description" required rows={4} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors resize-none" placeholder="Detailed product description..."></textarea>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="block text-sm font-bold text-ink">Description</label>
+                  <span className="text-[10px] text-muted uppercase font-bold tracking-widest">Scrollable & Resizable</span>
+                </div>
+                <textarea 
+                  name="description" 
+                  required 
+                  rows={6} 
+                  defaultValue={editingProduct?.description || ''} 
+                  className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors resize-y min-h-[150px] scrollbar-thin scrollbar-thumb-hairline scrollbar-track-transparent" 
+                  placeholder="Detailed product description including material, fit, and care instructions..."
+                ></textarea>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                   <label className="block text-sm font-bold text-ink mb-2">Sizes (Comma separated)</label>
-                  <input name="sizes" type="text" className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="S, M, L, XL" />
+                  <input name="sizes" type="text" defaultValue={editingProduct?.sizes?.join(', ') || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="S, M, L, XL" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Gender</label>
-                  <select name="gender" className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
+                  <select name="gender" defaultValue={editingProduct?.gender || 'unisex'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
                     <option value="unisex">Unisex</option>
                     <option value="boys">Boys</option>
                     <option value="girls">Girls</option>
@@ -325,13 +371,18 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-ink mb-2">Product Image</label>
+                <label className="block text-sm font-bold text-ink mb-2">Product Image {editingProduct && '(Leave blank to keep existing)'}</label>
                 <div className="relative w-full h-32 rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors flex items-center justify-center bg-canvas group cursor-pointer overflow-hidden">
-                  <input type="file" name="image" accept="image/*" required className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
+                  <input type="file" name="image" accept="image/*" required={!editingProduct} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
                   <div className="flex flex-col items-center text-muted group-hover:text-primary transition-colors pointer-events-none">
                     <ImageIcon size={32} className="mb-2" />
-                    <span className="text-sm font-medium">Click to upload image</span>
+                    <span className="text-sm font-medium">{editingProduct ? 'Change image (optional)' : 'Click to upload image'}</span>
                   </div>
+                  {editingProduct && editingProduct.images && editingProduct.images[0] && (
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-20 h-20 rounded-lg border border-hairline overflow-hidden opacity-50">
+                       <img src={editingProduct.images[0]} alt="" className="w-full h-full object-cover" />
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -343,10 +394,10 @@ export default function AdminDashboard() {
                 {isSubmitting ? (
                   <>
                     <Loader2 className="animate-spin" size={20} />
-                    Processing Product...
+                    Processing...
                   </>
                 ) : (
-                  'Save Product to Store'
+                  editingProduct ? 'Update Product Information' : 'Save Product to Store'
                 )}
               </button>
             </form>
