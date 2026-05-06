@@ -34,16 +34,30 @@ export default function Home() {
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   useEffect(() => {
-    setIsLoading(false);
+    const fetchFeatured = async () => {
+      try {
+        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
 
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-    fetch(`${apiUrl}/api/products`)
-      .then(res => res.json())
-      .then(data => {
+        const res = await fetch(`${apiUrl}/api/products`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
         setFeaturedProducts(data.slice(0, 4));
-      })
-      .catch(err => console.error("Failed to load featured products", err));
+      } catch (err) {
+        console.error("Failed to load featured products, using static fallback", err);
+        import('../constants').then(module => {
+          setFeaturedProducts(module.PRODUCTS.slice(0, 4));
+        });
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
+    fetchFeatured();
   }, []);
 
   if (isLoading) {

@@ -102,6 +102,8 @@ export default function Shop() {
 
   const [products, setProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isUsingFallback, setIsUsingFallback] = useState(false);
+  const [fetchError, setFetchError] = useState(false);
 
   useEffect(() => {
     setSearchQuery(searchParams.get('q') || '');
@@ -110,12 +112,20 @@ export default function Shop() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
+        setIsLoading(true);
+        setFetchError(false);
         const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        const response = await fetch(`${apiUrl}/api/products`);
+        
+        // Add a timeout to the fetch so it doesn't hang forever
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+
+        const response = await fetch(`${apiUrl}/api/products`, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
         
-        // Map database snake_case to frontend camelCase
         const mappedProducts: Product[] = data.map((item: any) => ({
           id: item.id,
           name: item.name,
@@ -136,8 +146,15 @@ export default function Shop() {
         }));
         
         setProducts(mappedProducts);
+        setIsUsingFallback(false);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Connection to backend failed, using static fallback:", error);
+        // FALLBACK: Load static products if backend is down
+        import('../constants').then(module => {
+          setProducts(module.PRODUCTS);
+          setIsUsingFallback(true);
+        });
+        setFetchError(true);
       } finally {
         setIsLoading(false);
       }
@@ -435,7 +452,7 @@ export default function Shop() {
       </div>
 
       <div className="container mx-auto px-4">
-        <div className="mb-8 flex items-center justify-between">
+        <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="text-sm text-muted">
             {isLoading ? (
               <Skeleton variant="text" className="w-32 h-4" />
@@ -443,6 +460,13 @@ export default function Shop() {
               <>Showing <span className="text-ink font-bold">{filteredProducts.length}</span> items</>
             )}
           </div>
+          
+          {isUsingFallback && (
+            <div className="bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-lg flex items-center gap-2 text-amber-600 text-xs font-medium">
+              <RefreshCw size={14} className="animate-spin-slow" />
+              <span>Using offline catalog while connecting to live server...</span>
+            </div>
+          )}
         </div>
         <div className="flex-1">
           {isLoading ? (
