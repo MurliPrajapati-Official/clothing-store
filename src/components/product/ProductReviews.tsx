@@ -42,7 +42,11 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
       if (pageNum === 1) setIsLoading(true);
       else setIsLoadingMore(true);
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        apiUrl = 'https://uniformtrends.onrender.com';
+      }
+      
       const res = await fetch(`${apiUrl}/api/reviews/${productId}?page=${pageNum}&limit=5`);
       const data = await res.json();
       
@@ -91,7 +95,11 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
     if (!window.confirm('Are you sure you want to delete your review?')) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        apiUrl = 'https://uniformtrends.onrender.com';
+      }
+      
       const response = await fetch(`${apiUrl}/api/reviews/${reviewId}`, {
         method: 'DELETE',
       });
@@ -125,7 +133,10 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        apiUrl = 'https://uniformtrends.onrender.com';
+      }
       
       const response = await fetch(`${apiUrl}/api/reviews`, {
         method: 'POST',

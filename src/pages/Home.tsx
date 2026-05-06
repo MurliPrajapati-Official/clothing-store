@@ -36,7 +36,12 @@ export default function Home() {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        
+        // AUTO-DETECT PRODUCTION
+        if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+          apiUrl = 'https://uniformtrends.onrender.com';
+        }
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
