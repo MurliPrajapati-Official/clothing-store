@@ -48,10 +48,7 @@ export default function Home() {
         const data = await res.json();
         setFeaturedProducts(data.slice(0, 4));
       } catch (err) {
-        console.error("Failed to load featured products, using static fallback", err);
-        import('../constants').then(module => {
-          setFeaturedProducts(module.PRODUCTS.slice(0, 4));
-        });
+        console.error("Failed to load featured products:", err);
       } finally {
         setIsLoading(false);
       }

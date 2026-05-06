@@ -23,10 +23,26 @@ const limiter = rateLimit({
 // Apply rate limiter to all requests
 app.use(limiter);
 
-// Configure CORS - Only allow your frontend domain to talk to this API
-const allowedOrigin = process.env.FRONTEND_URL || 'http://localhost:3000';
+// Configure CORS - Allow both local development and live production
+const allowedOrigins = [
+  process.env.FRONTEND_URL, 
+  'http://localhost:3000', 
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'https://uniformtrends.pages.dev'
+].filter(Boolean) as string[];
+
 app.use(cors({
-  origin: allowedOrigin,
+  origin: (origin, callback) => {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));

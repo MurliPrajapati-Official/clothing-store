@@ -148,13 +148,9 @@ export default function Shop() {
         setProducts(mappedProducts);
         setIsUsingFallback(false);
       } catch (error) {
-        console.error("Connection to backend failed, using static fallback:", error);
-        // FALLBACK: Load static products if backend is down
-        import('../constants').then(module => {
-          setProducts(module.PRODUCTS);
-          setIsUsingFallback(true);
-        });
+        console.error("Connection to backend failed:", error);
         setFetchError(true);
+        setProducts([]); // Ensure products is empty on error
       } finally {
         setIsLoading(false);
       }
@@ -460,13 +456,6 @@ export default function Shop() {
               <>Showing <span className="text-ink font-bold">{filteredProducts.length}</span> items</>
             )}
           </div>
-          
-          {isUsingFallback && (
-            <div className="bg-amber-500/10 border border-amber-500/20 px-4 py-2 rounded-lg flex items-center gap-2 text-amber-600 text-xs font-medium">
-              <RefreshCw size={14} className="animate-spin-slow" />
-              <span>Using offline catalog while connecting to live server...</span>
-            </div>
-          )}
         </div>
         <div className="flex-1">
           {isLoading ? (
@@ -529,18 +518,33 @@ export default function Shop() {
               className="py-32 px-12 text-center bg-surface-card rounded-3xl shadow-xl border border-hairline max-w-2xl mx-auto my-12"
             >
               <div className="w-24 h-24 bg-canvas rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                <Search className="text-muted" size={40} />
+                {fetchError ? (
+                  <RefreshCw className="text-m-red animate-spin-slow" size={40} />
+                ) : (
+                  <Search className="text-muted" size={40} />
+                )}
               </div>
-              <h3 className="text-3xl font-bold text-ink mb-4">No Products Found</h3>
-              <p className="text-lg text-muted mb-10 max-w-md mx-auto">We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters.</p>
-              <div className="flex justify-center">
+              <h3 className="text-3xl font-bold text-ink mb-4">
+                {fetchError ? 'Server Issue' : 'No Products Found'}
+              </h3>
+              <p className="text-lg text-muted mb-10 max-w-md mx-auto">
+                {fetchError 
+                  ? 'Server issue ongoing, please try again later. We are working to restore the connection.' 
+                  : "We couldn't find any premium uniforms matching your current filter selection. Try adjusting your search or clearing the filters."}
+              </p>
+              <div className="flex justify-center gap-4">
                 <button 
-                  onClick={clearFilters} 
-                  className="btn-primary px-10 py-4 rounded-xl flex items-center gap-2 shadow-[0_10px_30px_rgba(0,0,0,0.1)] hover:scale-105 transition-transform"
+                  onClick={() => window.location.reload()} 
+                  className="btn-primary px-10 py-4 rounded-xl flex items-center gap-2"
                 >
                   <RefreshCw size={18} />
-                  Clear All Filters
+                  Retry Connection
                 </button>
+                {!fetchError && (
+                  <button onClick={clearFilters} className="text-muted font-bold hover:text-ink px-4">
+                    Clear Filters
+                  </button>
+                )}
               </div>
             </motion.div>
           )}
