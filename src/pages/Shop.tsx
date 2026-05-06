@@ -114,13 +114,21 @@ export default function Shop() {
       try {
         setIsLoading(true);
         setFetchError(false);
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        
+        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        // Clean URL: Remove trailing slash if present
+        if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
+        
+        console.log("DEBUG: Connecting to Backend at:", `${apiUrl}/api/products`);
         
         // Add a timeout to the fetch so it doesn't hang forever
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // 8 second timeout
+        const timeoutId = setTimeout(() => controller.abort(), 12000); // 12 second timeout for Render wake-up
 
-        const response = await fetch(`${apiUrl}/api/products`, { signal: controller.signal });
+        const response = await fetch(`${apiUrl}/api/products`, { 
+          signal: controller.signal,
+          headers: { 'Accept': 'application/json' }
+        });
         clearTimeout(timeoutId);
 
         if (!response.ok) throw new Error('Failed to fetch products');

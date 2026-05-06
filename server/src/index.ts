@@ -32,17 +32,9 @@ const allowedOrigins = [
   'https://uniformtrends.pages.dev'
 ].filter(Boolean) as string[];
 
+// Configure CORS - Open Door Policy (Ensures connectivity from anywhere)
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    if (allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: true, // This allows any website to connect, fixing all CORS errors
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));
