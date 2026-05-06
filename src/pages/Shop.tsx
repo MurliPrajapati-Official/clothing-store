@@ -1,7 +1,7 @@
 import { useState, useEffect, ReactNode } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useSearchParams } from 'react-router-dom';
-import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, List } from 'lucide-react';
+import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, List, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import ProductCard from '../components/product/ProductCard';
 import ProductSkeleton from '../components/product/ProductSkeleton';
