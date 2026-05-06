@@ -50,6 +50,11 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Root route
+app.get('/', (req: Request, res: Response) => {
+  res.send('<h1>Uniform Trends API is Running</h1><p>The server is connected and ready for requests.</p>');
+});
+
 // Supabase Client Initialization
 // NOTE: These should be added to a .env file later
 const supabaseUrl = process.env.SUPABASE_URL || '';
