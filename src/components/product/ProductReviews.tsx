@@ -111,7 +111,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
       if (onReviewAdded) onReviewAdded();
     } catch (err) {
       console.error("Error deleting review", err);
-      alert('Failed to delete review');
+      alert('Unable to delete review at this time. Please try again later.');
     }
   };
 
@@ -162,7 +162,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
         setShowForm(false);
       }, 3000);
     } catch (err: any) {
-      setError(err.message);
+      setError('Unable to submit your review. Please check your connection and try again.');
     } finally {
       setIsSubmitting(false);
     }

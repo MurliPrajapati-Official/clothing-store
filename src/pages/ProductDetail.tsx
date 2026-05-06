@@ -53,7 +53,6 @@ export default function ProductDetail() {
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
@@ -66,7 +65,14 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        
+        // AUTO-DETECT PRODUCTION
+        if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+          apiUrl = 'https://uniformtrends.onrender.com';
+        }
+        if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
+
         const response = await fetch(`${apiUrl}/api/products/${slug}`);
         if (!response.ok) throw new Error('Product not found');
         const data = await response.json();
@@ -114,7 +120,7 @@ export default function ProductDetail() {
           })));
         }
       } catch (err: any) {
-        setError(err.message);
+        console.error("Failed to load product", err);
       } finally {
         setIsLoading(false);
       }
@@ -155,11 +161,16 @@ export default function ProductDetail() {
     return <ProductDetailSkeleton />;
   }
 
-  if (error || !product) {
+  if (!product) {
     return (
-      <div className="pt-32 text-center font-bold text-3xl text-ink bg-canvas min-h-screen">
-        {error || 'Product Not Found'}
-        <Link to="/shop" className="block text-lg text-primary mt-4 hover:underline">Return to Shop</Link>
+      <div className="pt-32 pb-20 text-center bg-canvas min-h-screen">
+        <div className="container-custom">
+          <div className="max-w-2xl mx-auto py-20 bg-surface-card rounded-3xl border border-hairline shadow-xl">
+            <h1 className="text-4xl font-bold text-ink mb-6">Product Not Found</h1>
+            <p className="text-muted mb-10 text-lg">We couldn't find the product you're looking for. It may have been removed or the link is incorrect.</p>
+            <Link to="/shop" className="btn-primary inline-flex px-10">Return to Shop</Link>
+          </div>
+        </div>
       </div>
     );
   }
