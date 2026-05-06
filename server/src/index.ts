@@ -23,7 +23,7 @@ const limiter = rateLimit({
 // Apply rate limiter to all requests
 app.use(limiter);
 
-// Configure CORS - Allow both local development and live production
+// Configure CORS - Restricted to authorized domains only
 const allowedOrigins = [
   process.env.FRONTEND_URL, 
   'http://localhost:3000', 
@@ -32,9 +32,14 @@ const allowedOrigins = [
   'https://uniformtrends.pages.dev'
 ].filter(Boolean) as string[];
 
-// Configure CORS - Open Door Policy (Ensures connectivity from anywhere)
 app.use(cors({
-  origin: true, // This allows any website to connect, fixing all CORS errors
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+      callback(null, true);
+    } else {
+      callback(new Error('Unauthorized by Security Policy (CORS)'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'DELETE'],
   credentials: true
 }));

@@ -117,19 +117,15 @@ export default function Shop() {
         
         let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         
-        // AUTO-DETECT PRODUCTION: If running on the live site, force the correct backend URL
+        // Use production URL if running on the live domain
         if (window.location.hostname.includes('uniformtrends.pages.dev')) {
           apiUrl = 'https://uniformtrends.onrender.com';
         }
         
-        // Clean URL: Remove trailing slash if present
         if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
         
-        console.log("DEBUG: Connecting to Backend at:", `${apiUrl}/api/products`);
-        
-        // Add a timeout to the fetch so it doesn't hang forever
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 12000); // 12 second timeout for Render wake-up
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
 
         const response = await fetch(`${apiUrl}/api/products`, { 
           signal: controller.signal,
