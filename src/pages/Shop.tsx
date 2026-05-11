@@ -119,7 +119,7 @@ export default function Shop() {
         let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
         // Use production URL if running on the live domain
-        if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        if (window.location.hostname.includes('uniformtrends.in')) {
           apiUrl = 'https://uniformtrends.onrender.com';
         }
 
@@ -242,7 +242,7 @@ export default function Shop() {
       <Helmet>
         <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends India` : 'Shop All Uniforms | Uniform Trends India'}</title>
         <meta name="description" content="Browse Uniform Trends's premium selection of specialized school, hospital, and corporate uniforms across India. Bulk orders and custom tailoring available." />
-        <link rel="canonical" href="https://uniformtrends.pages.dev/shop" />
+        <link rel="canonical" href="https://uniformtrends.in/shop" />
       </Helmet>
 
       {/* Hero / Header Section */}

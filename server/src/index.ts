@@ -29,7 +29,7 @@ const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://uniformtrends.pages.dev'
+  'https://uniformtrends.in'
 ].filter(Boolean) as string[];
 
 app.use(cors({

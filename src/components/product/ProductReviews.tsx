@@ -43,7 +43,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
       else setIsLoadingMore(true);
 
       let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+      if (window.location.hostname.includes('uniformtrends.in')) {
         apiUrl = 'https://uniformtrends.onrender.com';
       }
       
@@ -96,7 +96,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
 
     try {
       let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+      if (window.location.hostname.includes('uniformtrends.in')) {
         apiUrl = 'https://uniformtrends.onrender.com';
       }
       
@@ -134,7 +134,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
     try {
       const { data: { session } } = await supabase.auth.getSession();
       let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+      if (window.location.hostname.includes('uniformtrends.in')) {
         apiUrl = 'https://uniformtrends.onrender.com';
       }
       

@@ -6,7 +6,7 @@ export default function SizeGuide() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>Size Guide | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.pages.dev/size-guide" />
+        <link rel="canonical" href="https://uniformtrends.in/size-guide" />
       </Helmet>
       <div className="container mx-auto px-4 max-w-4xl">
         <motion.div 

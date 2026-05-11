@@ -6,7 +6,7 @@ export default function ReturnPolicy() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>Return Policy | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.pages.dev/return-policy" />
+        <link rel="canonical" href="https://uniformtrends.in/return-policy" />
       </Helmet>
       <div className="container-custom max-w-4xl">
         <motion.div

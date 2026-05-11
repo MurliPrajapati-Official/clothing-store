@@ -112,7 +112,7 @@ export default function Account() {
         <Helmet>
           <title>Sign In & Register | Uniform trends</title>
           <meta name="description" content="Log in to your account or create a new one to track orders and manage profile." />
-          <link rel="canonical" href="https://uniformtrends.pages.dev/account" />
+          <link rel="canonical" href="https://uniformtrends.in/account" />
         </Helmet>
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -193,7 +193,7 @@ export default function Account() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>My Account | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.pages.dev/account" />
+        <link rel="canonical" href="https://uniformtrends.in/account" />
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
          

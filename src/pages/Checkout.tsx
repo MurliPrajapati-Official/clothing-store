@@ -65,7 +65,7 @@ export default function Checkout() {
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
          <Helmet>
            <title>Order Confirmed | Uniform trends</title>
-           <link rel="canonical" href="https://uniformtrends.pages.dev/checkout" />
+           <link rel="canonical" href="https://uniformtrends.in/checkout" />
          </Helmet>
          <motion.div 
            initial={{ scale: 0.8, opacity: 0, y: 40 }}
@@ -91,7 +91,7 @@ export default function Checkout() {
       <div className="pt-32 pb-24 text-center min-h-[70vh] flex flex-col items-center justify-center">
          <Helmet>
            <title>Checkout | Uniform trends</title>
-           <link rel="canonical" href="https://uniformtrends.pages.dev/checkout" />
+           <link rel="canonical" href="https://uniformtrends.in/checkout" />
          </Helmet>
          <motion.h1 
            initial={{ opacity: 0, y: 20 }}
@@ -115,7 +115,7 @@ export default function Checkout() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>Secure Checkout | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.pages.dev/checkout" />
+        <link rel="canonical" href="https://uniformtrends.in/checkout" />
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
         

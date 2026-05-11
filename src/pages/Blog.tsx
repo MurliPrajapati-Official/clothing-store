@@ -49,7 +49,7 @@ export default function Blog() {
       <Helmet>
         <title>Uniform Trends Journal | Uniform Insights in India</title>
         <meta name="description" content="Industry insights, news, and tips from Uniform Trends (By WEA) - the national experts in premium uniforms." />
-        <link rel="canonical" href="https://uniformtrends.pages.dev/blog" />
+        <link rel="canonical" href="https://uniformtrends.in/blog" />
       </Helmet>
 
       <div className="container mx-auto px-4">

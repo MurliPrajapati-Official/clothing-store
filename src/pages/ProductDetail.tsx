@@ -68,7 +68,7 @@ export default function ProductDetail() {
         let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         
         // AUTO-DETECT PRODUCTION
-        if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        if (window.location.hostname.includes('uniformtrends.in')) {
           apiUrl = 'https://uniformtrends.onrender.com';
         }
         if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
@@ -191,7 +191,7 @@ export default function ProductDetail() {
       <Helmet>
         <title>{product.name} | Uniform trends</title>
         <meta name="description" content={product.description} />
-        <link rel="canonical" href={`https://uniformtrends.pages.dev/product/${product.slug}`} />
+        <link rel="canonical" href={`https://uniformtrends.in/product/${product.slug}`} />
       </Helmet>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}

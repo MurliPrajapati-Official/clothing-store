@@ -22,7 +22,7 @@ export default function TrackOrder() {
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
         <title>Track Order | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.pages.dev/track-order" />
+        <link rel="canonical" href="https://uniformtrends.in/track-order" />
       </Helmet>
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div 

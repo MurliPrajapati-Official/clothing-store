@@ -39,7 +39,7 @@ export default function Home() {
         let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         
         // AUTO-DETECT PRODUCTION
-        if (window.location.hostname.includes('uniformtrends.pages.dev')) {
+        if (window.location.hostname.includes('uniformtrends.in')) {
           apiUrl = 'https://uniformtrends.onrender.com';
         }
         
@@ -71,7 +71,7 @@ export default function Home() {
       <Helmet>
         <title>Best School & Corporate Uniforms in India | Uniform Trends</title>
         <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices across India. Experience the perfect fit today." />
-        <link rel="canonical" href="https://uniformtrends.pages.dev/" />
+        <link rel="canonical" href="https://uniformtrends.in/" />
       </Helmet>
 
       {/* Cinematic Hero Section */}
