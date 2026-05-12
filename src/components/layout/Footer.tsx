@@ -63,11 +63,11 @@ export default function Footer() {
                     className="h-12 w-auto object-contain" 
                   />
                   <span className="font-black text-2xl tracking-tight text-ink">
-                    Uniform Trends
+                    Uniform Trends by WEA
                   </span>
                 </Link>
                 <p className="text-body-text mb-8 leading-relaxed font-light text-[15px]">
-                  Uniform Trends is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
+                  Uniform Trends by WEA is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
                 </p>
                 <div className="flex gap-4">
                   <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
@@ -183,17 +183,12 @@ export default function Footer() {
                     <span className="break-all sm:break-normal">contact@uniformtrendsbywea.com</span>
                   </li>
                 </ul>
-                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
-                  <iframe 
-                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3662.6644485542!2d85.3332913!3d23.367912!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e0!3m2!1sen!2sin!4v1715010000000!5m2!1sen!2sin" 
-                    width="100%" 
-                    height="100%" 
-                    style={{ border: 0 }} 
-                    allowFullScreen 
-                    loading="lazy" 
-                    referrerPolicy="no-referrer-when-downgrade"
-                    title="WALRIE Store Location"
-                  ></iframe>
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated flex items-center justify-center p-6 text-center">
+                  <div className="flex flex-col items-center gap-3">
+                    <MapPin className="text-warning" size={32} />
+                    <p className="text-sm font-medium text-ink">Supplying Across India</p>
+                    <p className="text-[11px] text-muted leading-tight">National manufacturing & delivery network for all institutions.</p>
+                  </div>
                 </div>
               </>
             )}

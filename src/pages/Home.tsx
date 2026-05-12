@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Best School & Corporate Uniforms in India | Uniform Trends</title>
+        <title>Best School & Corporate Uniforms in India | Uniform Trends by WEA</title>
         <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices across India. Experience the perfect fit today." />
         <link rel="canonical" href="https://uniformtrends.in/" />
       </Helmet>
@@ -135,7 +135,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-20px" }}
               className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
             >
-              Welcome to Uniform Trends
+              Welcome to Uniform Trends by WEA
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -144,7 +144,7 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Uniform Trends (By WEA), we believe that the right attire fosters unity, professionalism, and confidence.
+              At Uniform Trends by WEA, we believe that the right attire fosters unity, professionalism, and confidence.
               As a leading national uniform manufacturer, we specialize in high-performance garments for schools, 
               hospitals, and industrial sectors across India. Whether you are equipping the next generation of students 
               or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with 

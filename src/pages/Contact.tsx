@@ -31,7 +31,7 @@ export default function Contact() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Contact Uniform Trends | Custom Bulk Uniform Orders India</title>
+        <title>Contact Uniform Trends by WEA | Custom Bulk Uniform Orders India</title>
         <meta name="description" content="Get in touch with Uniform Trends for bulk orders of school, hospital, and corporate uniforms across India. High-quality custom tailoring By WEA." />
         <link rel="canonical" href="https://uniformtrends.in/contact" />
       </Helmet>
@@ -42,7 +42,7 @@ export default function Contact() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-16"
         >
-          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Uniform Trends</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight">Get in Touch with Uniform Trends by WEA</h1>
           <p className="text-lg text-muted max-w-2xl mx-auto font-light">
             Ready to upgrade your institution's wardrobe? Contact us today to discuss bulk orders, custom designs, and fabric swatches. Our team is ready to assist you.
           </p>
@@ -91,7 +91,7 @@ export default function Contact() {
                   <h3 className="text-lg font-bold text-ink mb-1">Office</h3>
                   <p className="text-muted font-light mb-2">Come say hello at our HQ.</p>
                   <address className="not-italic text-ink font-medium">
-                    Uniform Trends (By WEA)<br />
+                    Uniform Trends by WEA<br />
                     India
                   </address>
                 </div>

@@ -70,7 +70,7 @@ export default function Header() {
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
                 <span className="font-black text-2xl sm:text-3xl tracking-tighter text-ink hidden sm:block">
-                  Uniform Trends
+                  Uniform Trends by WEA
                 </span>
               </Link>
             )}
@@ -315,7 +315,7 @@ export default function Header() {
                     className="h-12 w-auto object-contain" 
                   />
                   <span className="font-black text-2xl tracking-tight text-ink">
-                    Uniform Trends
+                    Uniform Trends by WEA
                   </span>
                 </Link>
                 <button 

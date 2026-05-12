@@ -18,7 +18,7 @@ export default function About() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>About Uniform Trends | Premium Uniforms in India</title>
+        <title>About Uniform Trends by WEA | Premium Uniforms in India</title>
         <meta name="description" content="Uniform Trends By WEA is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms across India." />
         <link rel="canonical" href="https://uniformtrends.in/about" />
       </Helmet>
@@ -30,9 +30,9 @@ export default function About() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto text-center mb-20"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Uniform Trends</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">About Uniform Trends by WEA</h1>
           <p className="text-xl text-muted font-light leading-relaxed">
-            Uniform Trends is a specialized uniform manufacturer in India (By WEA), providing high-quality attire for various sectors. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring, we provide top-tier uniform solutions.
+            Uniform Trends by WEA is a specialized uniform manufacturer in India, providing high-quality attire for various sectors. We understand that a uniform is more than just clothing; it is a representation of your institution's identity and values. With years of expertise in garment manufacturing and tailoring, we provide top-tier uniform solutions.
           </p>
         </motion.div>
 
