@@ -189,9 +189,35 @@ export default function ProductDetail() {
   return (
     <div className="pt-32 pb-24 bg-canvas text-body-text min-h-screen">
       <Helmet>
-        <title>{product.name} | Uniform trends</title>
-        <meta name="description" content={product.description} />
+        <title>{product.name} | Uniform Trends by WEA</title>
+        <meta name="description" content={`Buy ${product.name} at Uniform Trends. High-quality ${product.category} uniform, durable fabric, and perfect fit. Available in various sizes.`} />
         <link rel="canonical" href={`https://uniformtrends.in/product/${product.slug}`} />
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org/",
+            "@type": "Product",
+            "name": product.name,
+            "image": product.images,
+            "description": product.description,
+            "brand": {
+              "@type": "Brand",
+              "name": "Uniform Trends by WEA"
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://uniformtrends.in/product/${product.slug}`,
+              "priceCurrency": "INR",
+              "price": product.price,
+              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "itemCondition": "https://schema.org/NewCondition"
+            },
+            "aggregateRating": product.reviewsCount > 0 ? {
+              "@type": "AggregateRating",
+              "ratingValue": product.rating,
+              "reviewCount": product.reviewsCount
+            } : undefined
+          })}
+        </script>
       </Helmet>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}

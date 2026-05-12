@@ -97,6 +97,26 @@ export default function About() {
           </div>
         </motion.div>
 
+        {/* Serving Nationwide Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-4xl mx-auto mb-24 text-center"
+        >
+          <h2 className="text-3xl font-bold text-ink mb-6 tracking-tight">Serving Nationwide</h2>
+          <p className="text-lg text-muted font-light leading-relaxed mb-10">
+            While we are headquartered centrally, we supply premium school and corporate uniforms to major cities across India. Whether you are looking for <strong>school uniforms in Mumbai</strong>, <strong>corporate shirts in Delhi</strong>, or <strong>hospital scrubs in Bangalore</strong>, our logistics network ensures timely delivery of bulk orders.
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            {['Mumbai', 'Delhi', 'Bangalore', 'Pune', 'Kolkata', 'Chennai', 'Hyderabad'].map(city => (
+              <span key={city} className="px-6 py-2 rounded-full bg-surface-card border border-hairline text-ink text-sm font-medium">
+                Uniforms in {city}
+              </span>
+            ))}
+          </div>
+        </motion.div>
+
         {/* Image Section */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -106,7 +126,7 @@ export default function About() {
         >
           <img
             src="https://picsum.photos/seed/about/1920/800"
-            alt="Manufacturing Facility"
+            alt="Premium Uniform Manufacturing Facility India"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
           />

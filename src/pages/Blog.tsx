@@ -47,8 +47,8 @@ export default function Blog() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
-        <title>Uniform Trends Journal | Uniform Insights in India</title>
-        <meta name="description" content="Industry insights, news, and tips from Uniform Trends (By WEA) - the national experts in premium uniforms." />
+        <title>Uniform Industry Insights & Trends | Uniform Trends by WEA</title>
+        <meta name="description" content="Read our blog for the latest trends in school uniforms, healthcare scrub fabrics, and corporate wear tips. Expert insights by Uniform Trends by WEA." />
         <link rel="canonical" href="https://uniformtrends.in/blog" />
       </Helmet>
 

@@ -70,7 +70,8 @@ export default function Home() {
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
         <title>Best School & Corporate Uniforms in India | Uniform Trends by WEA</title>
-        <meta name="description" content="Uniform Trends By WEA provides premium, durable, and custom-tailored uniforms for schools, hospitals, and corporate offices across India. Experience the perfect fit today." />
+        <meta name="description" content="Uniform Trends by WEA is India's top manufacturer for school uniforms in Mumbai, corporate wear in Delhi, and hospital scrubs. Premium quality, custom tailoring, and bulk supply." />
+        <meta name="keywords" content="school uniforms India, best school uniforms Mumbai, corporate uniform manufacturers, hospital scrubs wholesale, uniform supplier Delhi, custom uniforms Pune, Uniform Trends by WEA" />
         <link rel="canonical" href="https://uniformtrends.in/" />
       </Helmet>
 
