@@ -46,6 +46,7 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
               alt={product.name}
               className="h-full w-full object-cover transition-transform duration-[800ms] group-hover:scale-110"
               referrerPolicy="no-referrer"
+              loading="lazy"
             />
           ) : (
             <div className="h-full w-full flex items-center justify-center bg-surface-card transition-transform duration-[800ms] group-hover:scale-110 border-b border-hairline">

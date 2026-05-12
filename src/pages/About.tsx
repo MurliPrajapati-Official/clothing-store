@@ -129,6 +129,7 @@ export default function About() {
             alt="Premium Uniform Manufacturing Facility India"
             className="w-full h-full object-cover"
             referrerPolicy="no-referrer"
+            loading="lazy"
           />
           <div className="absolute inset-0 bg-black/40" />
         </motion.div>

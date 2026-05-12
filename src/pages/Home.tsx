@@ -218,7 +218,7 @@ export default function Home() {
           >
             {/* Category 1: School */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_school_1.png" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_school_1.png" alt="School Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">School Uniforms</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -232,7 +232,7 @@ export default function Home() {
 
             {/* Category 2: College */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_college_1.png" alt="College Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_college_1.png" alt="College Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">College Wear</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -246,7 +246,7 @@ export default function Home() {
 
             {/* Category 3: Corporate */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_corporate_1.png" alt="Corporate Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_corporate_1.png" alt="Corporate Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Corporate Attire</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -260,7 +260,7 @@ export default function Home() {
 
             {/* Category 4: Hospital */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_hospital_1.png" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_hospital_1.png" alt="Hospital Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Healthcare Heroes</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -274,7 +274,7 @@ export default function Home() {
 
             {/* Category 5: Hotels */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_hotel_1.png" alt="Hotel Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_hotel_1.png" alt="Hotel Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Hotels & Hospitality</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -288,7 +288,7 @@ export default function Home() {
 
             {/* Category 6: Factory */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_factory_1.png" alt="Factory Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_factory_1.png" alt="Factory Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Industrial & Factory</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -302,7 +302,7 @@ export default function Home() {
 
             {/* Category 7: CCL/CIL */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_ccl_cil_1.png" alt="CCL/CIL Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_ccl_cil_1.png" alt="CCL/CIL Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">CCL/CIL Specials</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">
@@ -316,7 +316,7 @@ export default function Home() {
 
             {/* Category 8: Defence */}
             <motion.div variants={fadeUpVariant} className="group relative rounded-3xl overflow-hidden bg-surface-card aspect-[4/5] shadow-[0_8px_30px_rgba(0,0,0,0.05)] border border-hairline">
-              <img src="/products/gen_defence_1.png" alt="Defence Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+              <img src="/products/gen_defence_1.png" alt="Defence Uniforms" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" loading="lazy" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-4 md:p-8">
                 <h3 className="text-lg md:text-2xl font-bold text-white mb-2">Defence</h3>
                 <p className="hidden md:block text-sm text-gray-300 font-light mb-6 opacity-0 translate-y-4 transition-all duration-500 group-hover:opacity-100 group-hover:translate-y-0">

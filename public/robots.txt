@@ -1,4 +1,7 @@
 User-agent: *
 Allow: /
+Allow: /images/
+Allow: /products/
+Allow: /assets/
 
 Sitemap: https://uniformtrends.in/sitemap.xml
