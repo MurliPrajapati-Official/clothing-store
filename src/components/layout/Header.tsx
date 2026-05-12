@@ -65,7 +65,7 @@ export default function Header() {
             ) : (
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
-                  src="/images/logo.webp" 
+                  src="/images/logo.png" 
                   alt="Uniform Trends Uniforms - Best School & Corporate Uniforms in India" 
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
@@ -304,12 +304,17 @@ export default function Header() {
               animate={{ x: 0 }}
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              data-lenis-prevent
+                      data-lenis-prevent
               className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-surface-card border-r border-hairline z-[70] shadow-2xl flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-hairline"
             >
               <div className="flex items-center justify-between p-8 mb-4">
-                <Link to="/" className="flex items-center gap-2">
-                  <span className="font-extrabold text-xl tracking-tight text-ink">
+                <Link to="/" className="flex items-center gap-3 mb-6">
+                  <img 
+                    src="/images/logo.png" 
+                    alt="Uniform Trends Uniforms - Premium Manufacturer in India" 
+                    className="h-12 w-auto object-contain" 
+                  />
+                  <span className="font-black text-2xl tracking-tight text-ink">
                     Uniform Trends
                   </span>
                 </Link>
