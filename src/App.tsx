@@ -15,6 +15,8 @@ import Account from './pages/Account';
 import About from './pages/About';
 import Blog from './pages/Blog';
 import Contact from './pages/Contact';
+import Success from './pages/Success';
+import Collections from './pages/Collections';
 import AdminDashboard from './pages/AdminDashboard';
 import SizeGuide from './pages/SizeGuide';
 import TrackOrder from './pages/TrackOrder';
@@ -95,6 +97,8 @@ export default function App() {
             <Route path="/wishlist" element={<Placeholder name="My Wishlist" />} />
             <Route path="/account" element={<Account />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/success" element={<Success />} />
+            <Route path="/collections" element={<Collections />} />
             <Route path="*" element={<Placeholder name="404 - Not Found" />} />
           </Routes>
         </main>

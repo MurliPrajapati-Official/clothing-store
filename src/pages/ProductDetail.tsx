@@ -224,17 +224,15 @@ export default function ProductDetail() {
         <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="mb-12"
+          className="mb-12 flex items-center gap-3 text-sm font-medium"
         >
-          <Link 
-            to="/shop" 
-            className="inline-flex items-center gap-2 text-muted hover:text-primary transition-colors font-medium group"
-          >
-            <div className="w-10 h-10 rounded-full bg-surface-card border border-hairline flex items-center justify-center group-hover:border-primary transition-colors">
-              <ArrowLeft size={18} />
-            </div>
-            <span>Back to Shop</span>
-          </Link>
+          <Link to="/" className="text-muted hover:text-primary transition-colors">Home</Link>
+          <ChevronRight size={14} className="text-muted/40" />
+          <Link to="/shop" className="text-muted hover:text-primary transition-colors">Shop</Link>
+          <ChevronRight size={14} className="text-muted/40" />
+          <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="text-muted hover:text-primary transition-colors">{product.category}</Link>
+          <ChevronRight size={14} className="text-muted/40" />
+          <span className="text-ink truncate max-w-[150px] sm:max-w-none">{product.name}</span>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-start">

@@ -47,7 +47,7 @@ export default function Checkout() {
       });
 
       if (!response.ok) throw new Error('Checkout failed');
-      
+
       const result = await response.json();
       setOrderId(result.orderId);
       clearCart();
@@ -63,25 +63,25 @@ export default function Checkout() {
   if (orderComplete) {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
-         <Helmet>
-           <title>Order Confirmed | Uniform trends</title>
-           <link rel="canonical" href="https://uniformtrends.in/checkout" />
-         </Helmet>
-         <motion.div 
-           initial={{ scale: 0.8, opacity: 0, y: 40 }}
-           animate={{ scale: 1, opacity: 1, y: 0 }}
-           transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-           className="bg-surface-card p-12 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-hairline max-w-lg text-center"
-         >
-            <div className="w-20 h-20 bg-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
-               <CheckCircle2 size={40} />
-            </div>
-            <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
-            <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0,8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year By WEA.</p>
-            <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-               Return Home
-            </Link>
-         </motion.div>
+        <Helmet>
+          <title>Order Confirmed | Uniform trends</title>
+          <link rel="canonical" href="https://uniformtrends.in/checkout" />
+        </Helmet>
+        <motion.div
+          initial={{ scale: 0.8, opacity: 0, y: 40 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+          className="bg-surface-card p-12 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-hairline max-w-lg text-center"
+        >
+          <div className="w-20 h-20 bg-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
+            <CheckCircle2 size={40} />
+          </div>
+          <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
+          <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0, 8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year By WEA.</p>
+          <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+            Return Home
+          </Link>
+        </motion.div>
       </div>
     );
   }
@@ -89,24 +89,24 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="pt-32 pb-24 text-center min-h-[70vh] flex flex-col items-center justify-center">
-         <Helmet>
-           <title>Checkout | Uniform trends</title>
-           <link rel="canonical" href="https://uniformtrends.in/checkout" />
-         </Helmet>
-         <motion.h1 
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           className="text-3xl font-bold text-ink mb-4"
-         >
-           Your cart is empty
-         </motion.h1>
-         <motion.div
-           initial={{ opacity: 0, y: 20 }}
-           animate={{ opacity: 1, y: 0 }}
-           transition={{ delay: 0.1 }}
-         >
-           <Link to="/shop" className="btn-primary">Browse Catalogue</Link>
-         </motion.div>
+        <Helmet>
+          <title>Checkout | Uniform trends</title>
+          <link rel="canonical" href="https://uniformtrends.in/checkout" />
+        </Helmet>
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-3xl font-bold text-ink mb-4"
+        >
+          Your cart is empty
+        </motion.h1>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <Link to="/shop" className="btn-primary">Browse Catalogue</Link>
+        </motion.div>
       </div>
     );
   }
@@ -118,259 +118,259 @@ export default function Checkout() {
         <link rel="canonical" href="https://uniformtrends.in/checkout" />
       </Helmet>
       <div className="container mx-auto px-4 max-w-6xl">
-        
+
         {/* Progress Steps */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
           className="flex items-center justify-center mb-12"
         >
-           <div className="flex items-center gap-4">
-              <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 1 ? "text-ink" : "text-muted")}>
-                 <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 1 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>1</div>
-                 <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Shipping</span>
-              </div>
-              <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 2 ? "bg-primary" : "bg-surface-elevated")} />
-              <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 2 ? "text-ink" : "text-muted")}>
-                 <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 2 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>2</div>
-                 <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Payment</span>
-              </div>
-              <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 3 ? "bg-primary" : "bg-surface-elevated")} />
-              <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 3 ? "text-ink" : "text-muted")}>
-                 <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 3 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>3</div>
-                 <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Review</span>
-              </div>
-           </div>
+          <div className="flex items-center gap-4">
+            <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 1 ? "text-ink" : "text-muted")}>
+              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 1 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>1</div>
+              <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Shipping</span>
+            </div>
+            <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 2 ? "bg-primary" : "bg-surface-elevated")} />
+            <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 2 ? "text-ink" : "text-muted")}>
+              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 2 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>2</div>
+              <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Payment</span>
+            </div>
+            <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 3 ? "bg-primary" : "bg-surface-elevated")} />
+            <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 3 ? "text-ink" : "text-muted")}>
+              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 3 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>3</div>
+              <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Review</span>
+            </div>
+          </div>
         </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
-          
+
           <div className="lg:col-span-2 space-y-8">
             <AnimatePresence mode="wait">
-               {step === 1 && (
-                 <motion.div 
-                   key="step1"
-                   initial={{ opacity: 0, x: -20, scale: 0.98 }}
-                   animate={{ opacity: 1, x: 0, scale: 1 }}
-                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
-                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                   className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
-                 >
-                   <h2 className="text-2xl font-bold text-ink mb-8">Shipping Address</h2>
-                   <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                         <div>
-                           <label className="block text-sm font-semibold text-ink mb-2">First Name</label>
-                           <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
-                         <div>
-                           <label className="block text-sm font-semibold text-ink mb-2">Last Name</label>
-                           <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
+              {step === 1 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: -20, scale: 0.98 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.98 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                >
+                  <h2 className="text-2xl font-bold text-ink mb-8">Shipping Address</h2>
+                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-ink mb-2">First Name</label>
+                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-ink mb-2">Delivery Address</label>
-                        <input required type="text" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
-                        <input type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" placeholder="Apartment, suite, etc. (optional)" />
+                        <label className="block text-sm font-semibold text-ink mb-2">Last Name</label>
+                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                         <div className="md:col-span-1">
-                           <label className="block text-sm font-semibold text-ink mb-2">City</label>
-                           <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
-                         <div className="md:col-span-1">
-                           <label className="block text-sm font-semibold text-ink mb-2">State</label>
-                           <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
-                         <div className="md:col-span-1">
-                           <label className="block text-sm font-semibold text-ink mb-2">PIN Code</label>
-                           <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-ink mb-2">Delivery Address</label>
+                      <input required type="text" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
+                      <input type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" placeholder="Apartment, suite, etc. (optional)" />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                      <div className="md:col-span-1">
+                        <label className="block text-sm font-semibold text-ink mb-2">City</label>
+                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
-                      <div className="pt-6">
-                        <motion.button 
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          type="submit" 
-                          className="btn-primary w-full md:w-auto shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-                        >
-                          Proceed to Payment
-                        </motion.button>
+                      <div className="md:col-span-1">
+                        <label className="block text-sm font-semibold text-ink mb-2">State</label>
+                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
-                   </form>
-                 </motion.div>
-               )}
-
-               {step === 2 && (
-                 <motion.div 
-                   key="step2"
-                   initial={{ opacity: 0, x: -20, scale: 0.98 }}
-                   animate={{ opacity: 1, x: 0, scale: 1 }}
-                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
-                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                   className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
-                 >
-                   <h2 className="text-2xl font-bold text-ink mb-8">Payment Method</h2>
-                   <div className="space-y-4 mb-8">
-                     <label className="flex items-center gap-4 p-5 border-2 border-ink rounded-xl cursor-pointer bg-canvas shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-all">
-                        <input type="radio" name="payment" defaultChecked className="hidden" />
-                        <CreditCard className="text-ink" />
-                        <span className="font-semibold text-ink">Credit / Debit Card</span>
-                        <div className="w-4 h-4 rounded-full border border-ink ml-auto flex items-center justify-center">
-                           <div className="w-2 h-2 bg-ink rounded-full" />
-                        </div>
-                     </label>
-                     <label className="flex items-center gap-4 p-5 border border-hairline-strong rounded-xl cursor-pointer hover:border-ink/50 transition-colors">
-                        <input type="radio" name="payment" className="hidden" />
-                        <Wallet className="text-muted" />
-                        <span className="font-semibold text-body-text">UPI / Netbanking</span>
-                     </label>
-                   </div>
-                   
-                   {/* Mock Card Form */}
-                   <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(3); }}>
-                      <div>
-                        <label className="block text-sm font-semibold text-ink mb-2">Card Number</label>
-                        <input required type="text" placeholder="0000 0000 0000 0000" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                      <div className="md:col-span-1">
+                        <label className="block text-sm font-semibold text-ink mb-2">PIN Code</label>
+                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
-                      <div className="grid grid-cols-2 gap-6">
-                         <div>
-                           <label className="block text-sm font-semibold text-ink mb-2">Expiry Date</label>
-                           <input required type="text" placeholder="MM/YY" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
-                         <div>
-                           <label className="block text-sm font-semibold text-ink mb-2">CVV</label>
-                           <input required type="password" placeholder="***" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                         </div>
-                      </div>
-                      <div className="pt-6 flex gap-4">
-                        <button type="button" onClick={() => setStep(1)} className="btn-outline hover:scale-105 transition-transform">Back</button>
-                        <motion.button 
-                          whileHover={{ scale: 1.02 }}
-                          whileTap={{ scale: 0.98 }}
-                          type="submit" 
-                          className="btn-primary shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-                        >
-                          Review Order
-                        </motion.button>
-                      </div>
-                   </form>
-                 </motion.div>
-               )}
-
-               {step === 3 && (
-                 <motion.div 
-                   key="step3"
-                   initial={{ opacity: 0, x: -20, scale: 0.98 }}
-                   animate={{ opacity: 1, x: 0, scale: 1 }}
-                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
-                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                   className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
-                 >
-                   <h2 className="text-2xl font-bold text-ink mb-8">Review Your Order</h2>
-                   
-                   <div className="space-y-6 mb-10">
-                     {items.map(item => (
-                        <div key={`${item.id}-${item.selectedSize}`} className="flex gap-6 items-center">
-                           <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0 flex items-center justify-center border border-hairline">
-                             {item.images && item.images.length > 0 ? (
-                               <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
-                             ) : (
-                               <span className="text-xl font-bold text-muted/30 uppercase">{item.name.charAt(0)}</span>
-                             )}
-                           </div>
-                           <div className="flex-1">
-                             <h4 className="font-bold text-ink line-clamp-2">{item.name}</h4>
-                             <p className="text-sm text-muted mt-1">Size: {item.selectedSize}</p>
-                             <p className="text-sm text-muted mt-1">Qty: {item.quantity}</p>
-                           </div>
-                           <div className="font-bold text-ink text-right">
-                             {formatCurrency(item.price * item.quantity)}
-                           </div>
-                        </div>
-                     ))}
-                   </div>
-
-                   <hr className="border-hairline mb-8" />
-
-                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-                      <div>
-                         <h4 className="font-bold text-ink mb-3">Shipping Detail</h4>
-                         <p className="text-body-text text-sm leading-relaxed">
-                           Arjun Sharma<br />
-                           {address || '123 Default Street'}<br />
-                           New Delhi, 110022
-                         </p>
-                      </div>
-                      <div>
-                         <h4 className="font-bold text-ink mb-3">Payment Method</h4>
-                         <p className="text-body-text text-sm flex items-center gap-2">
-                           <CreditCard size={16} className="text-muted" />
-                           Card ending in •••• 4242
-                         </p>
-                      </div>
-                   </div>
-
-                   <div className="pt-6 flex gap-4">
-                     <button type="button" onClick={() => setStep(2)} className="btn-outline hover:scale-105 transition-transform">Back</button>
-                     <motion.button 
+                    </div>
+                    <div className="pt-6">
+                      <motion.button
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        type="button" 
-                        onClick={handlePlaceOrder} 
-                        disabled={isSubmitting}
-                        className="btn-primary w-full border border-transparent flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(10,37,64,0.5)] disabled:opacity-70"
-                     >
-                        {isSubmitting ? (
-                          <><Loader2 className="animate-spin" size={20} /> Processing...</>
-                        ) : 'Place Order Now'}
-                     </motion.button>
-                   </div>
-                 </motion.div>
-               )}
+                        type="submit"
+                        className="btn-primary w-full md:w-auto shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                      >
+                        Proceed to Payment
+                      </motion.button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: -20, scale: 0.98 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.98 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                >
+                  <h2 className="text-2xl font-bold text-ink mb-8">Payment Method</h2>
+                  <div className="space-y-4 mb-8">
+                    <label className="flex items-center gap-4 p-5 border-2 border-ink rounded-xl cursor-pointer bg-canvas shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-all">
+                      <input type="radio" name="payment" defaultChecked className="hidden" />
+                      <CreditCard className="text-ink" />
+                      <span className="font-semibold text-ink">Credit / Debit Card</span>
+                      <div className="w-4 h-4 rounded-full border border-ink ml-auto flex items-center justify-center">
+                        <div className="w-2 h-2 bg-ink rounded-full" />
+                      </div>
+                    </label>
+                    <label className="flex items-center gap-4 p-5 border border-hairline-strong rounded-xl cursor-pointer hover:border-ink/50 transition-colors">
+                      <input type="radio" name="payment" className="hidden" />
+                      <Wallet className="text-muted" />
+                      <span className="font-semibold text-body-text">UPI / Netbanking</span>
+                    </label>
+                  </div>
+
+                  {/* Mock Card Form */}
+                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(3); }}>
+                    <div>
+                      <label className="block text-sm font-semibold text-ink mb-2">Card Number</label>
+                      <input required type="text" placeholder="0000 0000 0000 0000" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                    </div>
+                    <div className="grid grid-cols-2 gap-6">
+                      <div>
+                        <label className="block text-sm font-semibold text-ink mb-2">Expiry Date</label>
+                        <input required type="text" placeholder="MM/YY" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-ink mb-2">CVV</label>
+                        <input required type="password" placeholder="***" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                      </div>
+                    </div>
+                    <div className="pt-6 flex gap-4">
+                      <button type="button" onClick={() => setStep(1)} className="btn-outline hover:scale-105 transition-transform">Back</button>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        type="submit"
+                        className="btn-primary shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                      >
+                        Review Order
+                      </motion.button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+
+              {step === 3 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: -20, scale: 0.98 }}
+                  animate={{ opacity: 1, x: 0, scale: 1 }}
+                  exit={{ opacity: 0, x: 20, scale: 0.98 }}
+                  transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                >
+                  <h2 className="text-2xl font-bold text-ink mb-8">Review Your Order</h2>
+
+                  <div className="space-y-6 mb-10">
+                    {items.map(item => (
+                      <div key={`${item.id}-${item.selectedSize}`} className="flex gap-6 items-center">
+                        <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0 flex items-center justify-center border border-hairline">
+                          {item.images && item.images.length > 0 ? (
+                            <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-xl font-bold text-muted/30 uppercase">{item.name.charAt(0)}</span>
+                          )}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="font-bold text-ink line-clamp-2">{item.name}</h4>
+                          <p className="text-sm text-muted mt-1">Size: {item.selectedSize}</p>
+                          <p className="text-sm text-muted mt-1">Qty: {item.quantity}</p>
+                        </div>
+                        <div className="font-bold text-ink text-right">
+                          {formatCurrency(item.price * item.quantity)}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <hr className="border-hairline mb-8" />
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+                    <div>
+                      <h4 className="font-bold text-ink mb-3">Shipping Detail</h4>
+                      <p className="text-body-text text-sm leading-relaxed">
+                        Arjun Sharma<br />
+                        {address || '123 Default Street'}<br />
+                        New Delhi, 110022
+                      </p>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-ink mb-3">Payment Method</h4>
+                      <p className="text-body-text text-sm flex items-center gap-2">
+                        <CreditCard size={16} className="text-muted" />
+                        Card ending in •••• 4242
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-6 flex gap-4">
+                    <button type="button" onClick={() => setStep(2)} className="btn-outline hover:scale-105 transition-transform">Back</button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={handlePlaceOrder}
+                      disabled={isSubmitting}
+                      className="btn-primary w-full border border-transparent flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(10,37,64,0.5)] disabled:opacity-70"
+                    >
+                      {isSubmitting ? (
+                        <><Loader2 className="animate-spin" size={20} /> Processing...</>
+                      ) : 'Place Order Now'}
+                    </motion.button>
+                  </div>
+                </motion.div>
+              )}
             </AnimatePresence>
           </div>
 
-          <motion.aside 
+          <motion.aside
             initial={{ opacity: 0, x: 40 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-1"
           >
-             <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline p-8 sticky top-28">
-               <h3 className="text-xl font-bold text-ink mb-6 pb-4 border-b border-hairline">Order Summary</h3>
-               
-               <div className="space-y-4 mb-6">
-                  <div className="flex justify-between items-center text-body-text">
-                    <span className="text-sm">Subtotal</span>
-                    <span className="font-semibold text-ink">{formatCurrency(total)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-body-text">
-                    <span className="text-sm">Estimated Tax (18% GST)</span>
-                    <span className="font-semibold text-ink">{formatCurrency(total * 0.18)}</span>
-                  </div>
-                  <div className="flex justify-between items-center text-body-text">
-                    <span className="text-sm">Shipping Delivery</span>
-                    <span className="font-semibold text-success">Free</span>
-                  </div>
-               </div>
+            <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline p-8 sticky top-28">
+              <h3 className="text-xl font-bold text-ink mb-6 pb-4 border-b border-hairline">Order Summary</h3>
 
-               <div className="flex justify-between items-center pt-6 border-t border-hairline mb-8">
-                  <span className="font-bold text-ink text-lg">Total</span>
-                  <span className="font-bold text-ink text-2xl">{formatCurrency(total * 1.18)}</span>
-               </div>
+              <div className="space-y-4 mb-6">
+                <div className="flex justify-between items-center text-body-text">
+                  <span className="text-sm">Subtotal</span>
+                  <span className="font-semibold text-ink">{formatCurrency(total)}</span>
+                </div>
+                <div className="flex justify-between items-center text-body-text">
+                  <span className="text-sm">Estimated Tax (18% GST)</span>
+                  <span className="font-semibold text-ink">{formatCurrency(total * 0.18)}</span>
+                </div>
+                <div className="flex justify-between items-center text-body-text">
+                  <span className="text-sm">Shipping Delivery</span>
+                  <span className="font-semibold text-success">Free</span>
+                </div>
+              </div>
 
-               <div className="p-4 bg-canvas rounded-xl border border-hairline-strong transition-colors hover:border-ink/50">
-                  <div className="flex items-center gap-3 mb-2">
-                     <ShieldCheck size={18} className="text-warning" />
-                     <span className="font-semibold text-ink text-sm">Safe & Secure Payment</span>
-                  </div>
-                  <p className="text-xs text-muted leading-relaxed">
-                    Your payment information is encrypted and securely processed. We never store credit card details.
-                  </p>
-               </div>
-             </div>
+              <div className="flex justify-between items-center pt-6 border-t border-hairline mb-8">
+                <span className="font-bold text-ink text-lg">Total</span>
+                <span className="font-bold text-ink text-2xl">{formatCurrency(total * 1.18)}</span>
+              </div>
+
+              <div className="p-4 bg-canvas rounded-xl border border-hairline-strong transition-colors hover:border-ink/50">
+                <div className="flex items-center gap-3 mb-2">
+                  <ShieldCheck size={18} className="text-warning" />
+                  <span className="font-semibold text-ink text-sm">Safe & Secure Payment</span>
+                </div>
+                <p className="text-xs text-muted leading-relaxed">
+                  Your payment information is encrypted and securely processed. We never store credit card details.
+                </p>
+              </div>
+            </div>
           </motion.aside>
 
         </div>

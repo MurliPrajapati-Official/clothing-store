@@ -126,6 +126,7 @@ export default function Footer() {
                 <ul className="space-y-4 text-body-text font-light">
                   {[
                     { name: 'About Us', path: '/about' },
+                    { name: 'Our Collections', path: '/collections' },
                     { name: 'Size Guide', path: '/size-guide' },
                     { name: 'Track Order', path: '/track-order' },
                     { name: 'Return Policy', path: '/return-policy' },
