@@ -280,12 +280,12 @@ export default function Account() {
               {activeTab === 'address' && (
                 <motion.div key="address" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-2xl border border-hairline p-8 shadow-sm">
                   <h2 className="text-2xl font-bold text-ink mb-2 flex items-center gap-2"><MapPin className="text-primary" /> Saved Address</h2>
-                  <p className="text-muted text-sm mb-6">This address is saved locally on your device for a faster checkout experience.</p>
+                  <p className="text-muted text-sm mb-6">Manage your primary shipping address for a faster checkout experience.</p>
 
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     localStorage.setItem('uniformTrends_savedAddress', JSON.stringify(addressData));
-                    setSuccessMsg('Address cached successfully on your device!');
+                    setSuccessMsg('Address updated successfully!');
                     setTimeout(() => setSuccessMsg(''), 3000);
                   }} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
