@@ -159,12 +159,15 @@ router.patch('/:id', async (req: Request, res: Response) => {
     const updateData: any = { status };
 
     if (cancellation_reason) {
+      console.log(`Processing cancellation for order ${req.params.id}. Reason: ${cancellation_reason}`);
       const { data: order } = await supabase.from('orders').select('shipping_address').eq('id', req.params.id).single();
       if (order) {
         const baseAddress = order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[0];
         updateData.shipping_address = `${baseAddress}\n\n--- CANCELLATION REASON ---\n${cancellation_reason}`;
       }
     }
+
+    console.log(`Updating order ${req.params.id} with data:`, updateData);
 
     const { data, error } = await supabase
       .from('orders')

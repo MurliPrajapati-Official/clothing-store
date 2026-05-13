@@ -173,8 +173,23 @@ export default function AdminDashboard() {
 
     setupAdmin();
 
-    // Listen for auth changes to handle direct URL entries robustly
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    // 1. Realtime Listener for instant updates
+    // This allows the dashboard to update immediately when a user cancels or places an order
+    const ordersChannel = supabase
+      .channel('admin-orders-live')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'orders' },
+        (payload) => {
+          console.log('Realtime Order Change Detected:', payload);
+          fetchOrders(); // Refresh orders list
+          fetchStats();  // Refresh stats
+        }
+      )
+      .subscribe();
+
+    // 2. Listen for auth changes to handle direct URL entries robustly
+    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
        if (session && isAdmin === false) {
           setupAdmin(); // Re-check if session suddenly becomes available
        }
@@ -183,7 +198,8 @@ export default function AdminDashboard() {
     return () => {
       isMounted = false;
       if (interval) clearInterval(interval);
-      subscription.unsubscribe();
+      supabase.removeChannel(ordersChannel);
+      authSub.unsubscribe();
     };
   }, [navigate]);
 
@@ -424,7 +440,7 @@ export default function AdminDashboard() {
                             </p>
                             {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') && (
                               <p className="mt-2 text-[10px] bg-m-red/10 text-m-red p-1.5 rounded-lg border border-m-red/20 italic">
-                                Reason: {order.shipping_address.split('\n\n--- CANCELLATION REASON ---\n')[1]}
+                                Reason: {order.shipping_address.split('--- CANCELLATION REASON ---\n')[1]}
                               </p>
                             )}
                           </td>
