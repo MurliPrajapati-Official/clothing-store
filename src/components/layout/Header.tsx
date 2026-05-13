@@ -65,7 +65,7 @@ export default function Header() {
             ) : (
               <Link to="/" className="flex items-center gap-3 group">
                 <img 
-                  src="https://uniformtrends.in/images/logo.png" 
+                  src="/images/logo.svg" 
                   alt="Uniform Trends Uniforms - Best School & Corporate Uniforms in India" 
                   className="h-12 sm:h-16 w-auto object-contain transition-transform duration-500 group-hover:scale-105" 
                 />
@@ -310,7 +310,7 @@ export default function Header() {
               <div className="flex items-center justify-between p-8 mb-4">
                 <Link to="/" className="flex items-center gap-3 mb-6">
                   <img 
-                    src="https://uniformtrends.in/images/logo.png" 
+                    src="/images/logo.svg" 
                     alt="Uniform Trends Uniforms - Premium Manufacturer in India" 
                     className="h-12 w-auto object-contain" 
                   />

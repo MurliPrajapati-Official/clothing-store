@@ -58,7 +58,7 @@ export default function Footer() {
               <>
                 <Link to="/" className="flex items-center gap-3 mb-6">
                   <img 
-                    src="https://uniformtrends.in/images/logo.png" 
+                    src="/images/logo.svg" 
                     alt="Uniform Trends Uniforms - Premium Manufacturer in India" 
                     className="h-12 w-auto object-contain" 
                   />
