@@ -22,10 +22,15 @@ export default function Contact() {
 
     const formData = new FormData(e.currentTarget);
     formData.append("access_key", "8190947b-d4f0-4b2b-9e41-e8a594d8b734");
+    formData.append("from_name", "Uniform Trends by WEA");
+    formData.append("subject", `New Bulk Order Inquiry from ${formData.get("name")}`);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
+        headers: {
+          "Accept": "application/json"
+        },
         body: formData
       });
 
@@ -33,11 +38,12 @@ export default function Contact() {
 
       if (data.success) {
         setIsSubmitted(true);
+        setError(null);
       } else {
-        setError(data.message || "Something went wrong. Please try again.");
+        setError(data.message || "Form submission failed. Please check your Web3Forms configuration.");
       }
     } catch (err) {
-      setError("Network error. Please check your connection.");
+      setError("Failed to submit form. Please check your internet connection and try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -176,7 +182,13 @@ export default function Contact() {
                 </div>
 
                 {error && (
-                  <p className="text-m-red text-sm font-medium">{error}</p>
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="p-4 bg-red-500/10 border border-red-500/20 text-m-red rounded-xl text-sm font-medium"
+                  >
+                    {error}
+                  </motion.div>
                 )}
 
                 <button
