@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { PRODUCTS, SCHOOLS } from '../constants';
+import { SCHOOLS } from '../constants';
 import { formatCurrency, cn } from '../lib/utils';
 import { useCartStore } from '../store/cartStore';
 import { useWishlistStore } from '../store/wishlistStore';

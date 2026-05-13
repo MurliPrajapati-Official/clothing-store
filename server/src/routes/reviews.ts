@@ -7,6 +7,10 @@ const router = express.Router();
 router.get('/:productId', async (req: Request, res: Response) => {
   try {
     const { productId } = req.params;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(productId)) {
+      return res.json({ reviews: [], total: 0, hasMore: false });
+    }
     const limit = parseInt(req.query.limit as string) || 5;
     const page = parseInt(req.query.page as string) || 1;
     const offset = (page - 1) * limit;
@@ -33,6 +37,11 @@ router.get('/:productId', async (req: Request, res: Response) => {
 router.post('/', async (req: Request, res: Response) => {
   try {
     const { product_id, user_id, user_name, rating, comment } = req.body;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+    if (!product_id || !uuidRegex.test(product_id)) {
+      return res.status(400).json({ error: 'Valid product ID is required' });
+    }
 
     if (!product_id || !user_name || !rating) {
       return res.status(400).json({ error: 'Missing required fields' });
@@ -83,6 +92,10 @@ router.post('/', async (req: Request, res: Response) => {
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.status(400).json({ error: 'Invalid review ID format' });
+    }
 
     // 1. Get the product_id before deleting
     const { data: review, error: getError } = await supabase

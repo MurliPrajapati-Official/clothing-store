@@ -101,6 +101,10 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
 // UPDATE a product
 router.put('/:id', upload.single('image'), async (req: Request, res: Response) => {
   try {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid product ID format' });
+    }
     const {
       name, slug, price, original_price, description,
       category, school_id, sizes, gender, grade,
@@ -158,6 +162,12 @@ router.put('/:id', upload.single('image'), async (req: Request, res: Response) =
 router.get('/related/:id', async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    
+    // Validate UUID format before querying
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(id)) {
+      return res.json([]); // Return empty array for invalid IDs instead of crashing
+    }
 
     // 1. Get the current product's category
     const { data: currentProduct, error: fetchError } = await supabase
@@ -201,6 +211,10 @@ router.get('/related/:id', async (req: Request, res: Response) => {
 // DELETE a product
 router.delete('/:id', async (req: Request, res: Response) => {
   try {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    if (!uuidRegex.test(req.params.id)) {
+      return res.status(400).json({ error: 'Invalid product ID format' });
+    }
     const { error } = await supabase
       .from('products')
       .delete()

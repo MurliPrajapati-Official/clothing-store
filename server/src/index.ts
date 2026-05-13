@@ -40,7 +40,7 @@ app.use(cors({
       callback(new Error('Unauthorized by Security Policy (CORS)'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
   credentials: true
 }));
 
@@ -77,14 +77,18 @@ app.get('/api/stats', async (req: Request, res: Response) => {
       .from('products')
       .select('*', { count: 'exact', head: true });
 
-    // Note: auth.admin requires Service Role Key which we have on backend
     const { data: { users }, error: uError } = await supabase.auth.admin.listUsers();
 
-    if (pError || uError) throw pError || uError;
+    const { count: orderCount, error: oError } = await supabase
+      .from('orders')
+      .select('*', { count: 'exact', head: true });
+
+    if (pError || uError || oError) throw pError || uError || oError;
 
     res.json({
       totalProducts: productCount || 0,
-      totalUsers: users.length || 0
+      totalUsers: users.length || 0,
+      totalOrders: orderCount || 0
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
@@ -94,6 +98,26 @@ app.get('/api/stats', async (req: Request, res: Response) => {
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/reviews', reviewRoutes);
+
+// Global Error Handlers for production stability
+process.on('unhandledRejection', (reason, promise) => {
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  // Log to file for debugging
+  try {
+    const fs = require('fs');
+    fs.appendFileSync('crash_logs.txt', `${new Date().toISOString()} - UNHANDLED REJECTION: ${reason}\n`);
+  } catch (e) {}
+});
+
+process.on('uncaughtException', (error) => {
+  console.error('Uncaught Exception:', error);
+  try {
+    const fs = require('fs');
+    fs.appendFileSync('crash_logs.txt', `${new Date().toISOString()} - UNCAUGHT EXCEPTION: ${error.message}\n${error.stack}\n`);
+  } catch (e) {}
+  // Give time for logging before exiting
+  setTimeout(() => process.exit(1), 1000);
+});
 
 // Start Server
 app.listen(port, () => {

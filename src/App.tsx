@@ -91,7 +91,7 @@ export default function App() {
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiesPolicy />} />
-            <Route path="/admin" element={<AdminDashboard />} />
+            <Route path="/admin-8822" element={<AdminDashboard />} />
             <Route path="/schools" element={<Placeholder name="Our Schools" />} />
             <Route path="/schools/:slug" element={<Placeholder name="School Details" />} />
             <Route path="/wishlist" element={<Placeholder name="My Wishlist" />} />

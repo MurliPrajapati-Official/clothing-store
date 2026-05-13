@@ -8,18 +8,35 @@ import { formatCurrency, cn } from '../lib/utils';
 import { supabase } from '../lib/supabase';
 
 export default function Checkout() {
-  const { items, getTotalPrice, clearCart } = useCartStore();
+  const { items, getTotalPrice, clearCart, removeItem } = useCartStore();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [orderComplete, setOrderComplete] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [address, setAddress] = useState('');
+  const [addressData, setAddressData] = useState({
+    firstName: '',
+    lastName: '',
+    street: '',
+    city: '',
+    state: '',
+    pin: ''
+  });
   const [orderId, setOrderId] = useState<string>('');
   const [userId, setUserId] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
+
+  const [savedAddressExists, setSavedAddressExists] = useState(false);
 
   useEffect(() => {
+    // Check for saved local address cache
+    const savedAddress = localStorage.getItem('uniformTrends_savedAddress');
+    if (savedAddress) {
+      setSavedAddressExists(true);
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session?.user) {
         setUserId(session.user.id);
+        setUserEmail(session.user.email || '');
       }
     });
   }, []);
@@ -29,10 +46,11 @@ export default function Checkout() {
   const handlePlaceOrder = async () => {
     setIsSubmitting(true);
     try {
+      const fullAddress = `${addressData.firstName} ${addressData.lastName}, ${addressData.street}, ${addressData.city}, ${addressData.state} - ${addressData.pin} (${userEmail})`;
       const orderData = {
         user_id: userId,
-        total_amount: total,
-        shipping_address: address || '123 Test Street, Default City', // Fallback for dev
+        total_amount: total * 1.18, // Total with GST
+        shipping_address: fullAddress,
         items: items.map(item => ({
           productId: item.id,
           quantity: item.quantity,
@@ -40,21 +58,25 @@ export default function Checkout() {
         }))
       };
 
-      const response = await fetch('http://localhost:5000/api/orders', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
       });
 
-      if (!response.ok) throw new Error('Checkout failed');
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.details || errorData.error || 'Checkout failed');
+      }
 
       const result = await response.json();
       setOrderId(result.orderId);
       clearCart();
       setOrderComplete(true);
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
-      alert('Failed to place order. Please try again.');
+      alert(`Order Failed: ${error.message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -157,35 +179,52 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
                 >
-                  <h2 className="text-2xl font-bold text-ink mb-8">Shipping Address</h2>
+                  <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-2xl font-bold text-ink">Shipping Address</h2>
+                    {savedAddressExists && (
+                      <button 
+                        type="button"
+                        onClick={() => {
+                          const savedAddress = localStorage.getItem('uniformTrends_savedAddress');
+                          if (savedAddress) {
+                            try {
+                              setAddressData(JSON.parse(savedAddress));
+                            } catch (e) {}
+                          }
+                        }}
+                        className="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                      >
+                        Use Saved Address
+                      </button>
+                    )}
+                  </div>
                   <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(2); }}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-semibold text-ink mb-2">First Name</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, firstName: e.target.value})} value={addressData.firstName} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-ink mb-2">Last Name</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, lastName: e.target.value})} value={addressData.lastName} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-ink mb-2">Delivery Address</label>
-                      <input required type="text" onChange={(e) => setAddress(e.target.value)} value={address} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
-                      <input type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" placeholder="Apartment, suite, etc. (optional)" />
+                      <input required type="text" onChange={(e) => setAddressData({...addressData, street: e.target.value})} value={addressData.street} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">City</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, city: e.target.value})} value={addressData.city} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">State</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, state: e.target.value})} value={addressData.state} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">PIN Code</label>
-                        <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, pin: e.target.value})} value={addressData.pin} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                     </div>
                     <div className="pt-6">
@@ -195,7 +234,7 @@ export default function Checkout() {
                         type="submit"
                         className="btn-primary w-full md:w-auto shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
                       >
-                        Proceed to Payment
+                        Continue to Confirmation
                       </motion.button>
                     </div>
                   </form>
@@ -211,51 +250,31 @@ export default function Checkout() {
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
                   className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
                 >
-                  <h2 className="text-2xl font-bold text-ink mb-8">Payment Method</h2>
+                  <h2 className="text-2xl font-bold text-ink mb-8">Confirm Order Method</h2>
                   <div className="space-y-4 mb-8">
                     <label className="flex items-center gap-4 p-5 border-2 border-ink rounded-xl cursor-pointer bg-canvas shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-all">
                       <input type="radio" name="payment" defaultChecked className="hidden" />
-                      <CreditCard className="text-ink" />
-                      <span className="font-semibold text-ink">Credit / Debit Card</span>
+                      <Truck className="text-ink" />
+                      <span className="font-semibold text-ink">Cash on Delivery / Bulk Invoice</span>
                       <div className="w-4 h-4 rounded-full border border-ink ml-auto flex items-center justify-center">
                         <div className="w-2 h-2 bg-ink rounded-full" />
                       </div>
                     </label>
-                    <label className="flex items-center gap-4 p-5 border border-hairline-strong rounded-xl cursor-pointer hover:border-ink/50 transition-colors">
-                      <input type="radio" name="payment" className="hidden" />
-                      <Wallet className="text-muted" />
-                      <span className="font-semibold text-body-text">UPI / Netbanking</span>
-                    </label>
+                    <p className="text-sm text-muted">For bulk orders, our team will contact you for payment arrangements after reviewing your requirements.</p>
                   </div>
 
-                  {/* Mock Card Form */}
-                  <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); setStep(3); }}>
-                    <div>
-                      <label className="block text-sm font-semibold text-ink mb-2">Card Number</label>
-                      <input required type="text" placeholder="0000 0000 0000 0000" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                    </div>
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <label className="block text-sm font-semibold text-ink mb-2">Expiry Date</label>
-                        <input required type="text" placeholder="MM/YY" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                      </div>
-                      <div>
-                        <label className="block text-sm font-semibold text-ink mb-2">CVV</label>
-                        <input required type="password" placeholder="***" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
-                      </div>
-                    </div>
-                    <div className="pt-6 flex gap-4">
-                      <button type="button" onClick={() => setStep(1)} className="btn-outline hover:scale-105 transition-transform">Back</button>
-                      <motion.button
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                        type="submit"
-                        className="btn-primary shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
-                      >
-                        Review Order
-                      </motion.button>
-                    </div>
-                  </form>
+                  <div className="pt-6 flex gap-4">
+                    <button type="button" onClick={() => setStep(1)} className="btn-outline hover:scale-105 transition-transform">Back</button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="button"
+                      onClick={() => setStep(3)}
+                      className="btn-primary shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                    >
+                      Review Order
+                    </motion.button>
+                  </div>
                 </motion.div>
               )}
 
@@ -298,16 +317,16 @@ export default function Checkout() {
                     <div>
                       <h4 className="font-bold text-ink mb-3">Shipping Detail</h4>
                       <p className="text-body-text text-sm leading-relaxed">
-                        Arjun Sharma<br />
-                        {address || '123 Default Street'}<br />
-                        New Delhi, 110022
+                        {addressData.firstName} {addressData.lastName}<br />
+                        {addressData.street}<br />
+                        {addressData.city}, {addressData.state} - {addressData.pin}
                       </p>
                     </div>
                     <div>
-                      <h4 className="font-bold text-ink mb-3">Payment Method</h4>
+                      <h4 className="font-bold text-ink mb-3">Order Method</h4>
                       <p className="text-body-text text-sm flex items-center gap-2">
-                        <CreditCard size={16} className="text-muted" />
-                        Card ending in •••• 4242
+                        <Truck size={16} className="text-muted" />
+                        Cash on Delivery / Bulk Invoice
                       </p>
                     </div>
                   </div>

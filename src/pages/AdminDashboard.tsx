@@ -9,16 +9,18 @@ import { formatCurrency, cn } from '../lib/utils';
 import { CATEGORIES } from '../constants';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'stats' | 'add' | 'manage'>('stats');
+  const [activeTab, setActiveTab] = useState<'stats' | 'add' | 'manage' | 'orders'>('stats');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMsg, setSuccessMsg] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
   const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   
-  const [stats, setStats] = useState({ totalProducts: 0, totalUsers: 0 });
+  const [stats, setStats] = useState({ totalProducts: 0, totalUsers: 0, totalOrders: 0 });
   const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   
   const navigate = useNavigate();
 
@@ -44,6 +46,53 @@ export default function AdminDashboard() {
       console.error("Failed to fetch products", err);
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const fetchOrders = async () => {
+    try {
+      setIsLoading(true);
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/orders`);
+      const data = await res.json();
+      setOrders(data);
+    } catch (err) {
+      console.error("Failed to fetch orders", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleUpdateOrderStatus = async (id: string, status: string) => {
+    if (status === 'completed') {
+      const confirmed = window.confirm('Are you sure you want to mark this order as completed? This action cannot be undone.');
+      if (!confirmed) return;
+    }
+    
+    setIsSubmitting(true);
+    setErrorMsg('');
+    setSuccessMsg('');
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/orders/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status })
+      });
+      if (res.ok) {
+        setSuccessMsg(`Order marked as ${status}`);
+        fetchOrders();
+        setTimeout(() => setSuccessMsg(''), 3000);
+      } else {
+        const errorData = await res.json();
+        setErrorMsg(`Failed to update status: ${errorData.error}`);
+        setTimeout(() => setErrorMsg(''), 5000);
+      }
+    } catch (err: any) {
+      setErrorMsg(`Network error: ${err.message}`);
+      setTimeout(() => setErrorMsg(''), 5000);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -75,23 +124,49 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    const checkAuth = async () => {
+    let isMounted = true;
+    let interval: any;
+
+    const setupAdmin = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
+      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase();
       
+      if (!isMounted) return;
+
       if (!session) {
         setIsAdmin(false);
-        setTimeout(() => navigate('/account'), 3000);
-      } else if (adminEmail && session.user.email !== adminEmail) {
+        setTimeout(() => isMounted && navigate('/account'), 3000);
+      } else if (adminEmail && session.user.email?.toLowerCase() !== adminEmail) {
         setIsAdmin(false);
-        setTimeout(() => navigate('/'), 3000);
+        setTimeout(() => isMounted && navigate('/'), 3000);
       } else {
         setIsAdmin(true);
         fetchStats();
         fetchProducts();
+        fetchOrders();
+        
+        // Auto-refresh every 30 seconds for "smooth detection"
+        interval = setInterval(() => {
+           fetchStats();
+           fetchOrders();
+        }, 30000);
       }
     };
-    checkAuth();
+
+    setupAdmin();
+
+    // Listen for auth changes to handle direct URL entries robustly
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+       if (session && isAdmin === false) {
+          setupAdmin(); // Re-check if session suddenly becomes available
+       }
+    });
+
+    return () => {
+      isMounted = false;
+      if (interval) clearInterval(interval);
+      subscription.unsubscribe();
+    };
   }, [navigate]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -165,7 +240,16 @@ export default function AdminDashboard() {
                 activeTab === 'manage' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <Package size={18} /> Manage
+              <Package size={18} /> Inventory
+            </button>
+            <button 
+              onClick={() => setActiveTab('orders')}
+              className={cn(
+                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+                activeTab === 'orders' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
+              )}
+            >
+              <ShoppingBag size={18} /> Orders
             </button>
             <button 
               onClick={() => {
@@ -211,8 +295,8 @@ export default function AdminDashboard() {
               <div className="w-12 h-12 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center mb-6">
                 <ShoppingBag size={24} />
               </div>
-              <p className="text-sm font-medium text-muted mb-1">Store Status</p>
-              <h3 className="text-xl font-bold text-success">Online & Live</h3>
+              <p className="text-sm font-medium text-muted mb-1">Total Orders</p>
+              <h3 className="text-4xl font-bold text-ink">{stats.totalOrders}</h3>
             </motion.div>
           </div>
         )}
@@ -276,6 +360,151 @@ export default function AdminDashboard() {
                           </div>
                         </td>
                       </tr>
+                    ))}
+                  </tbody>
+                </table>
+             </div>
+          </motion.div>
+        )}
+
+        {activeTab === 'orders' && (
+          <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="bg-surface-card rounded-3xl border border-hairline shadow-sm overflow-hidden">
+             <div className="p-6 border-b border-hairline flex justify-between items-center">
+                <h2 className="text-xl font-bold text-ink">Recent Orders</h2>
+                <span className="text-sm text-muted font-medium">{orders.length} Orders Found</span>
+             </div>
+             
+             <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-canvas border-b border-hairline">
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Order ID</th>
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Customer</th>
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Total</th>
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Status</th>
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Date</th>
+                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-hairline">
+                    {isLoading ? (
+                      <tr><td colSpan={6} className="px-6 py-12 text-center text-muted">Loading orders...</td></tr>
+                    ) : orders.length === 0 ? (
+                      <tr><td colSpan={6} className="px-6 py-12 text-center text-muted">No orders found.</td></tr>
+                    ) : orders.map(order => (
+                      <React.Fragment key={order.id}>
+                        <tr className="hover:bg-canvas/50 transition-colors">
+                          <td className="px-6 py-4">
+                            <span className="font-mono text-xs text-ink">#{order.id.substring(0, 8)}</span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'Guest'}</p>
+                            <p className="text-[10px] text-muted truncate max-w-[150px]">
+                              {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') 
+                                ? order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[0] 
+                                : order.shipping_address}
+                            </p>
+                            {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') && (
+                              <p className="mt-2 text-[10px] bg-m-red/10 text-m-red p-1.5 rounded-lg border border-m-red/20 italic">
+                                Reason: {order.shipping_address.split('\n\n--- CANCELLATION REASON ---\n')[1]}
+                              </p>
+                            )}
+                          </td>
+                          <td className="px-6 py-4 font-bold text-ink">
+                            {formatCurrency(order.total_amount)}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="flex items-center gap-2">
+                              <select 
+                                disabled={isSubmitting || order.status === 'completed'}
+                                value={order.status} 
+                                onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                                className={cn(
+                                  "text-[10px] uppercase tracking-widest font-bold px-4 py-2 rounded-xl outline-none border transition-all cursor-pointer appearance-none text-center min-w-[120px]",
+                                  order.status === 'pending' && "bg-warning/10 text-warning border-warning/20 hover:bg-warning/20",
+                                  order.status === 'completed' && "bg-success/10 text-success border-success/20 hover:bg-success/20",
+                                  order.status === 'cancelled' && "bg-m-red/10 text-m-red border-m-red/20 hover:bg-m-red/20"
+                                )}
+                              >
+                                <option value="pending" className="bg-surface-card text-ink">⏳ Pending</option>
+                                <option value="completed" className="bg-surface-card text-ink">✅ Completed</option>
+                                <option value="cancelled" className="bg-surface-card text-ink">❌ Cancelled</option>
+                              </select>
+                              {isSubmitting && <Loader2 size={12} className="animate-spin text-muted" />}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 text-xs text-muted">
+                            {new Date(order.created_at).toLocaleDateString()}
+                          </td>
+                          <td className="px-6 py-4">
+                             <div className="flex items-center gap-2">
+                               <button 
+                                 onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
+                                 className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                               >
+                                 {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
+                               </button>
+                             </div>
+                          </td>
+                        </tr>
+                        {expandedOrder === order.id && (
+                          <tr className="bg-canvas">
+                            <td colSpan={6} className="px-6 py-6 border-b border-hairline">
+                               <div className="bg-surface-card p-4 rounded-xl border border-hairline shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
+                                 <div>
+                                   <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Customer Details</h4>
+                                   <div className="space-y-4">
+                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Name & Contact</p>
+                                       <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'N/A'}</p>
+                                       <p className="text-xs text-muted">
+                                         {order.shipping_address.match(/\((.*?)\)/)?.[1] || 'No Email Provided'}
+                                       </p>
+                                     </div>
+                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Delivery Address</p>
+                                       <p className="text-sm text-ink leading-relaxed">
+                                         {order.shipping_address.replace(/\((.*?)\)/g, '').split('\n\n---')[0].split(',').slice(1).join(', ').trim()}
+                                       </p>
+                                     </div>
+                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
+                                       <p className="text-sm font-bold text-ink">Cash on Delivery / Bulk Invoice</p>
+                                     </div>
+                                   </div>
+                                 </div>
+                                 <div>
+                                   <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Order Items</h4>
+                                   {order.order_items && order.order_items.length > 0 ? (
+                                      <div className="space-y-3">
+                                        {order.order_items.map((item: any) => (
+                                          <div key={item.id} className="flex justify-between items-center bg-canvas p-3 rounded-lg border border-hairline">
+                                            <div className="flex items-center gap-3">
+                                              <div className="w-10 h-10 bg-surface-elevated rounded-md flex items-center justify-center overflow-hidden">
+                                                {item.products?.images?.[0] ? (
+                                                  <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
+                                                ) : (
+                                                  <Package size={16} className="text-muted" />
+                                                )}
+                                              </div>
+                                              <div>
+                                                <p className="text-sm font-bold text-ink">{item.products?.name || 'Unknown Product'}</p>
+                                                <p className="text-[10px] text-muted">Qty: {item.quantity}</p>
+                                              </div>
+                                            </div>
+                                            <p className="font-bold text-ink">{formatCurrency(item.price_at_time)}</p>
+                                          </div>
+                                        ))}
+                                      </div>
+                                   ) : (
+                                     <p className="text-sm text-muted">No items found for this order.</p>
+                                   )}
+                                 </div>
+                               </div>
+                            </td>
+                          </tr>
+                        )}
+                      </React.Fragment>
                     ))}
                   </tbody>
                 </table>

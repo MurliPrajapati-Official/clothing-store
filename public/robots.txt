@@ -3,5 +3,6 @@ Allow: /
 Allow: /images/
 Allow: /products/
 Allow: /assets/
-
+Disallow: /account
+Disallow: /admin
 Sitemap: https://uniformtrends.in/sitemap.xml
