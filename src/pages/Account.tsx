@@ -214,10 +214,10 @@ export default function Account() {
             {successMsg}
           </div>
         )}
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+        <div className="flex flex-col lg:grid lg:grid-cols-4 gap-8">
           <aside className="lg:col-span-1">
-            <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-6 sticky top-28">
-              <div className="flex items-center gap-4 mb-8 pb-6 border-b border-hairline">
+            <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-4 md:p-6 sticky top-28">
+              <div className="flex items-center gap-4 mb-4 md:mb-8 md:pb-6 md:border-b border-hairline">
                 <div className="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold uppercase">
                   {session.user.user_metadata?.full_name?.substring(0, 2) || session.user.email?.substring(0, 2)}
                 </div>
@@ -227,31 +227,34 @@ export default function Account() {
                 </div>
               </div>
 
-              <nav className="flex flex-col gap-2">
+              <nav className="flex lg:flex-col gap-1 md:gap-2 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-2 px-2 pb-2 lg:p-0 justify-between lg:justify-start">
                 {[
-                  { id: 'profile', label: 'My Profile', icon: User },
-                  { id: 'orders', label: 'My Orders', icon: Package },
-                  { id: 'address', label: 'Saved Address', icon: MapPin },
+                  { id: 'profile', label: 'Profile', icon: User },
+                  { id: 'orders', label: 'Orders', icon: Package },
+                  { id: 'address', label: 'Address', icon: MapPin },
                   { id: 'settings', label: 'Settings', icon: Settings },
                 ].map(tab => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
                     className={cn(
-                      "flex items-center gap-3 w-full p-3 rounded-xl transition-all",
+                      "flex flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-xl transition-all min-w-0 flex-1 lg:flex-none lg:w-full",
                       activeTab === tab.id ? "bg-canvas text-ink font-bold shadow-sm" : "text-muted hover:bg-canvas hover:text-ink font-medium"
                     )}
                   >
-                    <tab.icon size={18} />
-                    {tab.label}
+                    <tab.icon size={20} className="sm:w-[18px]" />
+                    <span className="text-[10px] sm:text-sm whitespace-nowrap">{tab.label}</span>
                   </button>
                 ))}
-                <div className="h-px bg-hairline my-2" />
-                <button onClick={handleLogout} className="flex items-center gap-3 w-full p-3 rounded-xl text-m-red hover:bg-m-red/10 font-medium transition-colors">
-                  <LogOut size={18} />
-                  Logout
+                <div className="hidden lg:block h-px bg-hairline my-2" />
+                <button onClick={handleLogout} className="flex lg:hidden flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-xl text-m-red hover:bg-m-red/10 font-medium transition-colors min-w-0 flex-1">
+                   <Lock size={20} className="sm:w-[18px]" />
+                   <span className="text-[10px] sm:text-sm whitespace-nowrap">Logout</span>
                 </button>
               </nav>
+              <button onClick={handleLogout} className="hidden lg:flex items-center gap-3 w-full p-3 rounded-xl text-m-red hover:bg-m-red/10 font-medium transition-colors">
+                <Lock size={18} /> Logout
+              </button>
             </div>
           </aside>
 

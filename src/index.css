@@ -153,6 +153,29 @@
   }
 }
 
+/* Global Responsive Helpers */
+@media (max-width: 640px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  /* Make all tables scrollable by default on tiny screens */
+  .overflow-x-auto {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Reduce body text size slightly on mobile for better fit */
+  body {
+    font-size: 14px;
+  }
+  
+  /* Ensure large titles don't overflow */
+  h1 {
+    word-break: break-word;
+  }
+}
+
 /* Custom Scrollbar for a premium feel */
 ::-webkit-scrollbar {
   width: 8px;

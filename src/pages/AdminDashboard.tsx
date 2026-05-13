@@ -251,40 +251,40 @@ export default function AdminDashboard() {
         <title>Admin Panel | Uniform Trends</title>
       </Helmet>
 
-      <div className="container mx-auto px-4 max-w-6xl">
-        <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
-          <div>
-            <h1 className="text-3xl font-bold text-ink tracking-tight">Admin Control Panel</h1>
-            <p className="text-muted font-light">Manage your store products and view insights.</p>
+      <div className="container mx-auto px-4 max-w-6xl overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-8">
+          <div className="text-center lg:text-left">
+            <h1 className="text-3xl md:text-4xl font-bold text-ink tracking-tight">Admin Control Panel</h1>
+            <p className="text-muted font-light mt-2 text-sm md:text-base">Manage your store products and view insights.</p>
           </div>
           
-          <div className="flex bg-surface-card p-1 rounded-2xl border border-hairline shadow-sm">
+          <div className="flex bg-surface-card p-1 rounded-2xl border border-hairline shadow-sm overflow-x-auto scrollbar-hide max-w-full self-center lg:self-auto">
             <button 
               onClick={() => setActiveTab('stats')}
               className={cn(
-                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+                "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
                 activeTab === 'stats' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <LayoutDashboard size={18} /> Overview
+              <LayoutDashboard size={16} className="md:w-[18px]" /> Overview
             </button>
             <button 
               onClick={() => setActiveTab('manage')}
               className={cn(
-                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+                "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
                 activeTab === 'manage' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <Package size={18} /> Inventory
+              <Package size={16} className="md:w-[18px]" /> Inventory
             </button>
             <button 
               onClick={() => setActiveTab('orders')}
               className={cn(
-                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+                "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
                 activeTab === 'orders' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <ShoppingBag size={18} /> Orders
+              <ShoppingBag size={16} className="md:w-[18px]" /> Orders
             </button>
             <button 
               onClick={() => {
@@ -292,11 +292,11 @@ export default function AdminDashboard() {
                 setActiveTab('add');
               }}
               className={cn(
-                "px-6 py-2.5 rounded-xl text-sm font-bold transition-all flex items-center gap-2",
+                "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
                 activeTab === 'add' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
               )}
             >
-              <PlusCircle size={18} /> {editingProduct ? 'Editing' : 'Add New'}
+              <PlusCircle size={16} className="md:w-[18px]" /> {editingProduct ? 'Editing' : 'Add New'}
             </button>
           </div>
         </div>
@@ -347,10 +347,10 @@ export default function AdminDashboard() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-canvas border-b border-hairline">
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Product</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Category</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Price</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Actions</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Product</th>
+                      <th className="px-4 md:px-6 py-4 hidden sm:table-cell text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Category</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted text-right md:text-left">Price</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted text-right">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-hairline">
@@ -360,38 +360,38 @@ export default function AdminDashboard() {
                       <tr><td colSpan={4} className="px-6 py-12 text-center text-muted">No products found in inventory.</td></tr>
                     ) : products.map(product => (
                       <tr key={product.id} className="hover:bg-canvas/50 transition-colors">
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-4">
-                            <div className="w-12 h-12 bg-canvas rounded-lg border border-hairline flex items-center justify-center shrink-0 overflow-hidden">
+                        <td className="px-4 md:px-6 py-4">
+                          <div className="flex items-center gap-2 md:gap-4">
+                            <div className="w-8 h-8 md:w-12 md:h-12 bg-canvas rounded-lg border border-hairline flex items-center justify-center shrink-0 overflow-hidden">
                               {product.images && product.images.length > 0 ? (
                                 <img src={product.images[0]} alt="" className="w-full h-full object-cover" />
                               ) : (
-                                <span className="font-bold text-muted/30">{product.name.charAt(0)}</span>
+                                <span className="text-[10px] font-bold text-muted/30">{product.name.charAt(0)}</span>
                               )}
                             </div>
-                            <div className="max-w-[200px]">
-                              <p className="font-bold text-ink line-clamp-1">{product.name}</p>
-                              <p className="text-xs text-muted font-mono">{product.slug}</p>
+                            <div className="min-w-0 flex-1">
+                              <p className="font-bold text-ink text-xs md:text-sm truncate">{product.name}</p>
+                              <p className="hidden md:block text-[10px] text-muted font-mono truncate">{product.slug}</p>
                             </div>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="px-3 py-1 bg-surface-elevated text-ink text-xs font-bold rounded-full">{product.category}</span>
+                        <td className="px-4 md:px-6 py-4 hidden sm:table-cell">
+                          <span className="px-3 py-1 bg-surface-elevated text-ink text-[10px] font-bold rounded-full">{product.category}</span>
                         </td>
-                        <td className="px-6 py-4 font-bold text-ink">
+                        <td className="px-4 md:px-6 py-4 font-bold text-ink text-xs md:text-base text-right md:text-left">
                           {formatCurrency(product.price)}
                         </td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
-                            <Link to={`/product/${product.slug}`} target="_blank" className="p-2 text-muted hover:text-primary transition-colors">
-                              <ExternalLink size={18} />
-                            </Link>
-                            <button onClick={() => handleEditProduct(product)} className="p-2 text-muted hover:text-primary transition-colors">
-                              <Edit size={18} />
-                            </button>
-                            <button onClick={() => handleDeleteProduct(product.id)} className="p-2 text-muted hover:text-m-red transition-colors">
-                              <Trash2 size={18} />
-                            </button>
+                        <td className="px-4 md:px-6 py-4">
+                          <div className="flex items-center justify-end gap-1 md:gap-3">
+                        <Link to={`/product/${product.slug}`} target="_blank" className="p-1.5 md:p-2 text-muted hover:text-primary transition-colors">
+                          <ExternalLink size={16} className="md:w-[18px]" />
+                        </Link>
+                        <button onClick={() => handleEditProduct(product)} className="p-1.5 md:p-2 text-muted hover:text-primary transition-colors">
+                          <Edit size={16} className="md:w-[18px]" />
+                        </button>
+                        <button onClick={() => handleDeleteProduct(product.id)} className="p-1.5 md:p-2 text-muted hover:text-m-red transition-colors">
+                          <Trash2 size={16} className="md:w-[18px]" />
+                        </button>
                           </div>
                         </td>
                       </tr>
@@ -413,12 +413,12 @@ export default function AdminDashboard() {
                 <table className="w-full text-left">
                   <thead>
                     <tr className="bg-canvas border-b border-hairline">
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Order ID</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Customer</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Total</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Status</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Date</th>
-                      <th className="px-6 py-4 text-xs font-bold uppercase tracking-wider text-muted">Actions</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Order ID</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Customer</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Total</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Status</th>
+                      <th className="px-4 md:px-6 py-4 hidden md:table-cell text-xs font-bold uppercase tracking-wider text-muted">Date</th>
+                      <th className="px-4 md:px-6 py-4 text-[10px] md:text-xs font-bold uppercase tracking-wider text-muted">Actions</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-hairline">
@@ -429,12 +429,12 @@ export default function AdminDashboard() {
                     ) : orders.map(order => (
                       <React.Fragment key={order.id}>
                         <tr className="hover:bg-canvas/50 transition-colors">
-                          <td className="px-6 py-4">
-                            <span className="font-mono text-xs text-ink">#{order.id.substring(0, 8)}</span>
+                          <td className="px-4 md:px-6 py-4">
+                            <span className="font-mono text-[10px] md:text-xs text-ink">#{order.id.substring(0, 8)}</span>
                           </td>
-                          <td className="px-6 py-4">
-                            <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'Guest'}</p>
-                            <p className="text-[10px] text-muted truncate max-w-[150px]">
+                          <td className="px-4 md:px-6 py-4">
+                            <p className="text-xs md:text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'Guest'}</p>
+                            <p className="hidden md:block text-[10px] text-muted truncate max-w-[150px]">
                               {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') 
                                 ? order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[0] 
                                 : order.shipping_address}
@@ -445,17 +445,17 @@ export default function AdminDashboard() {
                               </p>
                             )}
                           </td>
-                          <td className="px-6 py-4 font-bold text-ink">
+                          <td className="px-4 md:px-6 py-4 font-bold text-ink text-xs md:text-base">
                             {formatCurrency(order.total_amount)}
                           </td>
-                          <td className="px-6 py-4">
+                          <td className="px-4 md:px-6 py-4">
                             <div className="flex items-center gap-2">
                               <select 
                                 disabled={isSubmitting || order.status === 'completed'}
                                 value={order.status} 
                                 onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
                                 className={cn(
-                                  "text-[10px] uppercase tracking-widest font-bold px-4 py-2 rounded-xl outline-none border transition-all cursor-pointer appearance-none text-center min-w-[120px]",
+                                  "text-[8px] md:text-[10px] uppercase tracking-tighter md:tracking-widest font-bold px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl outline-none border transition-all cursor-pointer appearance-none text-center min-w-[80px] md:min-w-[120px]",
                                   order.status === 'pending' && "bg-warning/10 text-warning border-warning/20 hover:bg-warning/20",
                                   order.status === 'completed' && "bg-success/10 text-success border-success/20 hover:bg-success/20",
                                   order.status === 'cancelled' && "bg-m-red/10 text-m-red border-m-red/20 hover:bg-m-red/20"
