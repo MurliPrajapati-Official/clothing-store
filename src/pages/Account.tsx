@@ -334,7 +334,7 @@ export default function Account() {
                     <div className="text-center py-20 bg-canvas rounded-2xl border border-hairline">
                       <Package size={64} className="mx-auto text-muted mb-4 opacity-10" />
                       <p className="text-muted text-lg mb-6">No orders found in your account.</p>
-                      <Link to="/shop" className="btn-primary inline-block px-12">Start Shopping</Link>
+                      <Link to="/shop" className="btn-primary inline-flex px-12">Start Shopping</Link>
                     </div>
                   ) : (
                     <div className="space-y-4">

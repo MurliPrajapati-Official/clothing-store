@@ -276,7 +276,7 @@ export default function TrackOrder() {
           <div className="text-center py-12 bg-surface-card rounded-3xl border border-hairline">
             <Package size={48} className="mx-auto text-muted mb-4 opacity-20" />
             <p className="text-muted mb-6">You haven't placed any orders yet.</p>
-            <Link to="/shop" className="btn-primary inline-block px-8">Shop Now</Link>
+            <Link to="/shop" className="btn-primary inline-flex px-8">Shop Now</Link>
           </div>
         )}
       </div>
