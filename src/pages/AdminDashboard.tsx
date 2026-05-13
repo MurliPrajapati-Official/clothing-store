@@ -147,14 +147,15 @@ export default function AdminDashboard() {
 
     const setupAdmin = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase();
+      const adminEmails = import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase().split(',').map((e: string) => e.trim()) || [];
+      const userEmail = session?.user?.email?.toLowerCase();
       
       if (!isMounted) return;
 
       if (!session) {
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/account'), 3000);
-      } else if (adminEmail && session.user.email?.toLowerCase() !== adminEmail) {
+      } else if (adminEmails.length > 0 && !adminEmails.includes(userEmail)) {
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/'), 3000);
       } else {
