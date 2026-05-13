@@ -181,7 +181,7 @@ export default function Footer() {
                   </li>
                   <li className="flex gap-4 items-center overflow-hidden">
                     <Mail className="text-warning shrink-0" size={20} />
-                    <span className="break-all sm:break-normal">contact@uniformtrendsbywea.com</span>
+                    <span className="break-all sm:break-normal">uniformtrends01@gmail.com</span>
                   </li>
                 </ul>
                 <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated flex items-center justify-center p-6 text-center">

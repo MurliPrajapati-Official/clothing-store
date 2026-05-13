@@ -39,7 +39,7 @@ export default function PrivacyPolicy() {
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">5. Contact Us</h2>
-              <p>If you have questions or comments about this policy, you may email us at privacy@uniformtrendsbywea.com or by post to our business address.</p>
+              <p>If you have questions or comments about this policy, you may email us at uniformtrends01@gmail.com or by post to our business address.</p>
             </section>
           </div>
         </motion.div>

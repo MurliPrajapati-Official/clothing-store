@@ -9,19 +9,38 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsLoading(false);
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("access_key", "8190947b-d4f0-4b2b-9e41-e8a594d8b734");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setIsSubmitted(true);
+      } else {
+        setError(data.message || "Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setError("Network error. Please check your connection.");
+    } finally {
       setIsSubmitting(false);
-      setIsSubmitted(true);
-    }, 1500);
+    }
   };
 
   if (isLoading) {
@@ -77,7 +96,7 @@ export default function Contact() {
                 <div>
                   <h3 className="text-lg font-bold text-ink mb-1">Email</h3>
                   <p className="text-muted font-light mb-2">Our friendly team is here to help.</p>
-                  <a href="mailto:contact@uniformtrendsbywea.com" className="text-primary font-medium hover:underline">contact@uniformtrendsbywea.com</a>
+                  <a href="mailto:uniformtrends01@gmail.com" className="text-primary font-medium hover:underline">uniformtrends01@gmail.com</a>
                 </div>
               </div>
             </div>
@@ -122,28 +141,28 @@ export default function Contact() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Full Name</label>
-                    <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="John Doe" />
+                    <input name="name" required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="John Doe" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Email Address</label>
-                    <input required type="email" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="john@company.com" />
+                    <input name="email" required type="email" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="john@company.com" />
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Phone Number</label>
-                    <input required type="tel" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="+91xxxxxxxxxx" />
+                    <input name="phone" required type="tel" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="+91xxxxxxxxxx" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-semibold text-ink">Institution/Company Name</label>
-                    <input required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="Enter" />
+                    <input name="company" required type="text" className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors" placeholder="Enter" />
                   </div>
                 </div>
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-ink">Category of Interest</label>
-                  <select required className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors appearance-none">
+                  <select name="category" required className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors appearance-none">
                     <option value="" disabled selected>Select a category...</option>
                     {CATEGORIES.map(cat => (
                       <option key={cat} value={cat.toLowerCase()}>{cat} Uniforms</option>
@@ -153,8 +172,12 @@ export default function Contact() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-ink">Message / Bulk Order Details</label>
-                  <textarea required rows={5} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors resize-none" placeholder="Tell us about your requirements, sizes, quantities..."></textarea>
+                  <textarea name="message" required rows={5} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 focus:border-primary outline-none transition-colors resize-none" placeholder="Tell us about your requirements, sizes, quantities..."></textarea>
                 </div>
+
+                {error && (
+                  <p className="text-m-red text-sm font-medium">{error}</p>
+                )}
 
                 <button
                   type="submit"
