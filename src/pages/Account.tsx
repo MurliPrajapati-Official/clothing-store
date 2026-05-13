@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, Lock, Settings, LogOut, Package, ChevronRight, Phone, MapPin, Loader2, ShieldCheck } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import AccountSkeleton from '../components/layout/AccountSkeleton';
 import { cn, formatCurrency } from '../lib/utils';
@@ -13,6 +13,8 @@ export default function Account() {
   const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'settings'>('profile');
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const redirectTo = searchParams.get('redirect');
 
   // Form fields
   const [email, setEmail] = useState('');
@@ -107,6 +109,9 @@ export default function Account() {
       } else {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
+        if (redirectTo) {
+          navigate(`/${redirectTo}`);
+        }
       }
     } catch (err: any) {
       setAuthError(err.message || 'Authentication failed');
@@ -162,6 +167,12 @@ export default function Account() {
             {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h1>
           <form className="space-y-5 mt-8" onSubmit={handleAuth}>
+            {redirectTo === 'checkout' && (
+              <div className="p-4 mb-6 bg-primary/10 border border-primary/20 text-ink rounded-xl text-sm font-bold flex items-center gap-3">
+                <ShieldCheck className="text-primary shrink-0" size={18} />
+                <span>Please login or signup to complete your purchase.</span>
+              </div>
+            )}
             {authError && <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-xs">{authError}</div>}
             {successMsg && <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 rounded-xl text-xs">{successMsg}</div>}
 

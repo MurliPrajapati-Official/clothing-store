@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
@@ -12,6 +12,7 @@ import QuickViewModal from '../components/product/QuickViewModal';
 import ProductDetailSkeleton from '../components/product/ProductDetailSkeleton';
 import ProductReviews from '../components/product/ProductReviews';
 import { Product } from '../types';
+import { supabase } from '../lib/supabase';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -50,6 +51,7 @@ const splitDescription = (text: string) => {
 
 export default function ProductDetail() {
   const { slug } = useParams();
+  const navigate = useNavigate();
   
   const [product, setProduct] = useState<Product | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -178,11 +180,18 @@ export default function ProductDetail() {
   const school = SCHOOLS.find(s => s.id === product.schoolId);
   const exists = isInWishlist(product.id);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize) {
       alert('Please select a size');
       return;
     }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      navigate('/account?redirect=checkout');
+      return;
+    }
+
     addItem(product, selectedSize, quantity);
   };
 

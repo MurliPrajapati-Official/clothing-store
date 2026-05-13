@@ -5,6 +5,8 @@ import { formatCurrency, cn } from '../../lib/utils';
 import { useState } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '../../lib/supabase';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -42,11 +44,21 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
 
   const exists = isInWishlist(product.id);
 
-  const handleAddToCart = () => {
+  const navigate = useNavigate();
+
+  const handleAddToCart = async () => {
     if (!selectedSize) {
       alert('Please select a size');
       return;
     }
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      onClose();
+      navigate('/account?redirect=checkout');
+      return;
+    }
+
     addItem(product, selectedSize, quantity);
     onClose();
   };

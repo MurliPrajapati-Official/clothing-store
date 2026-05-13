@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ChevronRight, CheckCircle2, CreditCard, Wallet, Truck, ShieldCheck, Loader2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { formatCurrency, cn } from '../lib/utils';
@@ -26,6 +26,8 @@ export default function Checkout() {
 
   const [savedAddressExists, setSavedAddressExists] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     // Check for saved local address cache
     const savedAddress = localStorage.getItem('uniformTrends_savedAddress');
@@ -37,9 +39,12 @@ export default function Checkout() {
       if (session?.user) {
         setUserId(session.user.id);
         setUserEmail(session.user.email || '');
+      } else {
+        // Redirect to login if not authenticated
+        navigate('/account?redirect=checkout');
       }
     });
-  }, []);
+  }, [navigate]);
 
   const total = getTotalPrice();
 
