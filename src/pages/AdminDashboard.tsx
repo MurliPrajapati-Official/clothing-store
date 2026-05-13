@@ -96,6 +96,24 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDeleteOrder = async (id: string) => {
+    if (!window.confirm('Are you sure you want to permanently delete this cancelled order?')) return;
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/orders/${id}`, { method: 'DELETE' });
+      if (res.ok) {
+        setSuccessMsg('Order deleted successfully');
+        fetchOrders();
+        fetchStats();
+      } else {
+        const err = await res.json();
+        setErrorMsg(err.error || 'Failed to delete order');
+      }
+    } catch (err) {
+      setErrorMsg('Failed to delete order');
+    }
+  };
+
   const handleDeleteProduct = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     
@@ -444,6 +462,15 @@ export default function AdminDashboard() {
                                >
                                  {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
                                </button>
+                               {order.status === 'cancelled' && (
+                                 <button 
+                                   onClick={() => handleDeleteOrder(order.id)}
+                                   className="p-1.5 bg-m-red/10 text-m-red rounded-lg border border-m-red/20 hover:bg-m-red hover:text-white transition-all shadow-sm"
+                                   title="Delete Cancelled Order"
+                                 >
+                                   <Trash2 size={14} />
+                                 </button>
+                               )}
                              </div>
                           </td>
                         </tr>
