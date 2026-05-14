@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { supabase, verifyAdmin } from '../index';
+import { supabase, verifyAdmin } from '../supabase';
 
 const router = express.Router();
 

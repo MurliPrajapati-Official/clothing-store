@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
-import { supabase, verifyAdmin } from '../index'; 
+import { supabase, verifyAdmin } from '../supabase'; 
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }); // Store file in memory for direct upload to Supabase

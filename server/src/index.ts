@@ -55,40 +55,7 @@ app.get('/', (req: Request, res: Response) => {
   res.send('<h1>Uniform Trends API is Running</h1><p>The server is connected and ready for requests.</p>');
 });
 
-// Supabase Client Initialization
-const supabaseUrl = process.env.SUPABASE_URL || '';
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
-export const supabase = createClient(supabaseUrl, supabaseKey);
-
-// Admin Verification Middleware
-const ADMIN_EMAILS = ['murliprajapati228@gmail.com', 'uniformtrends01@gmail.com'];
-
-export const verifyAdmin = async (req: Request, res: Response, next: any) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader) {
-      return res.status(401).json({ error: 'Authentication required' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-
-    if (error || !user) {
-      return res.status(401).json({ error: 'Invalid or expired session' });
-    }
-
-    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
-      // Add user to request for use in routes if needed
-      (req as any).user = user;
-      next();
-    } else {
-      console.warn(`Unauthorized admin access attempt by: ${user.email}`);
-      res.status(403).json({ error: 'Access denied: Administrator privileges required' });
-    }
-  } catch (err) {
-    res.status(500).json({ error: 'Internal server error during authorization' });
-  }
-};
+import { supabase, verifyAdmin } from './supabase';
 
 // Routes
 import productRoutes from './routes/products';

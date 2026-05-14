@@ -168,6 +168,7 @@ export default function AdminDashboard() {
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/account'), 3000);
       } else {
+        console.log('Current User Email:', session.user.email);
         // Verify admin status with backend
         try {
           const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
