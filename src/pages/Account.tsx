@@ -238,6 +238,15 @@ export default function Account() {
                 </div>
               </div>
 
+              {import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase().split(',').map((e: string) => e.trim()).includes(session.user.email?.toLowerCase()) && (
+                <Link 
+                  to="/admin-8822"
+                  className="flex items-center gap-3 w-full p-3 mb-6 bg-primary/10 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/20"
+                >
+                  <ShieldCheck size={18} /> Admin Dashboard
+                </Link>
+              )}
+
               <nav className="flex lg:flex-col gap-1 md:gap-2 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-2 px-2 pb-2 lg:p-0 justify-between lg:justify-start">
                 {[
                   { id: 'profile', label: 'Profile', icon: User },

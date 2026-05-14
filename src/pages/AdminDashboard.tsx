@@ -145,55 +145,59 @@ export default function AdminDashboard() {
     let isMounted = true;
     let interval: any;
 
-    const setupAdmin = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    const setupAdmin = async (currentSession?: any) => {
+      const session = currentSession || (await supabase.auth.getSession()).data.session;
       const adminEmails = import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase().split(',').map((e: string) => e.trim()) || [];
       const userEmail = session?.user?.email?.toLowerCase();
       
       if (!isMounted) return;
 
       if (!session) {
+        console.log('Admin check: No session found');
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/account'), 3000);
       } else if (adminEmails.length > 0 && !adminEmails.includes(userEmail)) {
+        console.log('Admin check: Unauthorized user email:', userEmail);
+        console.log('Allowed admin emails:', adminEmails);
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/'), 3000);
       } else {
+        console.log('Admin check: Authorized as:', userEmail);
         setIsAdmin(true);
         fetchStats();
         fetchProducts();
         fetchOrders();
         
         // Auto-refresh every 30 seconds for "smooth detection"
-        interval = setInterval(() => {
-           fetchStats();
-           fetchOrders();
-        }, 30000);
+        if (!interval) {
+          interval = setInterval(() => {
+             fetchStats();
+             fetchOrders();
+          }, 30000);
+        }
       }
     };
 
     setupAdmin();
 
     // 1. Realtime Listener for instant updates
-    // This allows the dashboard to update immediately when a user cancels or places an order
     const ordersChannel = supabase
       .channel('admin-orders-live')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
         (payload) => {
-          console.log('Realtime Order Change Detected:', payload);
-          fetchOrders(); // Refresh orders list
-          fetchStats();  // Refresh stats
+          fetchOrders();
+          fetchStats();
         }
       )
       .subscribe();
 
     // 2. Listen for auth changes to handle direct URL entries robustly
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
-       if (session && isAdmin === false) {
-          setupAdmin(); // Re-check if session suddenly becomes available
-       }
+      if (isMounted) {
+        setupAdmin(session);
+      }
     });
 
     return () => {
@@ -244,6 +248,35 @@ export default function AdminDashboard() {
       setIsSubmitting(false);
     }
   };
+
+  if (isAdmin === null) {
+    return (
+      <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-4">
+        <Loader2 size={48} className="text-primary animate-spin mb-6" />
+        <h2 className="text-2xl font-bold text-ink">Verifying Admin Access...</h2>
+        <p className="text-muted mt-2">Please wait while we secure your session.</p>
+      </div>
+    );
+  }
+
+  if (isAdmin === false) {
+    return (
+      <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-4 text-center">
+        <div className="w-20 h-20 bg-m-red/10 text-m-red rounded-full flex items-center justify-center mb-6">
+          <ShieldAlert size={40} />
+        </div>
+        <h2 className="text-3xl font-bold text-ink mb-4">Access Denied</h2>
+        <p className="text-muted max-w-md mx-auto mb-8">
+          You do not have administrative privileges to access this area. 
+          You will be redirected shortly.
+        </p>
+        <div className="flex gap-4">
+          <button onClick={() => navigate('/account')} className="btn-primary px-8">Sign In</button>
+          <button onClick={() => navigate('/')} className="px-8 py-3 bg-surface-elevated text-ink font-bold rounded-xl border border-hairline hover:bg-hairline transition-all">Go Home</button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
