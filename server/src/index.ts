@@ -31,20 +31,24 @@ const allowedOrigins = [
   'http://localhost:5174',
   'https://uniformtrends.in',
   'https://www.uniformtrends.in',
-  'http://uniformtrends.in',
-  'http://www.uniformtrends.in'
+  'https://uniformtrends.onrender.com',
+  'https://uniform-trends-backend.onrender.com'
 ].filter(Boolean) as string[];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1 || process.env.NODE_ENV !== 'production') {
+    // Allow if no origin (like mobile apps or curl) or if in allowed list
+    if (!origin || allowedOrigins.includes(origin) || !process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
+      console.log('CORS Blocked for origin:', origin);
       callback(new Error('Unauthorized by Security Policy (CORS)'));
     }
   },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  credentials: true
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  credentials: true,
+  maxAge: 86400 // Cache preflight for 24 hours
 }));
 
 app.use(express.json());
