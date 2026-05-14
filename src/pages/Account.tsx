@@ -244,7 +244,7 @@ export default function Account() {
       <Helmet>
         <title>My Account | Uniform trends</title>
       </Helmet>
-      <div className="container mx-auto px-4 max-w-6xl">
+      <div className="container mx-auto px-4 max-w-[1600px]">
         {successMsg && (
           <div className="mb-6 p-4 bg-success/10 border border-success/20 text-success rounded-xl text-sm font-bold text-center">
             {successMsg}
@@ -439,7 +439,7 @@ export default function Account() {
                                   </div>
                                   <div className="bg-surface-card p-4 rounded-lg border border-hairline shadow-sm">
                                     <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
-                                    <p className="text-sm font-bold text-ink">Cash on Delivery / Bulk Invoice</p>
+                                    <p className="text-sm font-bold text-ink">Online Payment / Bulk Invoice</p>
                                   </div>
                                 </div>
                               </div>

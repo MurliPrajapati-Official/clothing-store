@@ -61,7 +61,7 @@ export default function Contact() {
         <link rel="canonical" href="https://uniformtrends.in/contact" />
       </Helmet>
 
-      <div className="container-custom max-w-7xl">
+      <div className="container-custom">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

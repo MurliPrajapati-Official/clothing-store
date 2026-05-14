@@ -184,12 +184,17 @@ export default function Footer() {
                     <span className="break-all sm:break-normal">uniformtrends01@gmail.com</span>
                   </li>
                 </ul>
-                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated flex items-center justify-center p-6 text-center">
-                  <div className="flex flex-col items-center gap-3">
-                    <MapPin className="text-warning" size={32} />
-                    <p className="text-sm font-medium text-ink">Supplying Across India</p>
-                    <p className="text-[11px] text-muted leading-tight">National manufacturing & delivery network for all institutions.</p>
-                  </div>
+                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
+                  <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4506.666925674507!2d85.33548!3d23.367912!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e1!3m2!1sen!2sin!4v1778774668294!5m2!1sen!2sin"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    allowFullScreen
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    title="Office Location"
+                  ></iframe>
                 </div>
               </>
             )}
@@ -267,7 +272,6 @@ export default function Footer() {
                 <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">VISA</div>
                 <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">MASTER</div>
                 <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">UPI</div>
-                <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">COD</div>
               </>
             )}
           </div>

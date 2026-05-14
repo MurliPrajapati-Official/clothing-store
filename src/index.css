@@ -1,6 +1,41 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
+/* 
+ * GLOBAL WIDE LAYOUT OVERRIDE
+ * This ensures the site fills large monitors (up to 1900px)
+ */
+.container, .container-custom {
+  max-width: 1900px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}
+
+@media (min-width: 640px) {
+  .container, .container-custom {
+    padding-left: 1.5rem !important;
+    padding-right: 1.5rem !important;
+  }
+}
+
+@media (min-width: 1024px) {
+  .container, .container-custom {
+    padding-left: 2rem !important;
+    padding-right: 2rem !important;
+  }
+}
+
+@media (min-width: 1536px) {
+  .container, .container-custom {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
+  }
+}
+
+
 @theme {
   --color-primary: #2ecc71;
   --color-ink: #f8f9fa;
@@ -109,10 +144,7 @@
 
 @layer components {
 
-  /* Step 2 & 5: Flexible Main Container with responsive padding */
-  .container-custom {
-    @apply mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl w-full;
-  }
+  /* Step 2 & 5: Flexible Main Container with responsive padding handled globally above */
 
   .btn-primary {
     @apply h-12 px-8 rounded-full bg-primary text-on-primary font-medium flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)];

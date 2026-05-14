@@ -348,7 +348,7 @@ export default function AdminDashboard() {
         <title>Admin Panel | Uniform Trends</title>
       </Helmet>
 
-      <div className="container mx-auto px-4 max-w-6xl overflow-hidden">
+      <div className="container mx-auto px-4 max-w-[1600px] overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-8">
           <div className="text-center lg:text-left">
             <h1 className="text-3xl md:text-4xl font-bold text-ink tracking-tight">Admin Control Panel</h1>
@@ -610,7 +610,7 @@ export default function AdminDashboard() {
                                      </div>
                                      <div className="bg-canvas p-4 rounded-lg border border-hairline">
                                        <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
-                                       <p className="text-sm font-bold text-ink">Cash on Delivery / Bulk Invoice</p>
+                                       <p className="text-sm font-bold text-ink">Online Payment / Bulk Invoice</p>
                                      </div>
                                    </div>
                                  </div>
