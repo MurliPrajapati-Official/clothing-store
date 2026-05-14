@@ -13,6 +13,7 @@ import ProductDetailSkeleton from '../components/product/ProductDetailSkeleton';
 import ProductReviews from '../components/product/ProductReviews';
 import { Product } from '../types';
 import { supabase } from '../lib/supabase';
+import { getApiUrl } from '../config';
 
 const fadeUpVariant = {
   hidden: { opacity: 0, y: 40 },
@@ -67,12 +68,7 @@ export default function ProductDetail() {
     const fetchProduct = async () => {
       try {
         setIsLoading(true);
-        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        
-        // AUTO-DETECT PRODUCTION
-        if (window.location.hostname.includes('uniformtrends.in')) {
-          apiUrl = 'https://uniformtrends.onrender.com';
-        }
+        let apiUrl = getApiUrl();
         if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
 
         const response = await fetch(`${apiUrl}/api/products/${slug}`);
@@ -137,7 +133,7 @@ export default function ProductDetail() {
       setTimeout(() => {
         const fetchProduct = async () => {
           try {
-            const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            const apiUrl = getApiUrl();
             const response = await fetch(`${apiUrl}/api/products/${slug}`);
             if (response.ok) {
               const data = await response.json();

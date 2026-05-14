@@ -6,6 +6,7 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import AccountSkeleton from '../components/layout/AccountSkeleton';
 import { cn, formatCurrency } from '../lib/utils';
+import { getApiUrl } from '../config';
 
 export default function Account() {
   const [session, setSession] = useState<any>(null);
@@ -67,13 +68,6 @@ export default function Account() {
 
     return () => subscription.unsubscribe();
   }, []);
-
-  const getApiUrl = () => {
-    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:5000'
-      : `https://${window.location.hostname.replace('www.', '')}/api`; 
-  };
 
   const fetchOrders = async (userId: string, userEmail: string) => {
     try {

@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
+import { getApiUrl } from '../config';
 import { ChevronRight, CheckCircle2, CreditCard, Wallet, Truck, ShieldCheck, Loader2 } from 'lucide-react';
 import { useCartStore } from '../store/cartStore';
 import { formatCurrency, cn } from '../lib/utils';
@@ -63,7 +64,7 @@ export default function Checkout() {
         }))
       };
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const response = await fetch(`${apiUrl}/api/orders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

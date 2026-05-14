@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Star, MessageSquare, User, Loader2, Send, CheckCircle2, Trash2 } from 'lucide-react';
 import { formatCurrency, cn } from '../../lib/utils';
 import { supabase } from '../../lib/supabase';
+import { getApiUrl } from '../../config';
 
 interface Review {
   id: string;
@@ -42,10 +43,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
       if (pageNum === 1) setIsLoading(true);
       else setIsLoadingMore(true);
 
-      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.in')) {
-        apiUrl = 'https://uniformtrends.onrender.com';
-      }
+      let apiUrl = getApiUrl();
       
       const res = await fetch(`${apiUrl}/api/reviews/${productId}?page=${pageNum}&limit=5`);
       const data = await res.json();
@@ -95,10 +93,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
     if (!window.confirm('Are you sure you want to delete your review?')) return;
 
     try {
-      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.in')) {
-        apiUrl = 'https://uniformtrends.onrender.com';
-      }
+      let apiUrl = getApiUrl();
       
       const response = await fetch(`${apiUrl}/api/reviews/${reviewId}`, {
         method: 'DELETE',
@@ -133,10 +128,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
 
     try {
       const { data: { session } } = await supabase.auth.getSession();
-      let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      if (window.location.hostname.includes('uniformtrends.in')) {
-        apiUrl = 'https://uniformtrends.onrender.com';
-      }
+      let apiUrl = getApiUrl();
       
       const response = await fetch(`${apiUrl}/api/reviews`, {
         method: 'POST',

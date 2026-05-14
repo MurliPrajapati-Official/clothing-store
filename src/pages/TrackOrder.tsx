@@ -4,6 +4,7 @@ import { Package, Search } from 'lucide-react';
 import React, { useState } from 'react';
 import { cn } from '../lib/utils';
 import { Link } from 'react-router-dom';
+import { getApiUrl } from '../config';
 
 export default function TrackOrder() {
   const [orderId, setOrderId] = useState('');
@@ -30,7 +31,7 @@ export default function TrackOrder() {
     setIsTracking(true);
     setError('');
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const response = await fetch(`${apiUrl}/api/orders/user/${userId}`);
       let data = [];
       if (response.ok) {
@@ -60,7 +61,7 @@ export default function TrackOrder() {
     setIsTracking(true);
     setError('');
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/orders`);
       if (res.ok) {
         const allOrders = await res.json();

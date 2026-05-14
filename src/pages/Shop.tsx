@@ -8,6 +8,7 @@ import ProductSkeleton from '../components/product/ProductSkeleton';
 import QuickViewModal from '../components/product/QuickViewModal';
 import { SCHOOLS, CATEGORIES } from '../constants';
 import { Product } from '../types';
+import { getApiUrl } from '../config';
 import { cn } from '../lib/utils';
 import { Loader2, ArrowLeft } from 'lucide-react';
 import Skeleton from '../components/ui/Skeleton';
@@ -116,12 +117,7 @@ export default function Shop() {
         setIsLoading(true);
         setFetchError(false);
 
-        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-
-        // Use production URL if running on the live domain
-        if (window.location.hostname.includes('uniformtrends.in')) {
-          apiUrl = 'https://uniformtrends.onrender.com';
-        }
+        let apiUrl = getApiUrl();
 
         if (apiUrl.endsWith('/')) apiUrl = apiUrl.slice(0, -1);
 

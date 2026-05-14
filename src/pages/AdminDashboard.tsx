@@ -6,6 +6,7 @@ import { supabase } from '../lib/supabase';
 import { useNavigate, Link } from 'react-router-dom';
 import { Product } from '../types';
 import { formatCurrency, cn } from '../lib/utils';
+import { getApiUrl } from '../config';
 import { CATEGORIES } from '../constants';
 
 export default function AdminDashboard() {
@@ -24,13 +25,6 @@ export default function AdminDashboard() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   
   const navigate = useNavigate();
-
-  const getApiUrl = () => {
-    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
-    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
-      ? 'http://localhost:5000'
-      : `https://${window.location.hostname.replace('www.', '')}/api`; 
-  };
 
   const adminFetch = async (url: string, options: any = {}) => {
     const { data: { session } } = await supabase.auth.getSession();

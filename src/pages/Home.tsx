@@ -24,6 +24,8 @@ const staggerContainer = {
   }
 };
 
+import { getApiUrl } from '../config';
+
 export default function Home() {
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 1000], [0, 400]);
@@ -36,12 +38,7 @@ export default function Home() {
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        let apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        
-        // AUTO-DETECT PRODUCTION
-        if (window.location.hostname.includes('uniformtrends.in')) {
-          apiUrl = 'https://uniformtrends.onrender.com';
-        }
+        let apiUrl = getApiUrl();
         
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
