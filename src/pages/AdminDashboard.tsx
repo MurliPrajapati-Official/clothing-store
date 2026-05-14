@@ -25,6 +25,13 @@ export default function AdminDashboard() {
   
   const navigate = useNavigate();
 
+  const getApiUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:5000'
+      : `https://${window.location.hostname.replace('www.', '')}/api`; 
+  };
+
   const adminFetch = async (url: string, options: any = {}) => {
     const { data: { session } } = await supabase.auth.getSession();
     const token = session?.access_token;
@@ -40,7 +47,7 @@ export default function AdminDashboard() {
 
   const fetchStats = async () => {
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/stats`);
       const data = await res.json();
       setStats(data);
@@ -52,7 +59,7 @@ export default function AdminDashboard() {
   const fetchProducts = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/products`);
       const data = await res.json();
       setProducts(data);
@@ -66,7 +73,7 @@ export default function AdminDashboard() {
   const fetchOrders = async () => {
     try {
       setIsLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/orders`);
       const data = await res.json();
       setOrders(data);
@@ -87,7 +94,7 @@ export default function AdminDashboard() {
     setErrorMsg('');
     setSuccessMsg('');
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/orders/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
@@ -113,7 +120,7 @@ export default function AdminDashboard() {
   const handleDeleteOrder = async (id: string) => {
     if (!window.confirm('Are you sure you want to permanently delete this cancelled order?')) return;
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/orders/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSuccessMsg('Order deleted successfully');
@@ -132,7 +139,7 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to delete this product?')) return;
     
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await adminFetch(`${apiUrl}/api/products/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSuccessMsg('Product deleted successfully');
@@ -171,7 +178,7 @@ export default function AdminDashboard() {
         console.log('Current User Email:', session.user.email);
         // Verify admin status with backend
         try {
-          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+          const apiUrl = getApiUrl();
           const res = await adminFetch(`${apiUrl}/api/admin/check`);
           
           if (res.ok) {
@@ -187,12 +194,16 @@ export default function AdminDashboard() {
               }, 30000);
             }
           } else {
-            console.log('Backend rejected admin status');
+            const errorData = await res.json();
+            console.error('Admin Access Denied:', errorData.error);
+            setErrorMsg(`Admin Verification Failed: ${errorData.error}`);
             setIsAdmin(false);
-            setTimeout(() => isMounted && navigate('/'), 3000);
+            // Don't redirect immediately so user can see the error
+            setTimeout(() => isMounted && navigate('/'), 10000);
           }
-        } catch (err) {
-          console.error('Admin verification failed', err);
+        } catch (err: any) {
+          console.error('Admin verification connection failed', err);
+          setErrorMsg(`Server Connection Error: ${err.message}`);
           setIsAdmin(false);
         }
       }
@@ -235,7 +246,7 @@ export default function AdminDashboard() {
     setSuccessMsg('');
 
     const formData = new FormData(e.currentTarget);
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+    const apiUrl = getApiUrl();
     
     if (editingProduct) {
       // Add existing images if no new image is uploaded
@@ -286,9 +297,11 @@ export default function AdminDashboard() {
           <ShieldAlert size={40} />
         </div>
         <h2 className="text-3xl font-bold text-ink mb-4">Access Denied</h2>
+        <p className="text-m-red font-bold mb-4 bg-m-red/5 p-3 rounded-lg border border-m-red/10">
+          Error: {errorMsg || 'Your account does not have administrator privileges.'}
+        </p>
         <p className="text-muted max-w-md mx-auto mb-8">
-          You do not have administrative privileges to access this area. 
-          You will be redirected shortly.
+          Logged in as: <span className="font-bold text-ink">{session?.user?.email}</span>
         </p>
         <div className="flex gap-4">
           <button onClick={() => navigate('/account')} className="btn-primary px-8">Sign In</button>

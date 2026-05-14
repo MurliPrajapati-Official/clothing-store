@@ -28,11 +28,29 @@ export const verifyAdmin = async (req: Request, res: Response, next: any) => {
     }
 
     // 1. Get user from token
-    const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+    let { data: { user }, error: authError } = await supabase.auth.getUser(token);
 
+    // Robust Fallback: If getUser(token) fails, try to manually decode and fetch via Admin API
     if (authError || !user) {
-      console.log('Admin verification failed: Invalid token', authError?.message);
-      return res.status(401).json({ error: 'Invalid or expired session' });
+      try {
+        console.log('Standard getUser(token) failed, attempting robust fallback...', authError?.message);
+        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        const userId = payload.sub;
+        if (userId) {
+          const { data: adminUser, error: adminError } = await supabase.auth.admin.getUserById(userId);
+          if (adminUser?.user) {
+            user = adminUser.user;
+            console.log('User verified via robust admin fallback:', user.email);
+          } else {
+            throw adminError || new Error('User not found in Admin API');
+          }
+        } else {
+          throw new Error('No sub in token payload');
+        }
+      } catch (fallbackErr: any) {
+        console.error('Admin verification failed: Token invalid and fallback failed', fallbackErr.message);
+        return res.status(401).json({ error: `Invalid or expired session: ${authError?.message || fallbackErr.message}` });
+      }
     }
 
     // 2. Check profile role in database

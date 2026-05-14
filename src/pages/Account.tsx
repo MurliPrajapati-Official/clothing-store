@@ -68,10 +68,17 @@ export default function Account() {
     return () => subscription.unsubscribe();
   }, []);
 
+  const getApiUrl = () => {
+    if (import.meta.env.VITE_API_URL) return import.meta.env.VITE_API_URL;
+    return window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+      ? 'http://localhost:5000'
+      : `https://${window.location.hostname.replace('www.', '')}/api`; 
+  };
+
   const fetchOrders = async (userId: string, userEmail: string) => {
     try {
       setOrdersLoading(true);
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const response = await fetch(`${apiUrl}/api/orders/user/${userId}`);
       let data = [];
       if (response.ok) {
@@ -99,7 +106,7 @@ export default function Account() {
   const checkAdminStatus = async (s: any) => {
     if (!s) return;
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
       const res = await fetch(`${apiUrl}/api/admin/check`, {
         headers: {
           'Authorization': `Bearer ${s.access_token}`
