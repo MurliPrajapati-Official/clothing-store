@@ -186,7 +186,7 @@ export default function Home() {
                 <ShieldCheck size={28} />
               </div>
               <h4 className="font-bold text-xl text-ink mb-3">Sustainable and Unheatable</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Stitched to precision to withstand daily wear and tear for years to come.</p>
+              <p className="text-muted text-sm font-light leading-relaxed">Eco-friendly fabrics and breathable designs that stay cool in any environment.</p>
             </motion.div>
           </motion.div>
         </div>
