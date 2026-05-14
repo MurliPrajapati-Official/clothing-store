@@ -169,6 +169,7 @@ export default function AdminDashboard() {
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/account'), 3000);
       } else {
+        setUserEmail(session.user.email || '');
         console.log('Current User Email:', session.user.email);
         // Verify admin status with backend
         try {
@@ -295,7 +296,7 @@ export default function AdminDashboard() {
           Error: {errorMsg || 'Your account does not have administrator privileges.'}
         </p>
         <p className="text-muted max-w-md mx-auto mb-8">
-          Logged in as: <span className="font-bold text-ink">{session?.user?.email}</span>
+          Logged in as: <span className="font-bold text-ink">{userEmail}</span>
         </p>
         <div className="flex gap-4">
           <button onClick={() => navigate('/account')} className="btn-primary px-8">Sign In</button>
