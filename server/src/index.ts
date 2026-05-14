@@ -14,7 +14,7 @@ const port = process.env.PORT || 5000;
 // Prevents Brute Force attacks by limiting requests from the same IP
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: 500, // Increased limit for smoother admin dashboard operation
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' }

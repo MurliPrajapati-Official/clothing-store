@@ -23,6 +23,7 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [hasInitialData, setHasInitialData] = useState(false);
   
   const navigate = useNavigate();
 
@@ -156,83 +157,118 @@ export default function AdminDashboard() {
     setActiveTab('manage');
   };
 
+  // 1. Auth & Admin Verification Effect
   useEffect(() => {
     let isMounted = true;
-    let interval: any;
 
-    const setupAdmin = async (currentSession?: any) => {
-      const session = currentSession || (await supabase.auth.getSession()).data.session;
-      
-      if (!isMounted) return;
-
+    const verifyAdminStatus = async (session: any) => {
       if (!session) {
-        setIsAdmin(false);
-        setTimeout(() => isMounted && navigate('/account'), 3000);
-      } else {
+        if (isMounted) {
+          setIsAdmin(false);
+          setTimeout(() => isMounted && navigate('/account'), 3000);
+        }
+        return;
+      }
+
+      if (isMounted) {
         setUserEmail(session.user.email || '');
-        console.log('Current User Email:', session.user.email);
-        // Verify admin status with backend
-        try {
-          const apiUrl = getApiUrl();
-          const res = await adminFetch(`${apiUrl}/api/admin/check`);
-          
+      }
+
+      try {
+        const apiUrl = getApiUrl();
+        const res = await adminFetch(`${apiUrl}/api/admin/check`);
+        
+        if (isMounted) {
           if (res.ok) {
             setIsAdmin(true);
-            fetchStats();
-            fetchProducts();
-            fetchOrders();
-            
-            if (!interval) {
-              interval = setInterval(() => {
-                 fetchStats();
-                 fetchOrders();
-              }, 30000);
-            }
           } else {
             const errorData = await res.json();
             console.error('Admin Access Denied:', errorData.error);
             setErrorMsg(`Admin Verification Failed: ${errorData.error}`);
             setIsAdmin(false);
-            // Don't redirect immediately so user can see the error
-            setTimeout(() => isMounted && navigate('/'), 10000);
+            setTimeout(() => isMounted && navigate('/'), 5000);
           }
-        } catch (err: any) {
-          console.error('Admin verification connection failed', err);
+        }
+      } catch (err: any) {
+        console.error('Admin verification connection failed', err);
+        if (isMounted) {
           setErrorMsg(`Server Connection Error: ${err.message}`);
           setIsAdmin(false);
         }
       }
     };
 
-    setupAdmin();
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isMounted) verifyAdminStatus(session);
+    });
 
-    // 1. Realtime Listener for instant updates
+    // Listen for auth changes
+    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((event, session) => {
+      // Only re-verify on major auth events to avoid loops
+      if (isMounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED')) {
+        verifyAdminStatus(session);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      authSub.unsubscribe();
+    };
+  }, [navigate]);
+
+  // 2. Data Fetching Effect (Depends on Admin Status)
+  useEffect(() => {
+    let isMounted = true;
+    let interval: any;
+
+    if (isAdmin === true && !hasInitialData) {
+      const loadData = async () => {
+        await Promise.all([
+          fetchStats(),
+          fetchProducts(),
+          fetchOrders()
+        ]);
+        if (isMounted) setHasInitialData(true);
+      };
+      
+      loadData();
+
+      // Setup background refresh
+      interval = setInterval(() => {
+        if (isMounted) {
+          fetchStats();
+          fetchOrders();
+        }
+      }, 60000); // Refresh every minute instead of 30s to be more stable
+    }
+
+    return () => {
+      isMounted = false;
+      if (interval) clearInterval(interval);
+    };
+  }, [isAdmin, hasInitialData]);
+
+  // 3. Realtime Listener Effect
+  useEffect(() => {
+    if (isAdmin !== true) return;
+
     const ordersChannel = supabase
-      .channel('admin-orders-live')
+      .channel('admin-orders-live-updates')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'orders' },
-        (payload) => {
+        () => {
           fetchOrders();
           fetchStats();
         }
       )
       .subscribe();
 
-    // 2. Listen for auth changes to handle direct URL entries robustly
-    const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (isMounted) {
-        setupAdmin(session);
-      }
-    });
-
     return () => {
-      isMounted = false;
-      if (interval) clearInterval(interval);
       supabase.removeChannel(ordersChannel);
-      authSub.unsubscribe();
     };
-  }, [navigate]);
+  }, [isAdmin]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
