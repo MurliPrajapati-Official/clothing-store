@@ -185,7 +185,7 @@ export default function Home() {
               <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
                 <ShieldCheck size={28} />
               </div>
-              <h4 className="font-bold text-xl text-ink mb-3">Unbeatable Durability</h4>
+              <h4 className="font-bold text-xl text-ink mb-3">Sustainable and Unheatable</h4>
               <p className="text-muted text-sm font-light leading-relaxed">Stitched to precision to withstand daily wear and tear for years to come.</p>
             </motion.div>
           </motion.div>
