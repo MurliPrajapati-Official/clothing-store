@@ -26,6 +26,7 @@ export default function Account() {
   const [orders, setOrders] = useState<any[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   // Local Address Cache State
   const [addressData, setAddressData] = useState({
@@ -50,6 +51,7 @@ export default function Account() {
       setIsLoading(false);
       if (s?.user) {
         fetchOrders(s.user.id, s.user.email || '');
+        checkAdminStatus(s);
       }
     });
 
@@ -57,6 +59,9 @@ export default function Account() {
       setSession(s);
       if (s?.user) {
         fetchOrders(s.user.id, s.user.email || '');
+        checkAdminStatus(s);
+      } else {
+        setIsAdmin(false);
       }
     });
 
@@ -88,6 +93,25 @@ export default function Account() {
       console.error("Failed to fetch orders", err);
     } finally {
       setOrdersLoading(false);
+    }
+  };
+
+  const checkAdminStatus = async (s: any) => {
+    if (!s) return;
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const res = await fetch(`${apiUrl}/api/admin/check`, {
+        headers: {
+          'Authorization': `Bearer ${s.access_token}`
+        }
+      });
+      if (res.ok) {
+        setIsAdmin(true);
+      } else {
+        setIsAdmin(false);
+      }
+    } catch (err) {
+      console.error('Failed to check admin status', err);
     }
   };
 
@@ -238,7 +262,7 @@ export default function Account() {
                 </div>
               </div>
 
-              {import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase().split(',').map((e: string) => e.trim()).includes(session.user.email?.toLowerCase()) && (
+              {isAdmin && (
                 <Link 
                   to="/admin-8822"
                   className="flex items-center gap-3 w-full p-3 mb-6 bg-primary/10 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/20"
@@ -246,6 +270,7 @@ export default function Account() {
                   <ShieldCheck size={18} /> Admin Dashboard
                 </Link>
               )}
+
 
               <nav className="flex lg:flex-col gap-1 md:gap-2 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-2 px-2 pb-2 lg:p-0 justify-between lg:justify-start">
                 {[

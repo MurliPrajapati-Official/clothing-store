@@ -1,6 +1,6 @@
 import express, { Request, Response } from 'express';
 import multer from 'multer';
-import { supabase } from '../index'; // Will need to ensure this works later
+import { supabase, verifyAdmin } from '../index'; 
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() }); // Store file in memory for direct upload to Supabase
@@ -36,8 +36,8 @@ router.get('/:slug', async (req: Request, res: Response) => {
   }
 });
 
-// POST a new product (Admin Only - Requires Auth later)
-router.post('/', upload.single('image'), async (req: Request, res: Response) => {
+// POST a new product (Admin Only)
+router.post('/', verifyAdmin, upload.single('image'), async (req: Request, res: Response) => {
   try {
     const {
       name, slug, price, original_price, description,
@@ -99,7 +99,7 @@ router.post('/', upload.single('image'), async (req: Request, res: Response) => 
 });
 
 // UPDATE a product
-router.put('/:id', upload.single('image'), async (req: Request, res: Response) => {
+router.put('/:id', verifyAdmin, upload.single('image'), async (req: Request, res: Response) => {
   try {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(req.params.id)) {
@@ -209,7 +209,7 @@ router.get('/related/:id', async (req: Request, res: Response) => {
 });
 
 // DELETE a product
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', verifyAdmin, async (req: Request, res: Response) => {
   try {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(req.params.id)) {

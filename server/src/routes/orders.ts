@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { supabase } from '../index';
+import { supabase, verifyAdmin } from '../index';
 
 const router = express.Router();
 
@@ -134,7 +134,7 @@ router.get('/user/:userId', async (req: Request, res: Response) => {
 });
 
 // GET all orders (Admin only)
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', verifyAdmin, async (req: Request, res: Response) => {
   try {
     const { data, error } = await supabase
       .from('orders')
@@ -190,7 +190,7 @@ router.patch('/:id', async (req: Request, res: Response) => {
 });
 
 // DELETE an order
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', verifyAdmin, async (req: Request, res: Response) => {
   try {
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(req.params.id)) {

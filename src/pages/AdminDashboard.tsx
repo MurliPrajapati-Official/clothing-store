@@ -21,13 +21,27 @@ export default function AdminDashboard() {
   const [orders, setOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null);
   
   const navigate = useNavigate();
+
+  const adminFetch = async (url: string, options: any = {}) => {
+    const { data: { session } } = await supabase.auth.getSession();
+    const token = session?.access_token;
+    
+    return fetch(url, {
+      ...options,
+      headers: {
+        ...options.headers,
+        'Authorization': `Bearer ${token || ''}`,
+      }
+    });
+  };
 
   const fetchStats = async () => {
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/stats`);
+      const res = await adminFetch(`${apiUrl}/api/stats`);
       const data = await res.json();
       setStats(data);
     } catch (err) {
@@ -39,7 +53,7 @@ export default function AdminDashboard() {
     try {
       setIsLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/products`);
+      const res = await adminFetch(`${apiUrl}/api/products`);
       const data = await res.json();
       setProducts(data);
     } catch (err) {
@@ -53,7 +67,7 @@ export default function AdminDashboard() {
     try {
       setIsLoading(true);
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/orders`);
+      const res = await adminFetch(`${apiUrl}/api/orders`);
       const data = await res.json();
       setOrders(data);
     } catch (err) {
@@ -74,7 +88,7 @@ export default function AdminDashboard() {
     setSuccessMsg('');
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/orders/${id}`, {
+      const res = await adminFetch(`${apiUrl}/api/orders/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status })
@@ -100,7 +114,7 @@ export default function AdminDashboard() {
     if (!window.confirm('Are you sure you want to permanently delete this cancelled order?')) return;
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/orders/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`${apiUrl}/api/orders/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSuccessMsg('Order deleted successfully');
         fetchOrders();
@@ -119,7 +133,7 @@ export default function AdminDashboard() {
     
     try {
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-      const res = await fetch(`${apiUrl}/api/products/${id}`, { method: 'DELETE' });
+      const res = await adminFetch(`${apiUrl}/api/products/${id}`, { method: 'DELETE' });
       if (res.ok) {
         setSuccessMsg('Product deleted successfully');
         fetchProducts();
@@ -147,33 +161,38 @@ export default function AdminDashboard() {
 
     const setupAdmin = async (currentSession?: any) => {
       const session = currentSession || (await supabase.auth.getSession()).data.session;
-      const adminEmails = import.meta.env.VITE_ADMIN_EMAIL?.toLowerCase().split(',').map((e: string) => e.trim()) || [];
-      const userEmail = session?.user?.email?.toLowerCase();
       
       if (!isMounted) return;
 
       if (!session) {
-        console.log('Admin check: No session found');
         setIsAdmin(false);
         setTimeout(() => isMounted && navigate('/account'), 3000);
-      } else if (adminEmails.length > 0 && !adminEmails.includes(userEmail)) {
-        console.log('Admin check: Unauthorized user email:', userEmail);
-        console.log('Allowed admin emails:', adminEmails);
-        setIsAdmin(false);
-        setTimeout(() => isMounted && navigate('/'), 3000);
       } else {
-        console.log('Admin check: Authorized as:', userEmail);
-        setIsAdmin(true);
-        fetchStats();
-        fetchProducts();
-        fetchOrders();
-        
-        // Auto-refresh every 30 seconds for "smooth detection"
-        if (!interval) {
-          interval = setInterval(() => {
-             fetchStats();
-             fetchOrders();
-          }, 30000);
+        // Verify admin status with backend
+        try {
+          const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+          const res = await adminFetch(`${apiUrl}/api/admin/check`);
+          
+          if (res.ok) {
+            setIsAdmin(true);
+            fetchStats();
+            fetchProducts();
+            fetchOrders();
+            
+            if (!interval) {
+              interval = setInterval(() => {
+                 fetchStats();
+                 fetchOrders();
+              }, 30000);
+            }
+          } else {
+            console.log('Backend rejected admin status');
+            setIsAdmin(false);
+            setTimeout(() => isMounted && navigate('/'), 3000);
+          }
+        } catch (err) {
+          console.error('Admin verification failed', err);
+          setIsAdmin(false);
         }
       }
     };
@@ -227,7 +246,7 @@ export default function AdminDashboard() {
         ? `${apiUrl}/api/products/${editingProduct.id}`
         : `${apiUrl}/api/products`;
         
-      const response = await fetch(url, {
+      const response = await adminFetch(url, {
         method: editingProduct ? 'PUT' : 'POST',
         body: formData,
       });

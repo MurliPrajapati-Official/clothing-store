@@ -29,7 +29,10 @@ const allowedOrigins = [
   'http://localhost:3000', 
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://uniformtrends.in'
+  'https://uniformtrends.in',
+  'https://www.uniformtrends.in',
+  'http://uniformtrends.in',
+  'http://www.uniformtrends.in'
 ].filter(Boolean) as string[];
 
 app.use(cors({
@@ -53,10 +56,39 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 // Supabase Client Initialization
-// NOTE: These should be added to a .env file later
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+// Admin Verification Middleware
+const ADMIN_EMAILS = ['murliprajapati228@gmail.com', 'uniformtrends01@gmail.com'];
+
+export const verifyAdmin = async (req: Request, res: Response, next: any) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (!authHeader) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const token = authHeader.split(' ')[1];
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+
+    if (error || !user) {
+      return res.status(401).json({ error: 'Invalid or expired session' });
+    }
+
+    if (user.email && ADMIN_EMAILS.includes(user.email.toLowerCase())) {
+      // Add user to request for use in routes if needed
+      (req as any).user = user;
+      next();
+    } else {
+      console.warn(`Unauthorized admin access attempt by: ${user.email}`);
+      res.status(403).json({ error: 'Access denied: Administrator privileges required' });
+    }
+  } catch (err) {
+    res.status(500).json({ error: 'Internal server error during authorization' });
+  }
+};
 
 // Routes
 import productRoutes from './routes/products';
@@ -70,8 +102,13 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
 });
 
+// Admin check route for frontend UI
+app.get('/api/admin/check', verifyAdmin, (req: Request, res: Response) => {
+  res.json({ isAdmin: true });
+});
+
 // Admin Stats route
-app.get('/api/stats', async (req: Request, res: Response) => {
+app.get('/api/stats', verifyAdmin, async (req: Request, res: Response) => {
   try {
     const { count: productCount, error: pError } = await supabase
       .from('products')
