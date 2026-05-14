@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Heart, Star, Ruler, Plus, Minus } from 'lucide-react';
 import { Product } from '../../types';
 import { formatCurrency, cn } from '../../lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useNavigate } from 'react-router-dom';
@@ -39,14 +39,20 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
-
-  if (!product) return null;
-
-  const exists = isInWishlist(product.id);
-
   const navigate = useNavigate();
 
+  // Reset state when product changes to avoid carrying over selection from previous product
+  useEffect(() => {
+    if (product) {
+      setSelectedSize('');
+      setQuantity(1);
+    }
+  }, [product?.id]);
+
+  const exists = product ? isInWishlist(product.id) : false;
+
   const handleAddToCart = async () => {
+    if (!product) return;
     if (!selectedSize) {
       alert('Please select a size');
       return;

@@ -70,21 +70,12 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           <button
             onClick={toggleWishlist}
             className={
-              `absolute top-4 right-4 p-2.5 rounded-full transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-10
+              `absolute top-4 right-4 p-2.5 rounded-full transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.5)] z-20
               ${exists ? 'bg-m-red text-white' : 'bg-surface-card/80 backdrop-blur-md text-ink hover:bg-surface-card hover:text-m-red'}`
             }
           >
             <Heart size={18} fill={exists ? "currentColor" : "none"} />
           </button>
-
-          <div className="absolute inset-x-4 bottom-4 translate-y-8 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 z-10">
-            <button 
-              onClick={handleQuickView}
-              className="w-full bg-surface-card/90 backdrop-blur-md text-ink font-bold py-3 rounded-xl uppercase tracking-widest text-[11px] shadow-2xl hover:bg-primary hover:text-on-primary flex items-center justify-center gap-2 transition-all"
-            >
-              <ShoppingBag size={14} /> Quick View
-            </button>
-          </div>
         </div>
 
         <div className="p-5 flex-1 flex flex-col text-left">
@@ -111,6 +102,16 @@ export default function ProductCard({ product, onQuickView }: ProductCardProps) 
           </div>
         </div>
       </Link>
+
+      {/* Quick View Button - Moved outside Link to prevent nested interactive element issues */}
+      <div className="absolute inset-x-4 top-[calc(50%-28px)] md:top-auto md:bottom-[130px] translate-y-8 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 z-30 pointer-events-none group-hover:pointer-events-auto">
+        <button 
+          onClick={handleQuickView}
+          className="w-full bg-surface-card/95 backdrop-blur-md text-ink font-bold py-3 rounded-xl uppercase tracking-widest text-[11px] shadow-2xl hover:bg-primary hover:text-on-primary flex items-center justify-center gap-2 transition-all border border-hairline"
+        >
+          <ShoppingBag size={14} /> Quick View
+        </button>
+      </div>
     </motion.div>
   );
 }
