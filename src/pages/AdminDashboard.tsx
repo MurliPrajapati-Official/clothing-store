@@ -24,6 +24,7 @@ export default function AdminDashboard() {
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [hasInitialData, setHasInitialData] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const navigate = useNavigate();
 
@@ -149,11 +150,13 @@ export default function AdminDashboard() {
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setActiveTab('add');
+    setImagePreview(product.images?.[0] || null);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancelEdit = () => {
     setEditingProduct(null);
+    setImagePreview(null);
     setActiveTab('manage');
   };
 
@@ -270,6 +273,19 @@ export default function AdminDashboard() {
     };
   }, [isAdmin]);
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -302,6 +318,7 @@ export default function AdminDashboard() {
       setSuccessMsg(`Product ${editingProduct ? 'updated' : 'added'} successfully!`);
       if (!editingProduct) (e.target as HTMLFormElement).reset();
       setEditingProduct(null);
+      setImagePreview(null);
       fetchProducts();
       fetchStats();
     } catch (err: any) {
@@ -386,6 +403,7 @@ export default function AdminDashboard() {
             <button 
               onClick={() => {
                 setEditingProduct(null);
+                setImagePreview(null);
                 setActiveTab('add');
               }}
               className={cn(
@@ -743,15 +761,28 @@ export default function AdminDashboard() {
 
               <div>
                 <label className="block text-sm font-bold text-ink mb-2">Product Image {editingProduct && '(Leave blank to keep existing)'}</label>
-                <div className="relative w-full h-32 rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors flex items-center justify-center bg-canvas group cursor-pointer overflow-hidden">
-                  <input type="file" name="image" accept="image/*" required={!editingProduct} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" />
-                  <div className="flex flex-col items-center text-muted group-hover:text-primary transition-colors pointer-events-none">
-                    <ImageIcon size={32} className="mb-2" />
-                    <span className="text-sm font-medium">{editingProduct ? 'Change image (optional)' : 'Click to upload image'}</span>
-                  </div>
-                  {editingProduct && editingProduct.images && editingProduct.images[0] && (
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-20 h-20 rounded-lg border border-hairline overflow-hidden opacity-50">
-                       <img src={editingProduct.images[0]} alt="" className="w-full h-full object-cover" />
+                <div className="relative w-full h-48 rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors flex items-center justify-center bg-canvas group cursor-pointer overflow-hidden">
+                  <input 
+                    type="file" 
+                    name="image" 
+                    accept="image/*" 
+                    required={!editingProduct} 
+                    onChange={handleImageChange}
+                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                  />
+                  
+                  {imagePreview ? (
+                    <div className="absolute inset-0 w-full h-full">
+                      <img src={imagePreview} alt="Preview" className="w-full h-full object-contain" />
+                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                        <ImageIcon size={32} className="text-white" />
+                        <span className="ml-2 text-white font-bold">Change Image</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col items-center text-muted group-hover:text-primary transition-colors pointer-events-none">
+                      <ImageIcon size={32} className="mb-2" />
+                      <span className="text-sm font-medium">{editingProduct ? 'Change image (optional)' : 'Click to upload image'}</span>
                     </div>
                   )}
                 </div>
