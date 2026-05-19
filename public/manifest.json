@@ -1,0 +1,17 @@
+{
+  "name": "Uniform Trends by WEA",
+  "short_name": "Uniform Trends",
+  "description": "Premium school, corporate, and hospital uniforms in India. Custom tailoring, durable fabrics, and bulk supplies.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#D1262B",
+  "icons": [
+    {
+      "src": "/images/logo.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
