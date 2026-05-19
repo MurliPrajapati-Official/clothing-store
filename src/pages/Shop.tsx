@@ -10,7 +10,7 @@ import { SCHOOLS, CATEGORIES } from '../constants';
 import { Product } from '../types';
 import { getApiUrl } from '../config';
 import { cn } from '../lib/utils';
-import { Loader2, ArrowLeft } from 'lucide-react';
+import { Loader2, ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
 import Skeleton from '../components/ui/Skeleton';
 
 const fadeUpVariant = {
@@ -106,6 +106,7 @@ export default function Shop() {
   const [isLoading, setIsLoading] = useState(true);
   const [isUsingFallback, setIsUsingFallback] = useState(false);
   const [fetchError, setFetchError] = useState(false);
+  const [mobilePage, setMobilePage] = useState(1);
 
   useEffect(() => {
     setSearchQuery(searchParams.get('q') || '');
@@ -192,6 +193,17 @@ export default function Shop() {
     if (sortBy === 'newest') return b.id.localeCompare(a.id);
     return 0;
   });
+
+  useEffect(() => {
+    setMobilePage(1);
+  }, [categoryFilter.length, schoolFilter, gradeFilter, genderFilter, searchQuery, sortBy]);
+
+  const MOBILE_PRODUCTS_PER_PAGE = 8;
+  const totalMobilePages = Math.ceil(filteredProducts.length / MOBILE_PRODUCTS_PER_PAGE);
+  const paginatedMobileProducts = filteredProducts.slice(
+    (mobilePage - 1) * MOBILE_PRODUCTS_PER_PAGE,
+    mobilePage * MOBILE_PRODUCTS_PER_PAGE
+  );
 
   const clearFilters = () => {
     setSearchParams({});
@@ -543,35 +555,111 @@ export default function Shop() {
             </div>
           ) : filteredProducts.length > 0 ? (
             <motion.div>
-              {/* Mobile Dual Independent Carousels */}
-              <div className="lg:hidden space-y-6 pb-8">
-                {/* Row 1 */}
+              {/* Mobile Paginated Grid */}
+              <div className="lg:hidden pb-4">
                 <motion.div
                   variants={staggerContainer}
                   initial={false}
                   animate="visible"
-                  className="flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory scrollbar-hide"
+                  className="grid grid-cols-2 gap-3.5 mb-8"
                 >
-                  {filteredProducts.filter((_, i) => i % 2 === 0).map((product) => (
-                    <div key={product.id} className="snap-start min-w-[min(70vw,260px)]">
-                      <ProductCard product={product} onQuickView={setQuickViewProduct} />
-                    </div>
+                  {paginatedMobileProducts.map((product) => (
+                    <motion.div key={product.id} variants={fadeUpVariant}>
+                      <ProductCard product={product} onQuickView={setQuickViewProduct} compact={true} />
+                    </motion.div>
                   ))}
                 </motion.div>
 
-                {/* Row 2 */}
-                <motion.div
-                  variants={staggerContainer}
-                  initial={false}
-                  animate="visible"
-                  className="flex overflow-x-auto -mx-4 px-4 gap-4 snap-x snap-mandatory scrollbar-hide"
-                >
-                  {filteredProducts.filter((_, i) => i % 2 !== 0).map((product) => (
-                    <div key={product.id} className="snap-start min-w-[min(70vw,260px)]">
-                      <ProductCard product={product} onQuickView={setQuickViewProduct} />
-                    </div>
-                  ))}
-                </motion.div>
+                {/* Mobile Pagination */}
+                {totalMobilePages > 1 && (
+                  <div className="flex items-center justify-center gap-1.5 py-6 border-t border-hairline/30 mb-8 select-none">
+                    {/* Left Arrow */}
+                    <button
+                      onClick={() => {
+                        setMobilePage(prev => Math.max(1, prev - 1));
+                        window.scrollTo({ top: 320, behavior: 'smooth' });
+                      }}
+                      disabled={mobilePage === 1}
+                      className={cn(
+                        "w-9 h-9 rounded-xl border border-hairline bg-surface-card flex items-center justify-center shadow-sm transition-all active:scale-90",
+                        mobilePage === 1 ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-primary hover:text-primary"
+                      )}
+                      aria-label="Previous Page"
+                    >
+                      <ChevronLeft size={16} />
+                    </button>
+
+                    {/* Page Numbers */}
+                    {Array.from({ length: Math.min(4, totalMobilePages) }, (_, idx) => {
+                      const pageNum = idx + 1;
+                      const isActive = mobilePage === pageNum;
+                      return (
+                        <button
+                          key={pageNum}
+                          onClick={() => {
+                            setMobilePage(pageNum);
+                            window.scrollTo({ top: 320, behavior: 'smooth' });
+                          }}
+                          className={cn(
+                            "w-9 h-9 rounded-xl border text-xs font-bold transition-all active:scale-90 flex items-center justify-center",
+                            isActive
+                              ? "bg-primary border-primary text-on-primary shadow-lg shadow-primary/25"
+                              : "border-hairline bg-surface-card text-muted hover:text-ink hover:border-muted"
+                          )}
+                        >
+                          {pageNum}
+                        </button>
+                      );
+                    })}
+
+                    {/* "more pages" display / button */}
+                    {totalMobilePages > 4 && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setMobilePage(prev => Math.min(totalMobilePages, Math.max(5, prev + 1)));
+                            window.scrollTo({ top: 320, behavior: 'smooth' });
+                          }}
+                          className={cn(
+                            "px-3 h-9 rounded-xl border border-hairline bg-surface-card text-[11px] font-bold text-muted hover:text-ink hover:border-muted transition-all active:scale-90 flex items-center justify-center whitespace-nowrap",
+                            mobilePage > 4 && mobilePage < totalMobilePages && "border-primary/50 text-primary bg-primary/5"
+                          )}
+                        >
+                          more pages
+                        </button>
+
+                        {/* Active indicator for pages beyond 4 */}
+                        {mobilePage > 4 && (
+                          <button
+                            onClick={() => {
+                              setMobilePage(mobilePage);
+                              window.scrollTo({ top: 320, behavior: 'smooth' });
+                            }}
+                            className="w-9 h-9 rounded-xl border bg-primary border-primary text-on-primary shadow-lg shadow-primary/25 text-xs font-bold flex items-center justify-center"
+                          >
+                            {mobilePage}
+                          </button>
+                        )}
+                      </>
+                    )}
+
+                    {/* Right Arrow */}
+                    <button
+                      onClick={() => {
+                        setMobilePage(prev => Math.min(totalMobilePages, prev + 1));
+                        window.scrollTo({ top: 320, behavior: 'smooth' });
+                      }}
+                      disabled={mobilePage === totalMobilePages}
+                      className={cn(
+                        "w-9 h-9 rounded-xl border border-hairline bg-surface-card flex items-center justify-center shadow-sm transition-all active:scale-90",
+                        mobilePage === totalMobilePages ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-primary hover:text-primary"
+                      )}
+                      aria-label="Next Page"
+                    >
+                      <ChevronRight size={16} />
+                    </button>
+                  </div>
+                )}
               </div>
 
               {/* Desktop Grid */}

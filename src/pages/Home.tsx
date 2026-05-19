@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { motion, useScroll, useTransform } from 'motion/react';
-import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory } from 'lucide-react';
+import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
+import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import ProductCard from '../components/product/ProductCard';
 import ProductSkeleton from '../components/product/ProductSkeleton';
@@ -33,6 +33,7 @@ export default function Home() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const heroOpacity = useTransform(scrollY, [0, 500], [1, 0]);
 
   useEffect(() => {
@@ -155,38 +156,38 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-50px" }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"
+            className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8"
           >
-            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-                <Star size={28} />
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-4 md:p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-4 md:mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Star className="w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h4 className="font-bold text-xl text-ink mb-3">Premium Fabrics</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Breathable, skin-friendly, and easy to wash materials selected for daily wear.</p>
+              <h4 className="font-extrabold text-sm md:text-xl text-ink mb-2 md:mb-3">Premium Fabrics</h4>
+              <p className="text-ink/80 text-[12px] md:text-sm font-normal leading-relaxed">Breathable, skin-friendly, and easy to wash materials selected for daily wear.</p>
             </motion.div>
 
-            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-                <Scissors size={28} />
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-4 md:p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-4 md:mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Scissors className="w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h4 className="font-bold text-xl text-ink mb-3">Custom Fits & Tailoring</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Ensuring every individual feels comfortable and confident in their everyday attire.</p>
+              <h4 className="font-extrabold text-sm md:text-xl text-ink mb-2 md:mb-3">Custom Fits & Tailoring</h4>
+              <p className="text-ink/80 text-[12px] md:text-sm font-normal leading-relaxed">Ensuring every individual feels comfortable and confident in their everyday attire.</p>
             </motion.div>
 
-            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-                <Factory size={28} />
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-4 md:p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-4 md:mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <Factory className="w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h4 className="font-bold text-xl text-ink mb-3">Bulk Order Specialists</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Timely delivery and consistent quality for institutions of all sizes.</p>
+              <h4 className="font-extrabold text-sm md:text-xl text-ink mb-2 md:mb-3">Bulk Order Specialists</h4>
+              <p className="text-ink/80 text-[12px] md:text-sm font-normal leading-relaxed">Timely delivery and consistent quality for institutions of all sizes.</p>
             </motion.div>
 
-            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
-              <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
-                <ShieldCheck size={28} />
+            <motion.div variants={fadeUpVariant} className="flex flex-col items-center text-center p-4 md:p-6 bg-canvas rounded-2xl border border-hairline shadow-[0_2px_10px_rgba(0,0,0,0.02)]">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-4 md:mb-6 text-primary shadow-[0_4px_20px_rgba(0,0,0,0.05)]">
+                <ShieldCheck className="w-5 h-5 md:w-7 md:h-7" />
               </div>
-              <h4 className="font-bold text-xl text-ink mb-3">Sustainable and Unheatable</h4>
-              <p className="text-muted text-sm font-light leading-relaxed">Eco-friendly fabrics and breathable designs that stay cool in any environment.</p>
+              <h4 className="font-extrabold text-sm md:text-xl text-ink mb-2 md:mb-3">Sustainable Workwear</h4>
+              <p className="text-ink/80 text-[12px] md:text-sm font-normal leading-relaxed">Eco-friendly fabrics and breathable designs that stay cool in any environment.</p>
             </motion.div>
           </motion.div>
         </div>
@@ -336,14 +337,14 @@ export default function Home() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: "-20px" }}
-            className="flex flex-col md:flex-row items-end justify-between mb-12 gap-6"
+            className="flex flex-row items-end justify-between mb-12 gap-4"
           >
             <div>
-              <h2 className="text-4xl font-bold text-ink tracking-tight mb-2">Ready to Ship</h2>
-              <p className="text-muted font-light">Our most popular standard garments.</p>
+              <h2 className="text-2xl md:text-4xl font-bold text-ink tracking-tight mb-1 md:mb-2">Ready to Ship</h2>
+              <p className="text-muted text-xs md:text-sm font-light">Our most popular standard garments.</p>
             </div>
-            <Link to="/shop" className="text-ink font-semibold hover:text-primary flex items-center gap-2 transition-colors">
-              View All Products <ArrowRight size={18} />
+            <Link to="/shop" className="text-ink text-xs md:text-base font-bold hover:text-primary flex items-center gap-1.5 transition-colors whitespace-nowrap shrink-0">
+              View All Products <ArrowRight size={14} className="shrink-0" />
             </Link>
           </motion.div>
 
@@ -368,6 +369,88 @@ export default function Home() {
               ))
             )}
           </motion.div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-24 bg-canvas border-b border-hairline overflow-hidden">
+        <div className="container-custom max-w-4xl mx-auto">
+          <motion.div
+            variants={fadeUpVariant}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: "-20px" }}
+            className="text-center mb-16"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-ink tracking-tight mb-4">Frequently Asked Questions</h2>
+            <p className="text-lg text-muted font-light max-w-2xl mx-auto">
+              Everything you need to know about our premium uniform manufacturing process, customization options, and bulk orders.
+            </p>
+          </motion.div>
+
+          <div className="space-y-4">
+            {[
+              {
+                q: "What is the minimum order quantity (MOQ) for custom uniforms?",
+                a: "Since we are primary manufacturers, our standard MOQ for custom school and corporate uniform orders is 50 sets per style. However, we also offer standard ready-to-ship sizes with no minimum order requirements."
+              },
+              {
+                q: "Do you provide fabric swatches and samples before production?",
+                a: "Yes, absolutely. We offer physical fabric swatches and tailored fit samples to institutional buyers to inspect quality, weight, color fastness, and durability before mass production commences."
+              },
+              {
+                q: "Can we customize our uniforms with school/corporate logos and branding?",
+                a: "Yes. We offer premium computerized embroidery, high-definition screen printing, and heat-transfer vinyl customization for school crests, company logos, names, and customized tags."
+              },
+              {
+                q: "What is the typical delivery timeline for bulk orders?",
+                a: "For bulk institutional orders, production and delivery typically take 3 to 4 weeks depending on the order size and style customization. Ready-to-ship catalog items are dispatched within 2–3 business days."
+              },
+              {
+                q: "Do you offer a warranty or guarantee on your uniforms?",
+                a: "We take pride in our precision tailoring. All WEA uniforms undergo rigorous double-stitch reinforcement and color-fastness testing. We provide a full replacement guarantee against any manufacturing defects."
+              }
+            ].map((faq, index) => {
+              const isOpen = activeFaq === index;
+              return (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.08 }}
+                  className="border border-hairline rounded-2xl bg-surface-card overflow-hidden shadow-sm transition-all"
+                >
+                  <button
+                    onClick={() => setActiveFaq(isOpen ? null : index)}
+                    className="w-full px-6 py-5 flex items-center justify-between text-left transition-all hover:bg-surface-elevated/20"
+                  >
+                    <span className="font-bold text-base md:text-lg text-ink pr-4 leading-snug">
+                      {faq.q}
+                    </span>
+                    <span className="w-8 h-8 rounded-full border border-hairline bg-canvas flex items-center justify-center text-primary shrink-0 transition-transform duration-300">
+                      {isOpen ? <Minus size={16} className="text-ink" /> : <Plus size={16} className="text-ink" />}
+                    </span>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: "easeInOut" }}
+                      >
+                        <div className="px-6 pb-6 text-sm md:text-base text-muted font-light leading-relaxed border-t border-hairline/30 pt-4 bg-canvas/30">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </section>
 

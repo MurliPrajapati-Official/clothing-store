@@ -70,10 +70,10 @@ export default function Footer() {
                   Uniform Trends by WEA is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
                 </p>
                 <div className="flex gap-4">
-                  <a href="#" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                  <a href="#" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
                     <Facebook size={18} />
                   </a>
-                  <a href="https://www.instagram.com/walrie_exclusive_apparels/" target="_blank" rel="noopener noreferrer" className="p-2 bg-surface-card rounded-full hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                  <a href="https://www.instagram.com/walrie_exclusive_apparels/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
                     <Instagram size={18} />
                   </a>
                 </div>

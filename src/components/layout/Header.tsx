@@ -344,7 +344,7 @@ export default function Header() {
                   <button
                     onClick={() => setIsMobileShopOpen(!isMobileShopOpen)}
                     className={cn(
-                      "operator items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
+                      "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
                       location.pathname.startsWith('/shop') ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
                     )}
                   >
