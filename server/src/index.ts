@@ -10,11 +10,14 @@ import { rateLimit } from 'express-rate-limit';
 const app = express();
 const port = process.env.PORT || 5000;
 
+// Trust Cloudflare and Render reverse proxies to enable correct client IP detection for rate-limiting
+app.set('trust proxy', 1);
+
 // Security Layer: Rate Limiting
 // Prevents Brute Force attacks by limiting requests from the same IP
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 500, // Increased limit for smoother admin dashboard operation
+  max: 1000, // Safe high limit for dynamic client page loads and admin dashboards
   standardHeaders: true,
   legacyHeaders: false,
   message: { error: 'Too many requests, please try again later.' }
@@ -23,7 +26,7 @@ const limiter = rateLimit({
 // Apply rate limiter to all requests
 app.use(limiter);
 
-// Configure CORS - Restricted to authorized domains only
+// Configure CORS - Restricted to authorized domains and their subdomains
 const allowedOrigins = [
   process.env.FRONTEND_URL, 
   'http://localhost:3000', 
@@ -35,18 +38,31 @@ const allowedOrigins = [
   'https://uniform-trends-backend.onrender.com'
 ].filter(Boolean) as string[];
 
+const isOriginAllowed = (origin: string): boolean => {
+  if (allowedOrigins.includes(origin)) return true;
+  
+  // Custom check to allow any subdomain of uniformtrends.in under Cloudflare proxying
+  try {
+    const parsedUrl = new URL(origin);
+    const hostname = parsedUrl.hostname;
+    return hostname === 'uniformtrends.in' || hostname.endsWith('.uniformtrends.in');
+  } catch (e) {
+    return false;
+  }
+};
+
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow if no origin (like mobile apps or curl) or if in allowed list
-    if (!origin || allowedOrigins.includes(origin) || !process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
+    // Allow if no origin (like server-to-server or curl) or if origin is allowed
+    if (!origin || isOriginAllowed(origin) || !process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
       callback(null, true);
     } else {
-      console.log('CORS Blocked for origin:', origin);
+      console.warn('CORS Policy Denied request for origin:', origin);
       callback(new Error('Unauthorized by Security Policy (CORS)'));
     }
   },
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Forwarded-For'],
   credentials: true,
   maxAge: 86400 // Cache preflight for 24 hours
 }));
