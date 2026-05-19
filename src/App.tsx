@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import Lenis from 'lenis';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
+import CookieConsent from './components/layout/CookieConsent';
 import CartDrawer from './components/cart/CartDrawer';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -103,6 +104,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <CookieConsent />
 
         {/* Floating WhatsApp Button */}
         <a

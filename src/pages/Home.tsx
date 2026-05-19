@@ -40,7 +40,7 @@ export default function Home() {
     const fetchFeatured = async () => {
       try {
         let apiUrl = getApiUrl();
-        
+
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 8000);
 
@@ -144,9 +144,9 @@ export default function Home() {
               className="text-lg text-muted leading-relaxed font-light"
             >
               At Uniform Trends by WEA, we believe that the right attire fosters unity, professionalism, and confidence.
-              As a leading national uniform manufacturer, we specialize in high-performance garments for schools, 
-              hospitals, and industrial sectors across India. Whether you are equipping the next generation of students 
-              or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with 
+              As a leading national uniform manufacturer, we specialize in high-performance garments for schools,
+              hospitals, and industrial sectors across India. Whether you are equipping the next generation of students
+              or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with
               unmatched durability for the demanding climates.
             </motion.p>
           </div>
