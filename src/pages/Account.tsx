@@ -39,6 +39,8 @@ export default function Account() {
     pin: ''
   });
 
+  const lastProcessedTokenRef = React.useRef<string | undefined>(undefined);
+
   useEffect(() => {
     // Load local address cache
     const savedAddress = localStorage.getItem('uniformTrends_savedAddress');
@@ -47,26 +49,49 @@ export default function Account() {
         setAddressData(JSON.parse(savedAddress));
       } catch (e) { }
     }
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
+
+    let isMounted = true;
+
+    const handleSessionChange = (s: any) => {
+      if (!isMounted) return;
+
+      const token = s?.access_token;
+      // Skip if the session token hasn't changed to prevent duplicate requests / token refresh loops
+      if (token === lastProcessedTokenRef.current) {
+        setIsLoading(false);
+        return;
+      }
+
+      lastProcessedTokenRef.current = token;
       setSession(s);
       setIsLoading(false);
-      if (s?.user) {
-        fetchOrders(s.user.id, s.user.email || '');
-        checkAdminStatus(s);
-      }
-    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
-      setSession(s);
       if (s?.user) {
         fetchOrders(s.user.id, s.user.email || '');
         checkAdminStatus(s);
       } else {
         setIsAdmin(false);
       }
+    };
+
+    // Initial session check
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (isMounted) {
+        handleSessionChange(s);
+      }
     });
 
-    return () => subscription.unsubscribe();
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
+      if (isMounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
+        handleSessionChange(s);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const fetchOrders = async (userId: string, userEmail: string) => {

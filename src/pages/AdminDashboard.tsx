@@ -160,6 +160,8 @@ export default function AdminDashboard() {
     setActiveTab('manage');
   };
 
+  const lastProcessedTokenRef = React.useRef<string | undefined>(undefined);
+
   // 1. Auth & Admin Verification Effect
   useEffect(() => {
     let isMounted = true;
@@ -172,6 +174,14 @@ export default function AdminDashboard() {
         }
         return;
       }
+
+      const token = session.access_token;
+      // Skip duplicate checks to avoid infinite verification requests/token loops
+      if (token === lastProcessedTokenRef.current) {
+        return;
+      }
+
+      lastProcessedTokenRef.current = token;
 
       if (isMounted) {
         setUserEmail(session.user.email || '');
@@ -209,7 +219,7 @@ export default function AdminDashboard() {
     // Listen for auth changes
     const { data: { subscription: authSub } } = supabase.auth.onAuthStateChange((event, session) => {
       // Only re-verify on major auth events to avoid loops
-      if (isMounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED')) {
+      if (isMounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'USER_UPDATED' || event === 'TOKEN_REFRESHED')) {
         verifyAdminStatus(session);
       }
     });

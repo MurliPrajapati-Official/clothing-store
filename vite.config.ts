@@ -15,5 +15,8 @@ export default defineConfig(({mode}) => {
     server: {
       hmr: true,
     },
+    build: {
+      target: 'es2015',
+    },
   };
 });
