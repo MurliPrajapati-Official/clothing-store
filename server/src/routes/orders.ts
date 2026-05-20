@@ -1,10 +1,10 @@
 import { Hono } from 'hono';
-import { getSupabase, verifyAdmin, verifyUser } from '../supabase';
+import { getSupabase, verifyAdmin, verifyUser, rateLimiter } from '../supabase';
 
 const router = new Hono<{ Variables: { user: any } }>();
 
 // POST a new order (Checkout - secure user-locked version)
-router.post('/', verifyUser, async (c) => {
+router.post('/', rateLimiter(5, 60000), verifyUser, async (c) => {
   try {
     const supabase = getSupabase(c.env);
     const authenticatedUser = c.get('user');
@@ -96,7 +96,7 @@ router.post('/', verifyUser, async (c) => {
 });
 
 // POST secure track order for guest lookup
-router.post('/track', async (c) => {
+router.post('/track', rateLimiter(10, 60000), async (c) => {
   try {
     const supabase = getSupabase(c.env);
     const { orderId, email } = await c.req.json();

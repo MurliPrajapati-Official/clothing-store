@@ -140,3 +140,46 @@ export const verifyUser = createMiddleware(async (c, next) => {
     return c.json({ error: 'Internal server error during authentication' }, 500);
   }
 });
+
+// A lightweight, highly efficient IP-based Rate Limiter optimized for Cloudflare Workers
+const ipCache = new Map<string, number[]>();
+
+export const rateLimiter = (limit: number, windowMs: number = 60000) => {
+  return createMiddleware(async (c, next) => {
+    // Retrieve client IP address securely from Cloudflare's edge proxy headers
+    const ip = c.req.header('CF-Connecting-IP') || c.req.header('x-real-ip') || 'unknown';
+
+    if (ip === 'unknown') {
+      return await next(); // Allow if IP cannot be parsed, but bypass rate limits
+    }
+
+    const now = Date.now();
+    let timestamps = ipCache.get(ip) || [];
+
+    // Filter out old request timestamps outside the active sliding time window
+    timestamps = timestamps.filter(t => now - t < windowMs);
+
+    if (timestamps.length >= limit) {
+      console.warn(`[Security Alert] IP: ${ip} exceeded rate limit of ${limit} reqs per ${windowMs}ms on URL: ${c.req.url}`);
+      return c.json({
+        error: 'Too many requests',
+        details: 'We detected unusual request patterns from your device. Please try again after a short delay to ensure secure store operations.'
+      }, 429);
+    }
+
+    // Add current request timestamp
+    timestamps.push(now);
+    ipCache.set(ip, timestamps);
+
+    // Bounded cache maintenance to prevent worker memory exhaustion in high-traffic environments
+    if (ipCache.size > 5000) {
+      const keys = Array.from(ipCache.keys());
+      for (let i = 0; i < 500; i++) {
+        ipCache.delete(keys[i]);
+      }
+    }
+
+    await next();
+  });
+};
+

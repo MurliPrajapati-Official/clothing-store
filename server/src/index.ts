@@ -1,6 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
-import { getSupabase, verifyAdmin } from './supabase';
+import { getSupabase, verifyAdmin, rateLimiter } from './supabase';
 
 // Routes
 import productRoutes from './routes/products';
@@ -50,6 +50,9 @@ app.use('*', async (c, next) => {
 
   return corsMiddleware(c, next);
 });
+
+// Apply global edge rate limiting on all dynamic API endpoints (100 requests per minute per IP)
+app.use('/api/*', rateLimiter(100, 60000));
 
 // Root route
 app.get('/', (c) => {
