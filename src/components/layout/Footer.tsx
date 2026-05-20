@@ -63,11 +63,11 @@ export default function Footer() {
                     className="h-12 w-auto object-contain" 
                   />
                   <span className="font-black text-2xl tracking-tight text-ink">
-                    Uniform Trends by WEA
+                    Uniform Trends
                   </span>
                 </Link>
                 <p className="text-body-text mb-8 leading-relaxed font-light text-[15px]">
-                  Uniform Trends by WEA is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
+                  Uniform Trends is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
                 </p>
                 <div className="flex gap-4">
                   <a href="#" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
@@ -173,7 +173,7 @@ export default function Footer() {
                 <ul className="space-y-6 font-light text-body-text mb-8">
                   <li className="flex gap-4 items-start">
                     <MapPin className="text-warning shrink-0 mt-1" size={20} />
-                    <span>Uniform Trends (By WEA)<br />India</span>
+                    <span>Uniform Trends<br />India</span>
                   </li>
                   <li className="flex gap-4 items-center">
                     <Phone className="text-warning shrink-0" size={20} />
@@ -241,7 +241,7 @@ export default function Footer() {
               <div>
                 <h5 className="text-xs font-bold uppercase tracking-widest text-ink mb-4">Quality & Comfort</h5>
                 <p className="text-[12px] text-muted leading-relaxed font-light">
-                  Using anti-microbial, breathable, and durable fabrics designed by the experts at By WEA.
+                  Using anti-microbial, breathable, and durable fabrics designed by the experts at Uniform Trends.
                 </p>
               </div>
             </>
@@ -259,7 +259,7 @@ export default function Footer() {
             <Skeleton variant="text" className="w-64 h-4" />
           ) : (
             <p className="text-muted text-[13px] font-light uppercase tracking-wider">
-              © {new Date().getFullYear()} By WEA. ALL RIGHTS RESERVED.
+              © {new Date().getFullYear()} Uniform Trends. ALL RIGHTS RESERVED.
             </p>
           )}
           <div className="flex gap-4">

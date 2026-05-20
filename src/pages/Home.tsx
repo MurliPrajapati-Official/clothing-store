@@ -67,9 +67,9 @@ export default function Home() {
   return (
     <div className="flex flex-col bg-canvas text-body-text">
       <Helmet>
-        <title>Best School & Corporate Uniforms in India | Uniform Trends by WEA</title>
-        <meta name="description" content="Uniform Trends by WEA is India's top manufacturer for school uniforms in Mumbai, corporate wear in Delhi, and hospital scrubs. Premium quality, custom tailoring, and bulk supply." />
-        <meta name="keywords" content="school uniforms India, best school uniforms Mumbai, corporate uniform manufacturers, hospital scrubs wholesale, uniform supplier Delhi, custom uniforms Pune, Uniform Trends by WEA" />
+        <title>Best School & Corporate Uniforms in India | Uniform Trends</title>
+        <meta name="description" content="Uniform Trends is India's top manufacturer for school uniforms in Mumbai, corporate wear in Delhi, and hospital scrubs. Premium quality, custom tailoring, and bulk supply." />
+        <meta name="keywords" content="school uniforms India, best school uniforms Mumbai, corporate uniform manufacturers, hospital scrubs wholesale, uniform supplier Delhi, custom uniforms Pune, Uniform Trends" />
         <link rel="canonical" href="https://uniformtrends.in/" />
       </Helmet>
 
@@ -134,7 +134,7 @@ export default function Home() {
               viewport={{ once: true, margin: "-20px" }}
               className="text-4xl md:text-5xl font-bold text-ink mb-6 tracking-tight"
             >
-              Welcome to Uniform Trends by WEA
+              Welcome to Uniform Trends
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -143,7 +143,7 @@ export default function Home() {
               transition={{ delay: 0.1 }}
               className="text-lg text-muted leading-relaxed font-light"
             >
-              At Uniform Trends by WEA, we believe that the right attire fosters unity, professionalism, and confidence.
+              At Uniform Trends, we believe that the right attire fosters unity, professionalism, and confidence.
               As a leading national uniform manufacturer, we specialize in high-performance garments for schools,
               hospitals, and industrial sectors across India. Whether you are equipping the next generation of students
               or outfitting dedicated healthcare heroes, we manufacture uniforms that combine all-day comfort with
@@ -408,7 +408,7 @@ export default function Home() {
               },
               {
                 q: "Do you offer a warranty or guarantee on your uniforms?",
-                a: "We take pride in our precision tailoring. All WEA uniforms undergo rigorous double-stitch reinforcement and color-fastness testing. We provide a full replacement guarantee against any manufacturing defects."
+                a: "We take pride in our precision tailoring. All our uniforms undergo rigorous double-stitch reinforcement and color-fastness testing. We provide a full replacement guarantee against any manufacturing defects."
               }
             ].map((faq, index) => {
               const isOpen = activeFaq === index;
@@ -464,7 +464,7 @@ export default function Home() {
             viewport={{ once: true, margin: "-20px" }}
             className="max-w-4xl mx-auto text-center"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner By WEA</h2>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 tracking-tight text-ink">Partner with Uniform Trends</h2>
             <p className="text-lg text-muted font-light mb-10 max-w-2xl mx-auto">
               Ready to upgrade your institution's wardrobe? Get in touch with us today to discuss bulk orders, custom designs, and fabric swatches.
             </p>

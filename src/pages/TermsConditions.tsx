@@ -5,7 +5,7 @@ export default function TermsConditions() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Terms & Conditions | Uniform Trends by WEA</title>
+        <title>Terms & Conditions | Uniform Trends</title>
         <link rel="canonical" href="https://uniformtrends.in/terms" />
       </Helmet>
       <div className="container-custom max-w-4xl">
@@ -21,15 +21,15 @@ export default function TermsConditions() {
               <h2 className="text-2xl font-bold text-ink mb-4">1. Acceptance of Terms</h2>
               <p>By accessing and using this website, you accept and agree to be bound by the terms and provision of this agreement.</p>
             </section>
-
+            
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">2. Use of License</h2>
-              <p>Permission is granted to temporarily download one copy of the materials (information or software) on Uniform Trends by WEA's website for personal, non-commercial transitory viewing only.</p>
+              <p>Permission is granted to temporarily download one copy of the materials (information or software) on Uniform Trends' website for personal, non-commercial transitory viewing only.</p>
             </section>
 
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">3. Disclaimer</h2>
-              <p>The materials on Uniform Trends by WEA's website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+              <p>The materials on Uniform Trends' website are provided on an 'as is' basis. We make no warranties, expressed or implied, and hereby disclaim and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
             </section>
 
             <section>

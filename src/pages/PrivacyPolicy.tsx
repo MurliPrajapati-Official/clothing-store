@@ -5,7 +5,7 @@ export default function PrivacyPolicy() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
       <Helmet>
-        <title>Privacy Policy | Uniform Trends by WEA</title>
+        <title>Privacy Policy | Uniform Trends</title>
         <link rel="canonical" href="https://uniformtrends.in/privacy" />
       </Helmet>
       <div className="container-custom max-w-4xl">
@@ -19,7 +19,7 @@ export default function PrivacyPolicy() {
           <div className="prose prose-invert max-w-none space-y-8 text-lg font-light leading-relaxed">
             <section>
               <h2 className="text-2xl font-bold text-ink mb-4">1. Introduction</h2>
-              <p>Welcome to Uniform Trends by WEA. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
+              <p>Welcome to Uniform Trends. We are committed to protecting your personal information and your right to privacy. If you have any questions or concerns about our policy, or our practices with regards to your personal information, please contact us.</p>
             </section>
 
             <section>

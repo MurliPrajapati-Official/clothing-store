@@ -111,7 +111,7 @@ export default function Checkout() {
             <CheckCircle2 size={40} />
           </div>
           <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
-          <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0, 8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year By WEA.</p>
+          <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0, 8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year.</p>
           <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
             Return Home
           </Link>

@@ -1,4 +1,4 @@
-# Uniform Trends (By WEA)
+# Uniform Trends
 
 Premium manufacturer and supplier of specialized uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
 

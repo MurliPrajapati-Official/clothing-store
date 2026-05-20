@@ -248,8 +248,8 @@ export default function Shop() {
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
       <Helmet>
-        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends by WEA India` : 'Shop All Uniforms | Uniform Trends by WEA India'}</title>
-        <meta name="description" content="Browse Uniform Trends by WEA's premium selection of specialized school, hospital, and corporate uniforms across India. Bulk orders and custom tailoring available." />
+        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends India` : 'Shop All Uniforms | Uniform Trends India'}</title>
+        <meta name="description" content="Browse Uniform Trends' premium selection of specialized school, hospital, and corporate uniforms across India. Bulk orders and custom tailoring available." />
         <link rel="canonical" href="https://uniformtrends.in/shop" />
       </Helmet>
 

@@ -198,7 +198,7 @@ export default function ProductDetail() {
   return (
     <div className="pt-32 pb-24 bg-canvas text-body-text min-h-screen">
       <Helmet>
-        <title>{product.name} | Uniform Trends by WEA</title>
+        <title>{product.name} | Uniform Trends</title>
         <meta name="description" content={`Buy ${product.name} at Uniform Trends. High-quality ${product.category} uniform, durable fabric, and perfect fit. Available in various sizes.`} />
         <link rel="canonical" href={`https://uniformtrends.in/product/${product.slug}`} />
         <script type="application/ld+json">
@@ -210,7 +210,7 @@ export default function ProductDetail() {
             "description": product.description,
             "brand": {
               "@type": "Brand",
-              "name": "Uniform Trends by WEA"
+              "name": "Uniform Trends"
             },
             "offers": {
               "@type": "Offer",

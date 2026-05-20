@@ -48,14 +48,14 @@ export default function Collections() {
     <div className="pt-32 pb-24 min-h-screen bg-canvas">
       <Helmet>
         <title>Uniform Collections Showcase | Best Uniform PNG Gallery India</title>
-        <meta name="description" content="Explore our premium uniform image gallery. High-quality PNG showcase of school uniforms, corporate wear, and medical scrubs by Uniform Trends by WEA." />
+        <meta name="description" content="Explore our premium uniform image gallery. High-quality PNG showcase of school uniforms, corporate wear, and medical scrubs by Uniform Trends." />
         <meta name="keywords" content="uniform images PNG, school uniform gallery, corporate wear showcase, hospital scrubs photos, Uniform Trends gallery" />
         <link rel="canonical" href="https://uniformtrends.in/collections" />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ImageGallery",
-            "name": "Uniform Trends by WEA Collections",
+            "name": "Uniform Trends Collections",
             "description": "A high-quality showcase of premium uniforms manufactured in India.",
             "image": showcaseImages.map(img => `https://uniformtrends.in${img.url}`)
           })}

@@ -10,8 +10,8 @@ export default function Success() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
       <Helmet>
-        <title>Order Confirmed | Uniform Trends by WEA</title>
-        <meta name="description" content="Thank you for your order. Your premium uniforms are being prepared by Uniform Trends by WEA." />
+        <title>Order Confirmed | Uniform Trends</title>
+        <meta name="description" content="Thank you for your order. Your premium uniforms are being prepared by Uniform Trends." />
         <link rel="canonical" href="https://uniformtrends.in/success" />
       </Helmet>
 
@@ -41,7 +41,7 @@ export default function Success() {
             Order Confirmed!
           </h1>
           <p className="text-xl text-muted font-light leading-relaxed mb-10">
-            Thank you for choosing <span className="text-ink font-semibold">Uniform Trends by WEA</span>. 
+            Thank you for choosing <span className="text-ink font-semibold">Uniform Trends</span>. 
             Your order <span className="text-primary font-bold">#{orderId}</span> has been successfully placed 
             and is now being processed for a fresh start.
           </p>
