@@ -15,9 +15,13 @@ interface QuickViewModalProps {
 
 const parseDescription = (text: string) => {
   if (!text) return null;
-  return text.split(/(\*\*.*?\*\*)/g).map((part, i) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={i} className="font-bold text-ink">{part.slice(2, -2)}</strong>;
+  return text.split(/(\*\*[\s\S]*?\*\*|__[\s\S]*?__)/g).map((part, i) => {
+    if ((part.startsWith('**') && part.endsWith('**')) || (part.startsWith('__') && part.endsWith('__'))) {
+      return (
+        <strong key={i} className="font-bold text-ink" style={{ fontWeight: 800, display: 'inline' }}>
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
     return part;
   });
