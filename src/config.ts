@@ -12,6 +12,6 @@ export const getApiUrl = () => {
   }
 
   // 3. Production Fallback
-  // User provided backend: https://uniformtrends.onrender.com
-  return 'https://uniformtrends.onrender.com';
+  // User provided backend: https://uniform-trends-backend.murliprajapati228.workers.dev
+  return 'https://uniform-trends-backend.murliprajapati228.workers.dev';
 };
