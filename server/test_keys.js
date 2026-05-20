@@ -1,11 +1,16 @@
 
 async function test() {
   try {
-    const res = await fetch('http://localhost:5000/api/orders');
-    const orders = await res.json();
-    console.log(Object.keys(orders[0]));
+    const url = 'https://uniform-trends-backend.murliprajapati228.workers.dev/api/products';
+    console.log('Fetching products from:', url);
+    const res = await fetch(url);
+    console.log('Status:', res.status);
+    console.log('Headers:', Object.fromEntries(res.headers.entries()));
+    const text = await res.text();
+    console.log('Body length:', text.length);
+    console.log('Body start:', text.substring(0, 500));
   } catch (e) {
-    console.error(e);
+    console.error('Fetch failed:', e);
   }
 }
 test();
