@@ -35,11 +35,12 @@ app.use('*', async (c, next) => {
 
   const corsMiddleware = cors({
     origin: (origin) => {
-      if (!origin || isOriginAllowed(origin)) {
+      if (!origin) return 'https://uniformtrends.in';
+      if (isOriginAllowed(origin)) {
         return origin;
       }
-      // If development, allow all
-      return origin;
+      // Strictly block access from foreign, non-whitelisted domains
+      return 'https://uniformtrends.in';
     },
     allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Forwarded-For'],
     allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],

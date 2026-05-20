@@ -67,7 +67,7 @@ export default function Account() {
       setIsLoading(false);
 
       if (s?.user) {
-        fetchOrders(s.user.id, s.user.email || '');
+        fetchOrders(s.user.id, s.user.email || '', s.access_token);
         checkAdminStatus(s);
       } else {
         setIsAdmin(false);
@@ -94,11 +94,15 @@ export default function Account() {
     };
   }, []);
 
-  const fetchOrders = async (userId: string, userEmail: string) => {
+  const fetchOrders = async (userId: string, userEmail: string, token: string) => {
     try {
       setOrdersLoading(true);
       const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`);
+      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       let data = [];
       if (response.ok) {
         data = await response.json();
@@ -106,12 +110,13 @@ export default function Account() {
 
       // Email fallback
       if (data.length === 0 && userEmail) {
-        const res = await fetch(`${apiUrl}/api/orders`);
+        const res = await fetch(`${apiUrl}/api/orders/my-email-orders`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (res.ok) {
-          const all = await res.json();
-          data = all.filter((o: any) =>
-            o.shipping_address?.toLowerCase().includes(userEmail.toLowerCase())
-          );
+          data = await res.json();
         }
       }
       setOrders(data);
@@ -180,16 +185,20 @@ export default function Account() {
     if (!reason) return;
 
     try {
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+      const apiUrl = getApiUrl();
+      const token = session?.access_token;
       const res = await fetch(`${apiUrl}/api/orders/${orderId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token || ''}`
+        },
         body: JSON.stringify({ status: 'cancelled', cancellation_reason: reason })
       });
       if (res.ok) {
         setSuccessMsg('Order cancelled successfully.');
         setTimeout(() => setSuccessMsg(''), 3000);
-        if (session?.user) fetchOrders(session.user.id, session.user.email || '');
+        if (session?.user) fetchOrders(session.user.id, session.user.email || '', session.access_token);
       } else {
         const errData = await res.json();
         alert(`Failed to cancel: ${errData.error || 'Unknown error'}`);

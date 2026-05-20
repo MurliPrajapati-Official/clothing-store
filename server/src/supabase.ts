@@ -92,3 +92,51 @@ export const verifyAdmin = createMiddleware(async (c, next) => {
     return c.json({ error: 'Internal server error during authorization' }, 500);
   }
 });
+
+// verifyUser checks that the request is authenticated with a valid Supabase JWT session token
+export const verifyUser = createMiddleware(async (c, next) => {
+  try {
+    const authHeader = c.req.header('authorization');
+    if (!authHeader) {
+      console.log('Authentication failed: No auth header');
+      return c.json({ error: 'Authentication required' }, 401);
+    }
+
+    const token = authHeader.split(' ')[1];
+    if (!token) {
+      console.log('Authentication failed: Malformed token');
+      return c.json({ error: 'Malformed authentication token' }, 401);
+    }
+
+    const supabase = getSupabase(c.env);
+    let { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+    // Fallback using Admin API decoding if normal session parsing fails
+    if (authError || !user) {
+      try {
+        console.log('getUser(token) failed in verifyUser, trying fallback...');
+        const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+        const userId = payload.sub;
+        if (userId) {
+          const { data: adminUser } = await supabase.auth.admin.getUserById(userId);
+          if (adminUser?.user) {
+            user = adminUser.user;
+          } else {
+            throw new Error('User not found in Admin API');
+          }
+        } else {
+          throw new Error('No sub in token');
+        }
+      } catch (fallbackErr: any) {
+        console.error('verifyUser failed:', authError?.message || fallbackErr.message);
+        return c.json({ error: 'Invalid or expired session token' }, 401);
+      }
+    }
+
+    c.set('user', user);
+    await next();
+  } catch (err: any) {
+    console.error('Error in verifyUser middleware:', err);
+    return c.json({ error: 'Internal server error during authentication' }, 500);
+  }
+});

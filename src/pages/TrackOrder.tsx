@@ -21,18 +21,22 @@ export default function TrackOrder() {
       setSession(s);
       if (s?.user) {
         setEmail(s.user.email || '');
-        fetchUserOrders(s.user.id, s.user.email || '');
+        fetchUserOrders(s.user.id, s.user.email || '', s.access_token);
       }
     };
     checkUser();
   }, []);
 
-  const fetchUserOrders = async (userId: string, userEmail: string) => {
+  const fetchUserOrders = async (userId: string, userEmail: string, token: string) => {
     setIsTracking(true);
     setError('');
     try {
       const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`);
+      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
       let data = [];
       if (response.ok) {
         data = await response.json();
@@ -40,12 +44,13 @@ export default function TrackOrder() {
 
       // Fallback to email search if no orders found by user_id
       if (data.length === 0 && userEmail) {
-        const res = await fetch(`${apiUrl}/api/orders`);
+        const res = await fetch(`${apiUrl}/api/orders/my-email-orders`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
         if (res.ok) {
-          const allOrders = await res.json();
-          data = allOrders.filter((o: any) => 
-            o.shipping_address?.toLowerCase().includes(userEmail.toLowerCase())
-          );
+          data = await res.json();
         }
       }
       setOrders(data);
@@ -60,17 +65,35 @@ export default function TrackOrder() {
     e.preventDefault();
     setIsTracking(true);
     setError('');
+
+    if (!orderId.trim()) {
+      setError('Order ID is required to track a guest order.');
+      setIsTracking(false);
+      return;
+    }
+    if (!email.trim()) {
+      setError('Email address is required to track a guest order.');
+      setIsTracking(false);
+      return;
+    }
+
     try {
       const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/orders`);
+      const res = await fetch(`${apiUrl}/api/orders/track`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ orderId: orderId.trim(), email: email.trim() })
+      });
       if (res.ok) {
-        const allOrders = await res.json();
-        const found = allOrders.filter((o: any) => 
-          o.id.toLowerCase().includes(orderId.toLowerCase()) || 
-          (email && o.shipping_address.toLowerCase().includes(email.toLowerCase()))
-        );
+        const found = await res.json();
         setOrders(found);
         if (found.length === 0) setError('No orders found with these details.');
+      } else {
+        const errData = await res.json();
+        setError(errData.error || 'No orders found with these details.');
+        setOrders([]);
       }
     } catch (err) {
       setError('Search failed. Please try again.');

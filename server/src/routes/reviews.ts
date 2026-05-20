@@ -1,7 +1,7 @@
 import { Hono } from 'hono';
-import { getSupabase } from '../supabase';
+import { getSupabase, verifyUser } from '../supabase';
 
-const router = new Hono();
+const router = new Hono<{ Variables: { user: any } }>();
 
 // GET reviews for a specific product with pagination
 router.get('/:productId', async (c) => {
@@ -35,19 +35,32 @@ router.get('/:productId', async (c) => {
 });
 
 // POST a new review
-router.post('/', async (c) => {
+router.post('/', verifyUser, async (c) => {
   try {
     const supabase = getSupabase(c.env);
-    const { product_id, user_id, user_name, rating, comment } = await c.req.json();
+    const { product_id, rating, comment } = await c.req.json();
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
     if (!product_id || !uuidRegex.test(product_id)) {
       return c.json({ error: 'Valid product ID is required' }, 400);
     }
 
-    if (!product_id || !user_name || !rating) {
-      return c.json({ error: 'Missing required fields' }, 400);
+    if (!rating) {
+      return c.json({ error: 'Rating is required' }, 400);
     }
+
+    // Securely pull session information from validated user token
+    const authenticatedUser = c.get('user');
+    const user_id = authenticatedUser.id;
+
+    // Securely retrieve name from user profile to prevent spoofing
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('full_name')
+      .eq('id', user_id)
+      .single();
+
+    const user_name = profile?.full_name || authenticatedUser.user_metadata?.full_name || authenticatedUser.email || 'Verified Customer';
 
     // 1. Insert the review
     const { data: reviewData, error: reviewError } = await supabase
@@ -91,7 +104,7 @@ router.post('/', async (c) => {
 });
 
 // DELETE a review
-router.delete('/:id', async (c) => {
+router.delete('/:id', verifyUser, async (c) => {
   try {
     const supabase = getSupabase(c.env);
     const id = c.req.param('id');
@@ -100,15 +113,29 @@ router.delete('/:id', async (c) => {
       return c.json({ error: 'Invalid review ID format' }, 400);
     }
 
-    // 1. Get the product_id before deleting
+    // 1. Get the review details to check authorization
     const { data: review, error: getError } = await supabase
       .from('reviews')
-      .select('product_id')
+      .select('product_id, user_id')
       .eq('id', id)
       .single();
 
     if (getError) throw getError;
     const productId = review.product_id;
+
+    // Ownership or Admin check: verify that they own the review or are an administrator
+    const authenticatedUser = c.get('user');
+    if (review.user_id !== authenticatedUser.id) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', authenticatedUser.id)
+        .single();
+      
+      if (!profile || profile.role !== 'admin') {
+        return c.json({ error: 'Access denied: You can only delete your own reviews' }, 403);
+      }
+    }
 
     // 2. Delete the review
     const { error: deleteError } = await supabase
