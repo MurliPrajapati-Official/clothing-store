@@ -1,66 +1,79 @@
-import express, { Request, Response } from 'express';
-import multer from 'multer';
-import { supabase, verifyAdmin } from '../supabase'; 
+import { Hono } from 'hono';
+import { getSupabase, verifyAdmin } from '../supabase'; 
 
-const router = express.Router();
-const upload = multer({ storage: multer.memoryStorage() }); // Store file in memory for direct upload to Supabase
+const router = new Hono();
 
 // GET all products
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (c) => {
   try {
+    const supabase = getSupabase(c.env);
     const { data, error } = await supabase
       .from('products')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    res.json(data);
+    return c.json(data);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // GET single product by slug
-router.get('/:slug', async (req: Request, res: Response) => {
+router.get('/:slug', async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const slug = c.req.param('slug');
     const { data, error } = await supabase
       .from('products')
       .select('*')
-      .eq('slug', req.params.slug)
+      .eq('slug', slug)
       .single();
 
     if (error) throw error;
-    res.json(data);
+    return c.json(data);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // POST a new product (Admin Only)
-router.post('/', verifyAdmin, upload.single('image'), async (req: Request, res: Response) => {
+router.post('/', verifyAdmin, async (c) => {
   try {
-    const {
-      name, slug, price, original_price, description,
-      category, school_id, sizes, gender, grade,
-      in_stock, is_featured
-    } = req.body;
+    const supabase = getSupabase(c.env);
+    const formData = await c.req.formData();
+    
+    const name = formData.get('name') as string;
+    const slug = formData.get('slug') as string;
+    const price = formData.get('price') as string;
+    const original_price = formData.get('original_price') as string;
+    const description = formData.get('description') as string;
+    const category = formData.get('category') as string;
+    const school_id = formData.get('school_id') as string;
+    const sizes = formData.get('sizes') as string;
+    const gender = formData.get('gender') as string;
+    const grade = formData.get('grade') as string;
+    const in_stock = formData.get('in_stock');
+    const is_featured = formData.get('is_featured');
+    
+    const file = formData.get('image') as File | null;
 
     // Server-side validation
-    if (!name || name.length < 3) return res.status(400).json({ error: 'Valid product name is required' });
-    if (!price || isNaN(Number(price))) return res.status(400).json({ error: 'A valid numeric price is required' });
-    if (!category) return res.status(400).json({ error: 'Category is required' });
-    if (!req.file) return res.status(400).json({ error: 'Product image is required' });
+    if (!name || name.length < 3) return c.json({ error: 'Valid product name is required' }, 400);
+    if (!price || isNaN(Number(price))) return c.json({ error: 'A valid numeric price is required' }, 400);
+    if (!category) return c.json({ error: 'Category is required' }, 400);
+    if (!file || file.size === 0) return c.json({ error: 'Product image is required' }, 400);
 
-    const file = req.file;
     let imageUrls: string[] = [];
 
     // 1. Upload image to Supabase Storage if present
-    if (file) {
-      const fileName = `${Date.now()}_${file.originalname}`;
+    if (file && file.size > 0) {
+      const fileName = `${Date.now()}_${file.name}`;
+      const fileBuffer = await file.arrayBuffer();
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('products')
-        .upload(fileName, file.buffer, {
-          contentType: file.mimetype,
+        .upload(fileName, fileBuffer, {
+          contentType: file.type,
         });
 
       if (uploadError) throw uploadError;
@@ -80,10 +93,18 @@ router.post('/', verifyAdmin, upload.single('image'), async (req: Request, res: 
       .from('products')
       .insert([
         {
-          name, slug, price, original_price, description,
-          category, school_id, 
+          name, 
+          slug, 
+          price: Number(price), 
+          original_price: original_price ? Number(original_price) : null, 
+          description,
+          category, 
+          school_id: school_id || null, 
           sizes: sizes ? sizes.split(',') : [], // Basic parsing
-          gender, grade, in_stock, is_featured,
+          gender, 
+          grade, 
+          in_stock: in_stock === 'true' || in_stock === '1', 
+          is_featured: is_featured === 'true' || is_featured === '1',
           images: imageUrls
         }
       ])
@@ -91,36 +112,51 @@ router.post('/', verifyAdmin, upload.single('image'), async (req: Request, res: 
 
     if (dbError) throw dbError;
 
-    res.status(201).json(productData[0]);
+    return c.json(productData[0], 201);
   } catch (error: any) {
     console.error("Error adding product:", error);
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // UPDATE a product
-router.put('/:id', verifyAdmin, upload.single('image'), async (req: Request, res: Response) => {
+router.put('/:id', verifyAdmin, async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(req.params.id)) {
-      return res.status(400).json({ error: 'Invalid product ID format' });
+    if (!uuidRegex.test(id)) {
+      return c.json({ error: 'Invalid product ID format' }, 400);
     }
-    const {
-      name, slug, price, original_price, description,
-      category, school_id, sizes, gender, grade,
-      in_stock, is_featured, existing_images
-    } = req.body;
+    
+    const formData = await c.req.formData();
+    
+    const name = formData.get('name') as string;
+    const slug = formData.get('slug') as string;
+    const price = formData.get('price') as string;
+    const original_price = formData.get('original_price') as string;
+    const description = formData.get('description') as string;
+    const category = formData.get('category') as string;
+    const school_id = formData.get('school_id') as string;
+    const sizes = formData.get('sizes') as string;
+    const gender = formData.get('gender') as string;
+    const grade = formData.get('grade') as string;
+    const in_stock = formData.get('in_stock');
+    const is_featured = formData.get('is_featured');
+    const existing_images = formData.get('existing_images') as string;
+    
+    const file = formData.get('image') as File | null;
 
     let imageUrls: string[] = existing_images ? JSON.parse(existing_images) : [];
 
     // 1. Upload new image if present
-    if (req.file) {
-      const file = req.file;
-      const fileName = `${Date.now()}_${file.originalname}`;
+    if (file && file.size > 0) {
+      const fileName = `${Date.now()}_${file.name}`;
+      const fileBuffer = await file.arrayBuffer();
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('products')
-        .upload(fileName, file.buffer, {
-          contentType: file.mimetype,
+        .upload(fileName, fileBuffer, {
+          contentType: file.type,
         });
 
       if (uploadError) throw uploadError;
@@ -138,35 +174,42 @@ router.put('/:id', verifyAdmin, upload.single('image'), async (req: Request, res
     const { data: productData, error: dbError } = await supabase
       .from('products')
       .update({
-        name, slug, price, original_price, description,
-        category, school_id, 
+        name, 
+        slug, 
+        price: Number(price), 
+        original_price: original_price ? Number(original_price) : null, 
+        description,
+        category, 
+        school_id: school_id || null, 
         sizes: sizes ? (Array.isArray(sizes) ? sizes : sizes.split(',')) : [],
-        gender, grade, 
-        in_stock: in_stock === 'true' || in_stock === true,
-        is_featured: is_featured === 'true' || is_featured === true,
+        gender, 
+        grade, 
+        in_stock: in_stock === 'true' || in_stock === '1',
+        is_featured: is_featured === 'true' || is_featured === '1',
         images: imageUrls
       })
-      .eq('id', req.params.id)
+      .eq('id', id)
       .select();
 
     if (dbError) throw dbError;
 
-    res.json(productData[0]);
+    return c.json(productData[0]);
   } catch (error: any) {
     console.error("Error updating product:", error);
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // GET related products
-router.get('/related/:id', async (req: Request, res: Response) => {
+router.get('/related/:id', async (c) => {
   try {
-    const { id } = req.params;
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     
     // Validate UUID format before querying
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return res.json([]); // Return empty array for invalid IDs instead of crashing
+      return c.json([]); // Return empty array for invalid IDs instead of crashing
     }
 
     // 1. Get the current product's category
@@ -199,31 +242,33 @@ router.get('/related/:id', async (req: Request, res: Response) => {
         .limit(4);
       
       if (fallbackError) throw fallbackError;
-      return res.json(fallbackProducts);
+      return c.json(fallbackProducts);
     }
 
-    res.json(relatedProducts);
+    return c.json(relatedProducts);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // DELETE a product
-router.delete('/:id', verifyAdmin, async (req: Request, res: Response) => {
+router.delete('/:id', verifyAdmin, async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(req.params.id)) {
-      return res.status(400).json({ error: 'Invalid product ID format' });
+    if (!uuidRegex.test(id)) {
+      return c.json({ error: 'Invalid product ID format' }, 400);
     }
     const { error } = await supabase
       .from('products')
       .delete()
-      .eq('id', req.params.id);
+      .eq('id', id);
 
     if (error) throw error;
-    res.json({ success: true, message: 'Product deleted' });
+    return c.json({ success: true, message: 'Product deleted' });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 

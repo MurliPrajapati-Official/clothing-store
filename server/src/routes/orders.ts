@@ -1,22 +1,23 @@
-import express, { Request, Response } from 'express';
-import { supabase, verifyAdmin } from '../supabase';
+import { Hono } from 'hono';
+import { getSupabase, verifyAdmin } from '../supabase';
 
-const router = express.Router();
+const router = new Hono();
 
 // POST a new order (Checkout)
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (c) => {
   try {
-    const { user_id, total_amount, shipping_address, items } = req.body;
+    const supabase = getSupabase(c.env);
+    const { user_id, total_amount, shipping_address, items } = await c.req.json();
 
     // Validate items and product IDs to prevent UUID syntax errors
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     const validItems = items.filter((item: any) => uuidRegex.test(item.productId));
     
     if (validItems.length === 0 && items.length > 0) {
-      return res.status(400).json({ 
+      return c.json({ 
         error: 'Invalid Product IDs', 
         details: 'Some items in your cart are from demo data and cannot be ordered. Please remove items like "Classic Boys School Polo" from your cart and add them again from the shop.' 
-      });
+      }, 400);
     }
 
     // 1. Ensure profile exists or create it to satisfy foreign key constraint
@@ -47,8 +48,6 @@ router.post('/', async (req: Request, res: Response) => {
         
         if (insertError) {
           console.error("Profile creation failed, trying one more fallback...");
-          // If it fails again, maybe it needs 'username'? Or it's already there?
-          // We'll proceed and let the order insert attempt decide the fate
         }
       }
     }
@@ -76,7 +75,7 @@ router.post('/', async (req: Request, res: Response) => {
           .insert([{ user_id: null, total_amount, shipping_address, status: 'pending' }])
           .select().single();
         if (guestError) throw guestError;
-        return res.status(201).json({ ...guestOrder, warning: 'Order placed as guest due to profile sync issue' });
+        return c.json({ ...guestOrder, warning: 'Order placed as guest due to profile sync issue' }, 201);
       }
       throw orderError;
     }
@@ -95,84 +94,82 @@ router.post('/', async (req: Request, res: Response) => {
 
     if (itemsError) throw itemsError;
 
-    res.status(201).json({ success: true, orderId: orderData.id });
+    return c.json({ success: true, orderId: orderData.id }, 201);
   } catch (error: any) {
     console.error("Checkout Error Full:", error);
-    try {
-      const fs = require('fs');
-      const path = require('path');
-      const logMsg = `${new Date().toISOString()} - Error: ${error.message} - Details: ${JSON.stringify(error)}\n`;
-      fs.appendFileSync(path.join(process.cwd(), 'checkout_errors.log'), logMsg);
-    } catch (e) {}
-    
-    res.status(500).json({ 
+    return c.json({ 
       error: error.message || 'Internal Server Error',
       details: error.details || error.hint || 'No additional details available',
       code: error.code
-    });
+    }, 500);
   }
 });
 
 // GET orders for a specific user
-router.get('/user/:userId', async (req: Request, res: Response) => {
+router.get('/user/:userId', async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const userId = c.req.param('userId');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(req.params.userId)) {
-      return res.json([]); // Return empty array for invalid user ID
+    if (!uuidRegex.test(userId)) {
+      return c.json([]); // Return empty array for invalid user ID
     }
     const { data, error } = await supabase
       .from('orders')
       .select('*, order_items(*, products(*))')
-      .eq('user_id', req.params.userId)
+      .eq('user_id', userId)
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    res.json(data);
+    return c.json(data);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // GET all orders (Admin only)
-router.get('/', verifyAdmin, async (req: Request, res: Response) => {
+router.get('/', verifyAdmin, async (c) => {
   try {
+    const supabase = getSupabase(c.env);
     const { data, error } = await supabase
       .from('orders')
       .select('*, order_items(*, products(*))')
       .order('created_at', { ascending: false });
 
     if (error) throw error;
-    res.json(data);
+    return c.json(data);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // PATCH update order status (Admin or User cancellation)
-router.patch('/:id', async (req: Request, res: Response) => {
+router.patch('/:id', async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(req.params.id)) {
-      return res.status(400).json({ error: 'Invalid order ID format' });
+    if (!uuidRegex.test(id)) {
+      return c.json({ error: 'Invalid order ID format' }, 400);
     }
-    const { status, cancellation_reason } = req.body;
+    const { status, cancellation_reason } = await c.req.json();
     const updateData: any = { status };
 
     if (cancellation_reason) {
-      console.log(`Processing cancellation for order ${req.params.id}. Reason: ${cancellation_reason}`);
-      const { data: order } = await supabase.from('orders').select('shipping_address').eq('id', req.params.id).single();
+      console.log(`Processing cancellation for order ${id}. Reason: ${cancellation_reason}`);
+      const { data: order } = await supabase.from('orders').select('shipping_address').eq('id', id).single();
       if (order) {
         const baseAddress = order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[0];
         updateData.shipping_address = `${baseAddress}\n\n--- CANCELLATION REASON ---\n${cancellation_reason}`;
       }
     }
 
-    console.log(`Updating order ${req.params.id} with data:`, updateData);
+    console.log(`Updating order ${id} with data:`, updateData);
 
     const { data, error } = await supabase
       .from('orders')
       .update(updateData)
-      .eq('id', req.params.id)
+      .eq('id', id)
       .select();
 
     if (error) {
@@ -181,30 +178,32 @@ router.patch('/:id', async (req: Request, res: Response) => {
     }
     
     if (!data || data.length === 0) {
-      return res.status(404).json({ error: 'Order not found' });
+      return c.json({ error: 'Order not found' }, 404);
     }
-    res.json(data[0]);
+    return c.json(data[0]);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // DELETE an order
-router.delete('/:id', verifyAdmin, async (req: Request, res: Response) => {
+router.delete('/:id', verifyAdmin, async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(req.params.id)) {
-      return res.status(400).json({ error: 'Invalid order ID format' });
+    if (!uuidRegex.test(id)) {
+      return c.json({ error: 'Invalid order ID format' }, 400);
     }
     const { error } = await supabase
       .from('orders')
       .delete()
-      .eq('id', req.params.id);
+      .eq('id', id);
 
     if (error) throw error;
-    res.json({ success: true });
+    return c.json({ success: true });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 

@@ -1,102 +1,75 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { createClient } from '@supabase/supabase-js';
-
-dotenv.config();
-
-import { rateLimit } from 'express-rate-limit';
-
-const app = express();
-const port = process.env.PORT || 5000;
-
-// Trust Cloudflare and Render reverse proxies to enable correct client IP detection for rate-limiting
-app.set('trust proxy', 1);
-
-// Security Layer: Rate Limiting
-// Prevents Brute Force attacks by limiting requests from the same IP
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 1000, // Safe high limit for dynamic client page loads and admin dashboards
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' }
-});
-
-// Apply rate limiter to all requests
-app.use(limiter);
-
-// Configure CORS - Restricted to authorized domains and their subdomains
-const allowedOrigins = [
-  process.env.FRONTEND_URL, 
-  'http://localhost:3000', 
-  'http://localhost:5173',
-  'http://localhost:5174',
-  'https://uniformtrends.in',
-  'https://www.uniformtrends.in',
-  'https://uniformtrends.onrender.com',
-  'https://uniform-trends-backend.onrender.com'
-].filter(Boolean) as string[];
-
-const isOriginAllowed = (origin: string): boolean => {
-  if (allowedOrigins.includes(origin)) return true;
-  
-  // Custom check to allow any subdomain of uniformtrends.in under Cloudflare proxying
-  try {
-    const parsedUrl = new URL(origin);
-    const hostname = parsedUrl.hostname;
-    return hostname === 'uniformtrends.in' || hostname.endsWith('.uniformtrends.in');
-  } catch (e) {
-    return false;
-  }
-};
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // Allow if no origin (like server-to-server or curl) or if origin is allowed
-    if (!origin || isOriginAllowed(origin) || !process.env.NODE_ENV || process.env.NODE_ENV === 'development') {
-      callback(null, true);
-    } else {
-      console.warn('CORS Policy Denied request for origin:', origin);
-      callback(new Error('Unauthorized by Security Policy (CORS)'));
-    }
-  },
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Forwarded-For'],
-  credentials: true,
-  maxAge: 86400 // Cache preflight for 24 hours
-}));
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-
-// Root route
-app.get('/', (req: Request, res: Response) => {
-  res.send('<h1>Uniform Trends API is Running</h1><p>The server is connected and ready for requests.</p>');
-});
-
-import { supabase, verifyAdmin } from './supabase';
+import { Hono } from 'hono';
+import { cors } from 'hono/cors';
+import { getSupabase, verifyAdmin } from './supabase';
 
 // Routes
 import productRoutes from './routes/products';
 import orderRoutes from './routes/orders';
 import reviewRoutes from './routes/reviews';
 
-import { Request, Response } from 'express';
+const app = new Hono<{ Bindings: { SUPABASE_URL: string; SUPABASE_SERVICE_ROLE_KEY: string; FRONTEND_URL: string } }>();
+
+// CORS Dynamic Handler
+app.use('*', async (c, next) => {
+  const allowedOrigins = [
+    c.env.FRONTEND_URL, 
+    'http://localhost:3000', 
+    'http://localhost:5173',
+    'http://localhost:5174',
+    'https://uniformtrends.in',
+    'https://www.uniformtrends.in',
+    'https://uniformtrends.onrender.com',
+    'https://uniform-trends-backend.onrender.com'
+  ].filter(Boolean) as string[];
+
+  const isOriginAllowed = (origin: string): boolean => {
+    if (allowedOrigins.includes(origin)) return true;
+    try {
+      const parsedUrl = new URL(origin);
+      const hostname = parsedUrl.hostname;
+      return hostname === 'uniformtrends.in' || hostname.endsWith('.uniformtrends.in');
+    } catch (e) {
+      return false;
+    }
+  };
+
+  const corsMiddleware = cors({
+    origin: (origin) => {
+      if (!origin || isOriginAllowed(origin)) {
+        return origin;
+      }
+      // If development, allow all
+      return origin;
+    },
+    allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'X-Forwarded-For'],
+    allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    credentials: true,
+    maxAge: 86400,
+  });
+
+  return corsMiddleware(c, next);
+});
+
+// Root route
+app.get('/', (c) => {
+  return c.html('<h1>Uniform Trends API is Running</h1><p>The server is connected and ready for requests.</p>');
+});
 
 // Basic health check route
-app.get('/api/health', (req: Request, res: Response) => {
-  res.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
+app.get('/api/health', (c) => {
+  return c.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
 });
 
 // Admin check route for frontend UI
-app.get('/api/admin/check', verifyAdmin, (req: Request, res: Response) => {
-  res.json({ isAdmin: true });
+app.get('/api/admin/check', verifyAdmin, (c) => {
+  return c.json({ isAdmin: true });
 });
 
 // Admin Stats route
-app.get('/api/stats', verifyAdmin, async (req: Request, res: Response) => {
+app.get('/api/stats', verifyAdmin, async (c) => {
   try {
+    const supabase = getSupabase(c.env);
+    
     const { count: productCount, error: pError } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true });
@@ -109,41 +82,28 @@ app.get('/api/stats', verifyAdmin, async (req: Request, res: Response) => {
 
     if (pError || uError || oError) throw pError || uError || oError;
 
-    res.json({
+    return c.json({
       totalProducts: productCount || 0,
       totalUsers: users.length || 0,
       totalOrders: orderCount || 0
     });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
-app.use('/api/products', productRoutes);
-app.use('/api/orders', orderRoutes);
-app.use('/api/reviews', reviewRoutes);
+// Mount Routes
+app.route('/api/products', productRoutes);
+app.route('/api/orders', orderRoutes);
+app.route('/api/reviews', reviewRoutes);
 
-// Global Error Handlers for production stability
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
-  // Log to file for debugging
-  try {
-    const fs = require('fs');
-    fs.appendFileSync('crash_logs.txt', `${new Date().toISOString()} - UNHANDLED REJECTION: ${reason}\n`);
-  } catch (e) {}
+// Hono global error boundary (replaces uncaughtException / unhandledRejection)
+app.onError((err, c) => {
+  console.error('Unhandled Server Error:', err);
+  return c.json({
+    error: 'Internal Server Error',
+    message: err.message,
+  }, 500);
 });
 
-process.on('uncaughtException', (error) => {
-  console.error('Uncaught Exception:', error);
-  try {
-    const fs = require('fs');
-    fs.appendFileSync('crash_logs.txt', `${new Date().toISOString()} - UNCAUGHT EXCEPTION: ${error.message}\n${error.stack}\n`);
-  } catch (e) {}
-  // Give time for logging before exiting
-  setTimeout(() => process.exit(1), 1000);
-});
-
-// Start Server
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+export default app;

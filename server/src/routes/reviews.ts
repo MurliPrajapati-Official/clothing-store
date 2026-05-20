@@ -1,18 +1,19 @@
-import express, { Request, Response } from 'express';
-import { supabase } from '../supabase';
+import { Hono } from 'hono';
+import { getSupabase } from '../supabase';
 
-const router = express.Router();
+const router = new Hono();
 
 // GET reviews for a specific product with pagination
-router.get('/:productId', async (req: Request, res: Response) => {
+router.get('/:productId', async (c) => {
   try {
-    const { productId } = req.params;
+    const supabase = getSupabase(c.env);
+    const productId = c.req.param('productId');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(productId)) {
-      return res.json({ reviews: [], total: 0, hasMore: false });
+      return c.json({ reviews: [], total: 0, hasMore: false });
     }
-    const limit = parseInt(req.query.limit as string) || 5;
-    const page = parseInt(req.query.page as string) || 1;
+    const limit = parseInt(c.req.query('limit') as string) || 5;
+    const page = parseInt(c.req.query('page') as string) || 1;
     const offset = (page - 1) * limit;
 
     const { data, error, count } = await supabase
@@ -23,28 +24,29 @@ router.get('/:productId', async (req: Request, res: Response) => {
       .range(offset, offset + limit - 1);
 
     if (error) throw error;
-    res.json({
+    return c.json({
       reviews: data,
       total: count || 0,
       hasMore: (count || 0) > offset + (data?.length || 0)
     });
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // POST a new review
-router.post('/', async (req: Request, res: Response) => {
+router.post('/', async (c) => {
   try {
-    const { product_id, user_id, user_name, rating, comment } = req.body;
+    const supabase = getSupabase(c.env);
+    const { product_id, user_id, user_name, rating, comment } = await c.req.json();
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
     if (!product_id || !uuidRegex.test(product_id)) {
-      return res.status(400).json({ error: 'Valid product ID is required' });
+      return c.json({ error: 'Valid product ID is required' }, 400);
     }
 
     if (!product_id || !user_name || !rating) {
-      return res.status(400).json({ error: 'Missing required fields' });
+      return c.json({ error: 'Missing required fields' }, 400);
     }
 
     // 1. Insert the review
@@ -68,33 +70,34 @@ router.post('/', async (req: Request, res: Response) => {
     if (fetchError) throw fetchError;
 
     const reviewCount = allReviews.length;
-    const avgRating = allReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount;
+    const avgRating = allReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviewCount;
 
     // Update the product table
     const { error: updateError } = await supabase
       .from('products')
       .update({
-        rating: avgRating.toFixed(1),
+        rating: Number(avgRating.toFixed(1)),
         reviews_count: reviewCount
       })
       .eq('id', product_id);
 
     if (updateError) throw updateError;
 
-    res.status(201).json(reviewData);
+    return c.json(reviewData, 201);
   } catch (error: any) {
     console.error("Error submitting review:", error);
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
 // DELETE a review
-router.delete('/:id', async (req: Request, res: Response) => {
+router.delete('/:id', async (c) => {
   try {
-    const { id } = req.params;
+    const supabase = getSupabase(c.env);
+    const id = c.req.param('id');
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return res.status(400).json({ error: 'Invalid review ID format' });
+      return c.json({ error: 'Invalid review ID format' }, 400);
     }
 
     // 1. Get the product_id before deleting
@@ -125,7 +128,7 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     const reviewCount = allReviews.length;
     const avgRating = reviewCount > 0 
-      ? (allReviews.reduce((sum, r) => sum + r.rating, 0) / reviewCount).toFixed(1)
+      ? Number((allReviews.reduce((sum: number, r: any) => sum + r.rating, 0) / reviewCount).toFixed(1))
       : 0;
 
     // Update the product table
@@ -139,10 +142,10 @@ router.delete('/:id', async (req: Request, res: Response) => {
 
     if (updateError) throw updateError;
 
-    res.json({ success: true, message: 'Review deleted and product stats updated' });
+    return c.json({ success: true, message: 'Review deleted and product stats updated' });
   } catch (error: any) {
     console.error("Error deleting review:", error);
-    res.status(500).json({ error: error.message });
+    return c.json({ error: error.message }, 500);
   }
 });
 
