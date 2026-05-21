@@ -116,7 +116,7 @@ export default function Home() {
               <Link to="/shop" className="btn-primary shadow-[0_8px_30px_rgba(0,0,0,0.1)]">
                 Explore Our Collection
               </Link>
-              <Link to="/contact" className="btn-secondary border-hairline-strong hover:bg-surface-card hover:border-ink">
+              <Link to="/contact" className="btn-secondary">
                 Request a Bulk Quote
               </Link>
             </div>
