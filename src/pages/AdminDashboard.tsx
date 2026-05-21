@@ -25,6 +25,7 @@ export default function AdminDashboard() {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [hasInitialData, setHasInitialData] = useState(false);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [orderFilter, setOrderFilter] = useState<'all' | 'standard' | 'bulk'>('all');
   
   const navigate = useNavigate();
 
@@ -369,6 +370,20 @@ export default function AdminDashboard() {
     );
   }
 
+  const bulkOrdersCount = orders.filter(o => 
+    o.shipping_address?.includes('--- ORDER TYPE ---\nbulk') ||
+    o.order_items?.some((oi: any) => oi.quantity >= 100)
+  ).length;
+
+  const filteredOrders = orders.filter(order => {
+    const isBulk = order.shipping_address?.includes('--- ORDER TYPE ---\nbulk') ||
+                   order.order_items?.some((oi: any) => oi.quantity >= 100);
+    
+    if (orderFilter === 'bulk') return isBulk;
+    if (orderFilter === 'standard') return !isBulk;
+    return true;
+  });
+
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
       <Helmet>
@@ -458,6 +473,15 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-muted mb-1">Total Orders</p>
               <h3 className="text-4xl font-bold text-ink">{stats.totalOrders}</h3>
             </motion.div>
+
+            <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} transition={{delay:0.3}} className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-sm relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none transition-all group-hover:scale-110" />
+              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+                <Package size={24} className="text-emerald-400" />
+              </div>
+              <p className="text-sm font-medium text-muted mb-1">Bulk Orders 📦</p>
+              <h3 className="text-4xl font-bold text-success">{bulkOrdersCount}</h3>
+            </motion.div>
           </div>
         )}
 
@@ -529,9 +553,41 @@ export default function AdminDashboard() {
 
         {activeTab === 'orders' && (
           <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="bg-surface-card rounded-3xl border border-hairline shadow-sm overflow-hidden">
-             <div className="p-6 border-b border-hairline flex justify-between items-center">
-                <h2 className="text-xl font-bold text-ink">Recent Orders</h2>
-                <span className="text-sm text-muted font-medium">{orders.length} Orders Found</span>
+             <div className="p-6 border-b border-hairline flex flex-col sm:flex-row gap-4 justify-between sm:items-center">
+                <div>
+                  <h2 className="text-xl font-bold text-ink">Recent Orders</h2>
+                  <span className="text-sm text-muted font-medium">{filteredOrders.length} Orders Found</span>
+                </div>
+
+                <div className="flex bg-canvas p-1 rounded-xl border border-hairline-strong self-start sm:self-auto">
+                  <button
+                    onClick={() => setOrderFilter('all')}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                      orderFilter === 'all' ? "bg-surface-card text-ink shadow-sm border border-hairline" : "text-muted hover:text-ink"
+                    )}
+                  >
+                    All Orders
+                  </button>
+                  <button
+                    onClick={() => setOrderFilter('standard')}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-bold transition-all",
+                      orderFilter === 'standard' ? "bg-surface-card text-ink shadow-sm border border-hairline" : "text-muted hover:text-ink"
+                    )}
+                  >
+                    Standard
+                  </button>
+                  <button
+                    onClick={() => setOrderFilter('bulk')}
+                    className={cn(
+                      "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5",
+                      orderFilter === 'bulk' ? "bg-emerald-500/10 text-emerald-400 shadow-sm border border-emerald-500/20" : "text-muted hover:text-emerald-400"
+                    )}
+                  >
+                    📦 Bulk Orders
+                  </button>
+                </div>
              </div>
              
              <div className="overflow-x-auto">
@@ -549,132 +605,206 @@ export default function AdminDashboard() {
                   <tbody className="divide-y divide-hairline">
                     {isLoading ? (
                       <tr><td colSpan={6} className="px-6 py-12 text-center text-muted">Loading orders...</td></tr>
-                    ) : orders.length === 0 ? (
-                      <tr><td colSpan={6} className="px-6 py-12 text-center text-muted">No orders found.</td></tr>
-                    ) : orders.map(order => (
-                      <React.Fragment key={order.id}>
-                        <tr className="hover:bg-canvas/50 transition-colors">
-                          <td className="px-4 md:px-6 py-4">
-                            <span className="font-mono text-[10px] md:text-xs text-ink">#{order.id.substring(0, 8)}</span>
-                          </td>
-                          <td className="px-4 md:px-6 py-4">
-                            <p className="text-xs md:text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'Guest'}</p>
-                            <p className="hidden md:block text-[10px] text-muted truncate max-w-[150px]">
-                              {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') 
-                                ? order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[0] 
-                                : order.shipping_address}
-                            </p>
-                            {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') && (
-                              <p className="mt-2 text-[10px] bg-m-red/10 text-m-red p-1.5 rounded-lg border border-m-red/20 italic">
-                                Reason: {order.shipping_address.split('--- CANCELLATION REASON ---\n')[1]}
-                              </p>
-                            )}
-                          </td>
-                          <td className="px-4 md:px-6 py-4 font-bold text-ink text-xs md:text-base">
-                            {formatCurrency(order.total_amount)}
-                          </td>
-                          <td className="px-4 md:px-6 py-4">
-                            <div className="flex items-center gap-2">
-                              <select 
-                                disabled={isSubmitting || order.status === 'completed'}
-                                value={order.status} 
-                                onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
-                                className={cn(
-                                  "text-[8px] md:text-[10px] uppercase tracking-tighter md:tracking-widest font-bold px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl outline-none border transition-all cursor-pointer appearance-none text-center min-w-[80px] md:min-w-[120px]",
-                                  order.status === 'pending' && "bg-warning/10 text-warning border-warning/20 hover:bg-warning/20",
-                                  order.status === 'completed' && "bg-success/10 text-success border-success/20 hover:bg-success/20",
-                                  order.status === 'cancelled' && "bg-m-red/10 text-m-red border-m-red/20 hover:bg-m-red/20"
+                    ) : filteredOrders.length === 0 ? (
+                      <tr><td colSpan={6} className="px-6 py-12 text-center text-muted">No orders found matching the filter.</td></tr>
+                    ) : filteredOrders.map(order => {
+                      const isBulk = order.shipping_address?.includes('--- ORDER TYPE ---\nbulk') ||
+                                     order.order_items?.some((oi: any) => oi.quantity >= 100);
+                      
+                      const cleanedAddr = order.shipping_address
+                        ?.split('\n\n--- ORDER TYPE ---')[0]
+                        ?.split('\n\n--- CANCELLATION REASON ---')[0] || '';
+
+                      const customerName = cleanedAddr.split(',')[0] || 'Guest';
+                      
+                      const deliveryAddress = cleanedAddr.replace(/\((.*?)\)/g, '').split(',').slice(1).join(', ').trim();
+                      
+                      const customerEmail = order.shipping_address.match(/\((.*?)\)/)?.[1] || 'No Email Provided';
+
+                      return (
+                        <React.Fragment key={order.id}>
+                          <tr className="hover:bg-canvas/50 transition-colors">
+                            <td className="px-4 md:px-6 py-4">
+                              <span className="font-mono text-[10px] md:text-xs text-ink">#{order.id.substring(0, 8)}</span>
+                            </td>
+                            <td className="px-4 md:px-6 py-4">
+                              <div className="flex items-center gap-2 flex-wrap">
+                                <p className="text-xs md:text-sm font-bold text-ink">{customerName}</p>
+                                {isBulk && (
+                                  <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-md animate-pulse">
+                                    📦 BULK
+                                  </span>
                                 )}
-                              >
-                                <option value="pending" className="bg-surface-card text-ink">⏳ Pending</option>
-                                <option value="completed" className="bg-surface-card text-ink">✅ Completed</option>
-                                <option value="cancelled" className="bg-surface-card text-ink">❌ Cancelled</option>
-                              </select>
-                              {isSubmitting && <Loader2 size={12} className="animate-spin text-muted" />}
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-xs text-muted">
-                            {new Date(order.created_at).toLocaleDateString()}
-                          </td>
-                          <td className="px-6 py-4">
-                             <div className="flex items-center gap-2">
-                               <button 
-                                 onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
-                                 className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
-                               >
-                                 {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
-                               </button>
-                               {order.status === 'cancelled' && (
+                              </div>
+                              <p className="hidden md:block text-[10px] text-muted truncate max-w-[180px] mt-0.5">
+                                {cleanedAddr}
+                              </p>
+                              {order.shipping_address.includes('\n\n--- CANCELLATION REASON ---') && (
+                                <p className="mt-2 text-[10px] bg-m-red/10 text-m-red p-1.5 rounded-lg border border-m-red/20 italic">
+                                  Reason: {order.shipping_address.split('--- CANCELLATION REASON ---\n')[1] || order.shipping_address.split('\n\n--- CANCELLATION REASON ---')[1]}
+                                </p>
+                              )}
+                            </td>
+                            <td className="px-4 md:px-6 py-4 font-bold text-ink text-xs md:text-base">
+                              {formatCurrency(order.total_amount)}
+                            </td>
+                            <td className="px-4 md:px-6 py-4">
+                              <div className="flex items-center gap-2">
+                                <select 
+                                  disabled={isSubmitting || order.status === 'completed'}
+                                  value={order.status} 
+                                  onChange={(e) => handleUpdateOrderStatus(order.id, e.target.value)}
+                                  className={cn(
+                                    "text-[8px] md:text-[10px] uppercase tracking-tighter md:tracking-widest font-bold px-2 md:px-4 py-1.5 md:py-2 rounded-lg md:rounded-xl outline-none border transition-all cursor-pointer appearance-none text-center min-w-[80px] md:min-w-[120px]",
+                                    order.status === 'pending' && "bg-warning/10 text-warning border-warning/20 hover:bg-warning/20",
+                                    order.status === 'completed' && "bg-success/10 text-success border-success/20 hover:bg-success/20",
+                                    order.status === 'cancelled' && "bg-m-red/10 text-m-red border-m-red/20 hover:bg-m-red/20"
+                                  )}
+                                >
+                                  <option value="pending" className="bg-surface-card text-ink">⏳ Pending</option>
+                                  <option value="completed" className="bg-surface-card text-ink">✅ Completed</option>
+                                  <option value="cancelled" className="bg-surface-card text-ink">❌ Cancelled</option>
+                                </select>
+                                {isSubmitting && <Loader2 size={12} className="animate-spin text-muted" />}
+                              </div>
+                            </td>
+                            <td className="px-6 py-4 text-xs text-muted hidden md:table-cell">
+                              {new Date(order.created_at).toLocaleDateString()}
+                            </td>
+                            <td className="px-6 py-4">
+                               <div className="flex items-center gap-2">
                                  <button 
-                                   onClick={() => handleDeleteOrder(order.id)}
-                                   className="p-1.5 bg-m-red/10 text-m-red rounded-lg border border-m-red/20 hover:bg-m-red hover:text-white transition-all shadow-sm"
-                                   title="Delete Cancelled Order"
+                                   onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
+                                   className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
                                  >
-                                   <Trash2 size={14} />
+                                   {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
                                  </button>
-                               )}
-                             </div>
-                          </td>
-                        </tr>
-                        {expandedOrder === order.id && (
-                          <tr className="bg-canvas">
-                            <td colSpan={6} className="px-6 py-6 border-b border-hairline">
-                               <div className="bg-surface-card p-4 rounded-xl border border-hairline shadow-sm grid grid-cols-1 md:grid-cols-2 gap-6">
-                                 <div>
-                                   <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Customer Details</h4>
-                                   <div className="space-y-4">
-                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
-                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Name & Contact</p>
-                                       <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'N/A'}</p>
-                                       <p className="text-xs text-muted">
-                                         {order.shipping_address.match(/\((.*?)\)/)?.[1] || 'No Email Provided'}
-                                       </p>
-                                     </div>
-                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
-                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Delivery Address</p>
-                                       <p className="text-sm text-ink leading-relaxed">
-                                         {order.shipping_address.replace(/\((.*?)\)/g, '').split('\n\n---')[0].split(',').slice(1).join(', ').trim()}
-                                       </p>
-                                     </div>
-                                     <div className="bg-canvas p-4 rounded-lg border border-hairline">
-                                       <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
-                                       <p className="text-sm font-bold text-ink">Online Payment / Bulk Invoice</p>
-                                     </div>
-                                   </div>
-                                 </div>
-                                 <div>
-                                   <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Order Items</h4>
-                                   {order.order_items && order.order_items.length > 0 ? (
-                                      <div className="space-y-3">
-                                        {order.order_items.map((item: any) => (
-                                          <div key={item.id} className="flex justify-between items-center bg-canvas p-3 rounded-lg border border-hairline">
-                                            <div className="flex items-center gap-3">
-                                              <div className="w-10 h-10 bg-surface-elevated rounded-md flex items-center justify-center overflow-hidden">
-                                                {item.products?.images?.[0] ? (
-                                                  <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
-                                                ) : (
-                                                  <Package size={16} className="text-muted" />
-                                                )}
-                                              </div>
-                                              <div>
-                                                <p className="text-sm font-bold text-ink">{item.products?.name || 'Unknown Product'}</p>
-                                                <p className="text-[10px] text-muted">Qty: {item.quantity}</p>
-                                              </div>
-                                            </div>
-                                            <p className="font-bold text-ink">{formatCurrency(item.price_at_time)}</p>
-                                          </div>
-                                        ))}
-                                      </div>
-                                   ) : (
-                                     <p className="text-sm text-muted">No items found for this order.</p>
-                                   )}
-                                 </div>
+                                 {order.status === 'cancelled' && (
+                                   <button 
+                                     onClick={() => handleDeleteOrder(order.id)}
+                                     className="p-1.5 bg-m-red/10 text-m-red rounded-lg border border-m-red/20 hover:bg-m-red hover:text-white transition-all shadow-sm"
+                                     title="Delete Cancelled Order"
+                                   >
+                                     <Trash2 size={14} />
+                                   </button>
+                                 )}
                                </div>
                             </td>
                           </tr>
-                        )}
-                      </React.Fragment>
-                    ))}
+                          {expandedOrder === order.id && (
+                            <tr className="bg-canvas">
+                              <td colSpan={6} className="px-6 py-6 border-b border-hairline">
+                                 <div className="bg-surface-card p-6 rounded-2xl border border-hairline shadow-sm">
+                                   
+                                   {isBulk && (
+                                     <div className="mb-6 bg-emerald-500/5 p-5 rounded-xl border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)] relative overflow-hidden">
+                                       <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none" />
+                                       <div className="flex items-start gap-4">
+                                         <div className="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-lg shrink-0">
+                                           📦
+                                         </div>
+                                         <div>
+                                           <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">B2B Institutional Order Details</h4>
+                                           <p className="text-xs text-muted mt-1 leading-relaxed max-w-3xl">
+                                             This high-volume purchase includes a 10% volume discount applied directly to item unit prices. The order is cleared for priority manufacturing scheduling, multi-step quality audit validation, and dedicated transport container dispatch.
+                                           </p>
+                                           <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] font-mono font-bold">
+                                             <span className="text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">
+                                               ✓ 10% VOLUME DISCOUNT APPLIED
+                                             </span>
+                                             <span className="text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded border border-indigo-500/20">
+                                               ✓ B2B NET 30 INVOICING ACCOUNTING SCHEDULE
+                                             </span>
+                                             <span className="text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
+                                               ✓ PRIORITY MANUFACTURING LOGISTICS
+                                             </span>
+                                           </div>
+                                         </div>
+                                       </div>
+                                     </div>
+                                   )}
+
+                                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                     <div>
+                                       <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Customer Details</h4>
+                                       <div className="space-y-4">
+                                         <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                           <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Name & Contact</p>
+                                           <p className="text-sm font-bold text-ink">{customerName}</p>
+                                           <p className="text-xs text-muted mt-0.5">{customerEmail}</p>
+                                         </div>
+                                         <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                           <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Delivery Address</p>
+                                           <p className="text-sm text-ink leading-relaxed">
+                                             {deliveryAddress || 'Local Pickup / Handover'}
+                                           </p>
+                                         </div>
+                                         <div className="bg-canvas p-4 rounded-lg border border-hairline">
+                                           <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
+                                           <p className="text-sm font-bold text-ink">
+                                             {isBulk ? "B2B Net 30 Commercial Invoice (Priority Dispatch)" : "Cash on Delivery (COD) / Instant UPI"}
+                                           </p>
+                                         </div>
+                                       </div>
+                                     </div>
+                                     <div>
+                                       <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Order Items</h4>
+                                       {order.order_items && order.order_items.length > 0 ? (
+                                          <div className="space-y-3">
+                                            {order.order_items.map((item: any) => {
+                                              const isItemBulk = item.quantity >= 100;
+                                              const originalUnitPrice = isItemBulk ? item.price_at_time / 0.9 : item.price_at_time;
+                                              const calculatedTotal = item.price_at_time * item.quantity;
+                                              const discountAmt = isItemBulk ? (originalUnitPrice * 0.1 * item.quantity) : 0;
+                                              
+                                              return (
+                                                <div key={item.id} className="flex justify-between items-center bg-canvas p-4 rounded-xl border border-hairline hover:border-hairline-strong transition-all">
+                                                  <div className="flex items-center gap-3">
+                                                    <div className="w-12 h-12 bg-surface-elevated rounded-lg flex items-center justify-center overflow-hidden border border-hairline shrink-0">
+                                                      {item.products?.images?.[0] ? (
+                                                        <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
+                                                      ) : (
+                                                        <Package size={18} className="text-muted" />
+                                                      )}
+                                                    </div>
+                                                    <div>
+                                                      <p className="text-xs md:text-sm font-bold text-ink flex items-center gap-2 flex-wrap">
+                                                        {item.products?.name || 'Unknown Product'}
+                                                        {isItemBulk && (
+                                                          <span className="px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/10 text-emerald-400 rounded">
+                                                            10% BULK OFF
+                                                          </span>
+                                                        )}
+                                                      </p>
+                                                      <p className="text-[10px] text-muted font-mono mt-0.5">
+                                                        {formatCurrency(item.price_at_time)} × {item.quantity} units
+                                                      </p>
+                                                    </div>
+                                                  </div>
+                                                  <div className="text-right shrink-0">
+                                                    <p className="font-bold text-ink text-sm">{formatCurrency(calculatedTotal)}</p>
+                                                    {isItemBulk && (
+                                                      <p className="text-[9px] text-emerald-400 font-mono font-medium mt-0.5">
+                                                        Saved {formatCurrency(discountAmt)}
+                                                      </p>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
+                                          </div>
+                                       ) : (
+                                         <p className="text-sm text-muted">No items found for this order.</p>
+                                       )}
+                                     </div>
+                                   </div>
+                                 </div>
+                              </td>
+                            </tr>
+                          )}
+                        </React.Fragment>
+                      );
+                    })}
                   </tbody>
                 </table>
              </div>

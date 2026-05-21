@@ -22,6 +22,14 @@ const itemVariants = {
 export default function Cart() {
   const { items, removeItem, updateQuantity, getTotalPrice } = useCartStore();
 
+  const hasBulkItems = items.some(item => item.quantity >= 100);
+  const totalSavings = items.reduce((acc, item) => {
+    if (item.quantity >= 100) {
+      return acc + (item.price * 0.10 * item.quantity);
+    }
+    return acc;
+  }, 0);
+
   if (items.length === 0) {
     return (
       <div className="pt-32 pb-24 container mx-auto px-4 flex flex-col items-center min-h-screen bg-canvas">
@@ -96,60 +104,87 @@ export default function Cart() {
             </div>
 
             <AnimatePresence mode="popLayout">
-              {items.map((item, idx) => (
-                <motion.div
-                  key={`${item.id}-${item.selectedSize}`}
-                  variants={itemVariants}
-                  layout
-                  className="bg-surface-card p-4 md:p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline flex flex-col md:flex-row gap-6 md:items-center"
-                >
-                  <div className="w-24 h-32 md:w-28 md:h-36 overflow-hidden rounded-xl bg-canvas shrink-0">
-                    <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
-                  </div>
+              {items.map((item, idx) => {
+                const isBulk = item.quantity >= 100;
+                const discountedPrice = item.price * 0.9;
+                const originalTotal = item.price * item.quantity;
+                const discountedTotal = discountedPrice * item.quantity;
 
-                  <div className="flex-1 flex flex-col">
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className="font-bold text-lg text-ink line-clamp-2 pr-4">{item.name}</h3>
-                      <button
-                        onClick={() => removeItem(item.id, item.selectedSize)}
-                        className="p-2 text-muted hover:text-m-red bg-canvas rounded-full transition-colors shrink-0"
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                return (
+                  <motion.div
+                    key={`${item.id}-${item.selectedSize}`}
+                    variants={itemVariants}
+                    layout
+                    className="bg-surface-card p-4 md:p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline flex flex-col md:flex-row gap-6 md:items-center"
+                  >
+                    <div className="w-24 h-32 md:w-28 md:h-36 overflow-hidden rounded-xl bg-canvas shrink-0">
+                      <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
                     </div>
 
-                    <div className="flex gap-4 mb-4">
-                      <span className="text-xs font-semibold text-muted border border-hairline-strong rounded-md px-2 py-1">Size: {item.selectedSize}</span>
+                    <div className="flex-1 flex flex-col">
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className="font-bold text-lg text-ink line-clamp-2 pr-4">{item.name}</h3>
+                        <button
+                          onClick={() => removeItem(item.id, item.selectedSize)}
+                          className="p-2 text-muted hover:text-m-red bg-canvas rounded-full transition-colors shrink-0"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+
+                      <div className="flex gap-4 mb-4">
+                        <span className="text-xs font-semibold text-muted border border-hairline-strong rounded-md px-2 py-1">Size: {item.selectedSize}</span>
+                      </div>
+
+                      {isBulk ? (
+                        <div className="flex flex-col gap-0.5 md:hidden">
+                          <span className="font-bold text-success">{formatCurrency(discountedPrice)}</span>
+                          <span className="text-xs text-muted line-through">{formatCurrency(item.price)}</span>
+                          <span className="inline-flex self-start items-center gap-1 mt-1 text-[10px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-1.5 py-0.5 rounded-full shadow-[0_0_10px_rgba(16,185,129,0.1)] animate-pulse">
+                            📦 10% Bulk Off
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="font-bold text-ink md:hidden">{formatCurrency(item.price)}</span>
+                      )}
                     </div>
 
-                    <span className="font-bold text-ink md:hidden">{formatCurrency(item.price)}</span>
-                  </div>
-
-                  <div className="w-full md:w-24 flex md:justify-center mt-4 md:mt-0">
-                    <div className="flex items-center gap-2 bg-canvas rounded-lg border border-hairline-strong p-1">
-                      <motion.button
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
-                        className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
-                      >
-                        <Minus size={14} />
-                      </motion.button>
-                      <span className="font-semibold text-sm text-ink w-6 text-center">{item.quantity}</span>
-                      <motion.button
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
-                        className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
-                      >
-                        <Plus size={14} />
-                      </motion.button>
+                    <div className="w-full md:w-24 flex md:justify-center mt-4 md:mt-0">
+                      <div className="flex items-center gap-2 bg-canvas rounded-lg border border-hairline-strong p-1">
+                        <motion.button
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                          className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
+                        >
+                          <Minus size={14} />
+                        </motion.button>
+                        <span className="font-semibold text-sm text-ink w-6 text-center">{item.quantity}</span>
+                        <motion.button
+                          whileTap={{ scale: 0.9 }}
+                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                          className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
+                        >
+                          <Plus size={14} />
+                        </motion.button>
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="hidden md:block w-32 text-right">
-                    <span className="text-xl font-bold text-ink">{formatCurrency(item.price * item.quantity)}</span>
-                  </div>
-                </motion.div>
-              ))}
+                    <div className="hidden md:block w-32 text-right">
+                      {isBulk ? (
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="text-xl font-bold text-success">{formatCurrency(discountedTotal)}</span>
+                          <span className="text-sm text-muted line-through">{formatCurrency(originalTotal)}</span>
+                          <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full shadow-[0_0_12px_rgba(16,185,129,0.15)] animate-pulse">
+                            📦 10% Bulk Off
+                          </span>
+                        </div>
+                      ) : (
+                        <span className="text-xl font-bold text-ink">{formatCurrency(item.price * item.quantity)}</span>
+                      )}
+                    </div>
+                  </motion.div>
+                );
+              })}
             </AnimatePresence>
           </motion.div>
 
@@ -166,8 +201,16 @@ export default function Cart() {
               <div className="space-y-4 mb-8">
                 <div className="flex justify-between items-center text-body-text">
                   <span className="text-sm font-medium">Subtotal</span>
-                  <span className="font-semibold text-ink">{formatCurrency(getTotalPrice())}</span>
+                  <span className="font-semibold text-ink">{formatCurrency(getTotalPrice() + totalSavings)}</span>
                 </div>
+                {hasBulkItems && (
+                  <div className="flex justify-between items-center text-success bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                    <span className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                      🎉 Bulk Discount (10%)
+                    </span>
+                    <span className="font-bold">-{formatCurrency(totalSavings)}</span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center text-body-text">
                   <span className="text-sm font-medium">Shipping</span>
                   <span className="font-semibold text-success">Free</span>

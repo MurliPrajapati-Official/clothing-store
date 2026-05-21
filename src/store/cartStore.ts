@@ -52,7 +52,10 @@ export const useCartStore = create<CartState>()(
       },
       clearCart: () => set({ items: [] }),
       getTotalItems: () => get().items.reduce((acc, item) => acc + item.quantity, 0),
-      getTotalPrice: () => get().items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+      getTotalPrice: () => get().items.reduce((acc, item) => {
+        const itemPrice = item.quantity >= 100 ? item.price * 0.9 : item.price;
+        return acc + itemPrice * item.quantity;
+      }, 0),
     }),
     {
       name: 'uniform-kart-cart',

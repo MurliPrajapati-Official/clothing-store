@@ -48,11 +48,18 @@ export default function Checkout() {
   }, [navigate]);
 
   const total = getTotalPrice();
+  const hasBulkItems = items.some(item => item.quantity >= 100);
+  const totalSavings = items.reduce((acc, item) => {
+    if (item.quantity >= 100) {
+      return acc + (item.price * 0.10 * item.quantity);
+    }
+    return acc;
+  }, 0);
 
   const handlePlaceOrder = async () => {
     setIsSubmitting(true);
     try {
-      const fullAddress = `${addressData.firstName} ${addressData.lastName}, ${addressData.street}, ${addressData.city}, ${addressData.state} - ${addressData.pin} (${userEmail})`;
+      const fullAddress = `${addressData.firstName} ${addressData.lastName}, ${addressData.street}, ${addressData.city}, ${addressData.state} - ${addressData.pin} (${userEmail})${hasBulkItems ? '\n\n--- ORDER TYPE ---\nbulk' : ''}`;
       const orderData = {
         user_id: userId,
         total_amount: total * 1.18, // Total with GST
@@ -60,7 +67,7 @@ export default function Checkout() {
         items: items.map(item => ({
           productId: item.id,
           quantity: item.quantity,
-          price: item.price
+          price: item.quantity >= 100 ? item.price * 0.9 : item.price
         }))
       };
 
@@ -267,12 +274,22 @@ export default function Checkout() {
                     <label className="flex items-center gap-4 p-5 border-2 border-ink rounded-xl cursor-pointer bg-canvas shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-all">
                       <input type="radio" name="payment" defaultChecked className="hidden" />
                       <Truck className="text-ink" />
-                      <span className="font-semibold text-ink">Cash on Delivery / Bulk Invoice</span>
+                      <span className="font-semibold text-ink">{hasBulkItems ? 'Institutional Bulk Billing' : 'Cash on Delivery'}</span>
                       <div className="w-4 h-4 rounded-full border border-ink ml-auto flex items-center justify-center">
                         <div className="w-2 h-2 bg-ink rounded-full" />
                       </div>
                     </label>
-                    <p className="text-sm text-muted">For bulk orders, our team will contact you for payment arrangements after reviewing your requirements.</p>
+                    {hasBulkItems ? (
+                      <div className="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl text-sm leading-relaxed flex gap-3 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                        <span className="text-lg">ℹ️</span>
+                        <div>
+                          <strong className="font-semibold text-ink block mb-0.5">Institutional Order Billing:</strong>
+                          Since your order contains a bulk quantity (MOQ &gt;= 100), it has been upgraded to corporate invoicing. Our accounts department will verify details and reach out within 2 hours to coordinate priority shipping and dispatch an electronic invoice for secure institutional wire transfer.
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted">For bulk orders, our team will contact you for payment arrangements after reviewing your requirements.</p>
+                    )}
                   </div>
 
                   <div className="pt-6 flex gap-4">
@@ -316,8 +333,16 @@ export default function Checkout() {
                           <p className="text-sm text-muted mt-1">Size: {item.selectedSize}</p>
                           <p className="text-sm text-muted mt-1">Qty: {item.quantity}</p>
                         </div>
-                        <div className="font-bold text-ink text-right">
-                          {formatCurrency(item.price * item.quantity)}
+                        <div className="font-bold text-ink text-right flex flex-col items-end gap-0.5">
+                          {item.quantity >= 100 ? (
+                            <>
+                              <span className="text-success">{formatCurrency(item.price * 0.9 * item.quantity)}</span>
+                              <span className="text-xs text-muted line-through">{formatCurrency(item.price * item.quantity)}</span>
+                              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1 rounded border border-emerald-500/20 mt-0.5">10% Off Applied</span>
+                            </>
+                          ) : (
+                            formatCurrency(item.price * item.quantity)
+                          )}
                         </div>
                       </div>
                     ))}
@@ -338,7 +363,7 @@ export default function Checkout() {
                       <h4 className="font-bold text-ink mb-3">Order Method</h4>
                       <p className="text-body-text text-sm flex items-center gap-2">
                         <Truck size={16} className="text-muted" />
-                        Cash on Delivery / Bulk Invoice
+                        {hasBulkItems ? 'Institutional Bulk Billing' : 'Cash on Delivery'}
                       </p>
                     </div>
                   </div>
@@ -375,8 +400,21 @@ export default function Checkout() {
               <div className="space-y-4 mb-6">
                 <div className="flex justify-between items-center text-body-text">
                   <span className="text-sm">Subtotal</span>
-                  <span className="font-semibold text-ink">{formatCurrency(total)}</span>
+                  <span className="font-semibold text-ink">{formatCurrency(total + totalSavings)}</span>
                 </div>
+                {hasBulkItems && (
+                  <div className="flex flex-col gap-1 text-success bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
+                        🎉 Bulk Discount Applied
+                      </span>
+                      <span className="font-bold">-10%</span>
+                    </div>
+                    <span className="text-[11px] text-emerald-400">
+                      Saved {formatCurrency(totalSavings)} on volume items (MOQ &gt;= 100).
+                    </span>
+                  </div>
+                )}
                 <div className="flex justify-between items-center text-body-text">
                   <span className="text-sm">Estimated Tax (18% GST)</span>
                   <span className="font-semibold text-ink">{formatCurrency(total * 0.18)}</span>

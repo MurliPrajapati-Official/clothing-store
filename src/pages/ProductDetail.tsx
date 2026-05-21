@@ -63,7 +63,16 @@ export default function ProductDetail() {
 
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
+  const [isBulkMode, setIsBulkMode] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
+
+  useEffect(() => {
+    if (quantity >= 100) {
+      setIsBulkMode(true);
+    } else {
+      setIsBulkMode(false);
+    }
+  }, [quantity]);
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [relatedProducts, setRelatedProducts] = useState<Product[]>([]);
@@ -376,6 +385,113 @@ export default function ProductDetail() {
                   </motion.button>
                 ))}
               </div>
+            </motion.div>
+
+            {/* Bulk & Institutional Ordering Panel */}
+            <motion.div 
+              variants={fadeUpVariant} 
+              className="mb-8 p-6 rounded-2xl bg-surface-card border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-hairline-strong"
+            >
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <span className="text-2xl leading-none">📦</span>
+                  <div>
+                    <h3 className="font-bold text-ink text-base">Bulk & Institutional Orders</h3>
+                    <p className="text-xs text-muted">Order 100+ units for exclusive benefits</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const nextMode = !isBulkMode;
+                    setIsBulkMode(nextMode);
+                    if (nextMode) {
+                      setQuantity(100);
+                    } else {
+                      setQuantity(1);
+                    }
+                  }}
+                  className={cn(
+                    "text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all border",
+                    isBulkMode 
+                      ? "bg-primary border-primary text-on-primary shadow-lg shadow-primary/10" 
+                      : "bg-canvas border-hairline text-ink hover:border-ink"
+                  )}
+                >
+                  {isBulkMode ? 'Bulk Enabled' : 'Enable Bulk'}
+                </button>
+              </div>
+
+              <AnimatePresence initial={false}>
+                {isBulkMode && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="space-y-4 pt-2 overflow-hidden"
+                  >
+                    {/* Preset Packages */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {[
+                        { label: 'Bronze', qty: 100, bonus: '10% Off' },
+                        { label: 'Silver', qty: 500, bonus: 'Embroidery' },
+                        { label: 'Gold', qty: 1000, bonus: 'Fit Samples' },
+                        { label: 'Platinum', qty: 2000, bonus: 'Custom Colors' },
+                      ].map((tier) => (
+                        <button
+                          type="button"
+                          key={tier.label}
+                          onClick={() => setQuantity(tier.qty)}
+                          className={cn(
+                            "flex flex-col items-center justify-center p-3 rounded-xl border transition-all text-center",
+                            quantity === tier.qty 
+                              ? "bg-primary/10 border-primary text-primary" 
+                              : "bg-canvas/50 border-hairline text-body-text hover:border-body-text"
+                          )}
+                        >
+                          <span className="text-[10px] uppercase font-bold tracking-widest text-muted">{tier.label}</span>
+                          <span className="text-base font-extrabold text-ink my-0.5">{tier.qty}+</span>
+                          <span className="text-[9px] font-medium leading-tight text-muted line-clamp-1">{tier.bonus}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    {/* Pricing info display */}
+                    <div className="bg-canvas/80 rounded-xl p-4 border border-hairline-strong space-y-2">
+                      <div className="flex justify-between items-center text-xs">
+                        <span className="text-muted">Standard Price:</span>
+                        <span className="text-ink line-through">{formatCurrency(product.price)} / unit</span>
+                      </div>
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-success font-semibold flex items-center gap-1">
+                          🎉 Bulk Discount Price:
+                        </span>
+                        <span className="text-success font-bold">{formatCurrency(product.price * 0.9)} / unit</span>
+                      </div>
+                      <hr className="border-hairline-strong my-2" />
+                      <div className="flex justify-between items-baseline">
+                        <span className="text-xs text-muted">Est. Subtotal:</span>
+                        <div className="text-right">
+                          <span className="text-xl font-extrabold text-ink">{formatCurrency(product.price * 0.9 * quantity)}</span>
+                          <p className="text-[10px] text-success font-bold mt-0.5">You Save: {formatCurrency(product.price * 0.1 * quantity)}!</p>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Dynamic Tier Message */}
+                    <div className="text-[11px] text-muted flex items-center gap-2 bg-canvas/30 px-3 py-2.5 rounded-lg border border-hairline/30">
+                      <span className="text-base">💡</span>
+                      <span>
+                        {quantity >= 2000 ? 'Platinum Tier: Dedicated institutional manager assigned + custom fabrics.' :
+                         quantity >= 1000 ? 'Gold Tier: Free physical fit-samples shipped to your institution.' :
+                         quantity >= 500 ? 'Silver Tier: Free high-definition computerized embroidery for your logo.' :
+                         'Bronze Tier: Standard 10% volume discount applied.'}
+                      </span>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
 
             {/* Quantity and CTA */}
