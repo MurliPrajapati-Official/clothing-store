@@ -6,6 +6,18 @@ const PRECACHE_ASSETS = [
   '/manifest.json'
 ];
 
+// Clean redirect response to avoid browser security issues when redirect mode is not 'follow'
+function cleanResponse(response) {
+  if (!response || !response.redirected) {
+    return response;
+  }
+  return new Response(response.body, {
+    status: response.status,
+    statusText: response.statusText,
+    headers: response.headers
+  });
+}
+
 // Install event - precache core assets
 self.addEventListener('install', (event) => {
   event.waitUntil(
@@ -45,8 +57,9 @@ self.addEventListener('fetch', (event) => {
   if (event.request.mode === 'navigate') {
     event.respondWith(
       fetch(event.request)
+        .then(cleanResponse)
         .catch(() => {
-          return caches.match('/index.html');
+          return caches.match('/index.html').then(cleanResponse);
         })
     );
     return;
@@ -64,17 +77,19 @@ self.addEventListener('fetch', (event) => {
       caches.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
           if (networkResponse && networkResponse.status === 200) {
-            const responseToCache = networkResponse.clone();
+            const cleanedResponse = cleanResponse(networkResponse);
+            const responseToCache = cleanedResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
               cache.put(event.request, responseToCache);
             });
+            return cleanedResponse;
           }
           return networkResponse;
         }).catch((err) => {
           console.log('Network fetch failed for asset, using cache fallback:', err);
         });
 
-        return cachedResponse || fetchPromise;
+        return (cachedResponse ? cleanResponse(cachedResponse) : null) || fetchPromise;
       })
     );
     return;
@@ -83,8 +98,9 @@ self.addEventListener('fetch', (event) => {
   // Default network-first falling back to cache
   event.respondWith(
     fetch(event.request)
+      .then(cleanResponse)
       .catch(() => {
-        return caches.match(event.request);
+        return caches.match(event.request).then(cleanResponse);
       })
   );
 });
