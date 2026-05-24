@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
 import { CATEGORIES } from '../constants';
@@ -46,11 +46,11 @@ const showcaseImages = [
 export default function Collections() {
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas">
-      <Helmet>
-        <title>Uniform Collections Showcase | Best Uniform PNG Gallery India</title>
-        <meta name="description" content="Explore our premium uniform image gallery. High-quality PNG showcase of school uniforms, corporate wear, and medical scrubs by Uniform Trends." />
-        <meta name="keywords" content="uniform images PNG, school uniform gallery, corporate wear showcase, hospital scrubs photos, Uniform Trends gallery" />
-        <link rel="canonical" href="https://uniformtrends.in/collections" />
+      <SEO
+        title="Uniform Collections Showcase | Best Uniform PNG Gallery India"
+        description="Explore our premium uniform image gallery. High-quality PNG showcase of school uniforms, corporate wear, and medical scrubs by Uniform Trends."
+        keywords="uniform images PNG, school uniform gallery, corporate wear showcase, hospital scrubs photos, Uniform Trends gallery"
+      >
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
@@ -60,7 +60,7 @@ export default function Collections() {
             "image": showcaseImages.map(img => `https://uniformtrends.in${img.url}`)
           })}
         </script>
-      </Helmet>
+      </SEO>
 
       <div className="container mx-auto px-4">
         <motion.div 

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { Search, ArrowRight, ShieldCheck, Truck, RefreshCw, Star, ArrowUpRight, Scissors, Factory, Plus, Minus } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -66,12 +66,11 @@ export default function Home() {
 
   return (
     <div className="flex flex-col bg-canvas text-body-text">
-      <Helmet>
-        <title>Best School & Corporate Uniforms in India | Uniform Trends</title>
-        <meta name="description" content="Uniform Trends is India's top manufacturer for school uniforms in Mumbai, corporate wear in Delhi, and hospital scrubs. Premium quality, custom tailoring, and bulk supply." />
-        <meta name="keywords" content="school uniforms India, best school uniforms Mumbai, corporate uniform manufacturers, hospital scrubs wholesale, uniform supplier Delhi, custom uniforms Pune, Uniform Trends" />
-        <link rel="canonical" href="https://uniformtrends.in/" />
-      </Helmet>
+      <SEO
+        title="Best School & Corporate Uniforms in India"
+        description="Uniform Trends is India's top manufacturer for school uniforms in Mumbai, corporate wear in Delhi, and hospital scrubs. Premium quality, custom tailoring, and bulk supply."
+        keywords="school uniforms India, best school uniforms Mumbai, corporate uniform manufacturers, hospital scrubs wholesale, uniform supplier Delhi, custom uniforms Pune, Uniform Trends"
+      />
 
       {/* Cinematic Hero Section */}
       <section className="relative h-[95vh] flex items-center overflow-hidden">
@@ -109,7 +108,7 @@ export default function Home() {
               Uniforms in India.
             </h1>
             <p className="text-[18px] md:text-[20px] text-body-text mb-10 leading-[1.6] max-w-xl font-light">
-              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration (by WALRIE).
+              Premium, durable, and comfortable uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
             </p>
 
             <div className="flex flex-wrap gap-4">

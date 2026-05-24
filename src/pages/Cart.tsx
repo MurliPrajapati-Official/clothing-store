@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { ShoppingBag, Trash2, Plus, Minus, ArrowRight, ShieldCheck, Truck } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
@@ -33,10 +33,11 @@ export default function Cart() {
   if (items.length === 0) {
     return (
       <div className="pt-32 pb-24 container mx-auto px-4 flex flex-col items-center min-h-screen bg-canvas">
-        <Helmet>
-          <title>Your Cart is Empty | Uniform trends</title>
-          <link rel="canonical" href="https://uniformtrends.in/cart" />
-        </Helmet>
+        <SEO
+          title="Your Cart is Empty"
+          description="Your Uniform Trends shopping cart is empty. Browse our catalog for premium school, corporate, and hospital uniforms."
+          robots="noindex, nofollow"
+        />
         <motion.div 
           initial={false}
           animate={{ opacity: 1, scale: 1 }}
@@ -76,10 +77,11 @@ export default function Cart() {
 
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen">
-      <Helmet>
-        <title>{`Your Cart (${items.length}) | Uniform trends`}</title>
-        <link rel="canonical" href="https://uniformtrends.in/cart" />
-      </Helmet>
+      <SEO
+        title={`Your Cart (${items.length})`}
+        description={`View the ${items.length} item(s) in your shopping cart. Adjust sizes, quantities, and proceed to checkout securely.`}
+        robots="noindex, nofollow"
+      />
       <div className="container mx-auto px-4">
         <motion.h1 
           initial={false}

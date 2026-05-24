@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { PlusCircle, Image as ImageIcon, Loader2, ShieldAlert, LayoutDashboard, Package, Users, Trash2, Edit, ExternalLink, ShoppingBag } from 'lucide-react';
 import { supabase } from '../lib/supabase';
@@ -386,9 +386,11 @@ export default function AdminDashboard() {
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
-      <Helmet>
-        <title>Admin Panel | Uniform Trends</title>
-      </Helmet>
+      <SEO
+        title="Admin Panel"
+        description="Administrative panel for store inventory and order management."
+        robots="noindex, nofollow"
+      />
 
       <div className="container mx-auto px-4 max-w-[1600px] overflow-hidden">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between mb-10 gap-8">

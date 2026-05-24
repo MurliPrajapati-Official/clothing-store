@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, Package, ArrowRight, Home, ShoppingBag } from 'lucide-react';
@@ -9,11 +9,11 @@ export default function Success() {
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
-      <Helmet>
-        <title>Order Confirmed | Uniform Trends</title>
-        <meta name="description" content="Thank you for your order. Your premium uniforms are being prepared by Uniform Trends." />
-        <link rel="canonical" href="https://uniformtrends.in/success" />
-      </Helmet>
+      <SEO
+        title="Order Confirmed | Uniform Trends"
+        description="Thank you for your order. Your premium uniforms are being prepared by Uniform Trends."
+        robots="noindex, nofollow"
+      />
 
       <div className="container mx-auto px-4 max-w-2xl text-center">
         {/* Animated Checkmark */}

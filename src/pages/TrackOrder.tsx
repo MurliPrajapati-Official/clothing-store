@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { Package, Search } from 'lucide-react';
 import React, { useState } from 'react';
@@ -104,10 +104,11 @@ export default function TrackOrder() {
 
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>Track Order | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.in/track-order" />
-      </Helmet>
+      <SEO
+        title="Track Order"
+        description="Track your active Uniform Trends order status and real-time shipping progress. Input order details to locate standard or institutional bulk shipments."
+        robots="noindex, nofollow"
+      />
       <div className="container mx-auto px-4 max-w-2xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

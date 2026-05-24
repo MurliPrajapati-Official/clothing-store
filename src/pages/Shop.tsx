@@ -1,5 +1,5 @@
 import { useState, useEffect, ReactNode } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { useSearchParams } from 'react-router-dom';
 import { Filter, SlidersHorizontal, X, Search, ChevronDown, Check, LayoutGrid, List, RefreshCw } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -247,11 +247,10 @@ export default function Shop() {
 
   return (
     <div className="pt-24 pb-20 bg-canvas min-h-screen">
-      <Helmet>
-        <title>{categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends India` : 'Shop All Uniforms | Uniform Trends India'}</title>
-        <meta name="description" content="Browse Uniform Trends' premium selection of specialized school, hospital, and corporate uniforms across India. Bulk orders and custom tailoring available." />
-        <link rel="canonical" href="https://uniformtrends.in/shop" />
-      </Helmet>
+      <SEO
+        title={categoryFilter.length > 0 ? `${categoryFilter.join(', ')} Uniforms | Shop Uniform Trends India` : 'Shop All Uniforms | Uniform Trends India'}
+        description="Browse Uniform Trends' premium selection of specialized school, hospital, and corporate uniforms across India. Bulk orders and custom tailoring available."
+      />
 
       {/* Hero / Header Section */}
       <div className="bg-surface-card border-b border-hairline py-8 md:py-12">

@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { MapPin, Phone, Mail, Send } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
@@ -55,11 +55,10 @@ export default function Contact() {
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
-      <Helmet>
-        <title>Contact Uniform Trends | Custom Bulk Uniform Orders India</title>
-        <meta name="description" content="Get in touch with Uniform Trends for bulk orders of school, hospital, and corporate uniforms across India. High-quality custom tailoring." />
-        <link rel="canonical" href="https://uniformtrends.in/contact" />
-      </Helmet>
+      <SEO
+        title="Contact Uniform Trends | Custom Bulk Uniform Orders India"
+        description="Get in touch with Uniform Trends for bulk orders of school, hospital, and corporate uniforms across India. High-quality custom tailoring."
+      />
 
       <div className="container-custom">
         <motion.div

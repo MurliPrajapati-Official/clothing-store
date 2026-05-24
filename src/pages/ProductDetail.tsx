@@ -1,6 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { ArrowLeft, Star, ShoppingBag, Heart, ShieldCheck, Truck, RefreshCw, ChevronRight, Ruler, Plus, Minus, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { SCHOOLS } from '../constants';
@@ -206,10 +206,11 @@ export default function ProductDetail() {
 
   return (
     <div className="pt-32 pb-24 bg-canvas text-body-text min-h-screen">
-      <Helmet>
-        <title>{product.name} | Uniform Trends</title>
-        <meta name="description" content={`Buy ${product.name} at Uniform Trends. High-quality ${product.category} uniform, durable fabric, and perfect fit. Available in various sizes.`} />
-        <link rel="canonical" href={`https://uniformtrends.in/product/${product.slug}`} />
+      <SEO
+        title={`${product.name} | Uniform Trends`}
+        description={`Buy ${product.name} at Uniform Trends. High-quality ${product.category} uniform, durable fabric, and perfect fit. Available in various sizes.`}
+        ogImage={product.images && product.images.length > 0 ? product.images[0] : undefined}
+      >
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org/",
@@ -236,7 +237,7 @@ export default function ProductDetail() {
             } : undefined
           })}
         </script>
-      </Helmet>
+      </SEO>
       <div className="container mx-auto px-4">
         {/* Breadcrumbs */}
         <motion.div

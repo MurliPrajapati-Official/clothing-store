@@ -1,13 +1,13 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 
 export default function SizeGuide() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>Size Guide | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.in/size-guide" />
-      </Helmet>
+      <SEO
+        title="Size Guide"
+        description="Comprehensive sizing guide for Uniform Trends school, hospital, and corporate uniforms. Learn how to measure chest, waist, and hips for standard sizing."
+      />
       <div className="container mx-auto px-4 max-w-4xl">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}

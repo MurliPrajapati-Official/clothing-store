@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion, AnimatePresence } from 'motion/react';
 import { User, Mail, Lock, Settings, LogOut, Package, ChevronRight, Phone, MapPin, Loader2, ShieldCheck } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
@@ -214,9 +214,11 @@ export default function Account() {
   if (!session) {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex items-center justify-center">
-        <Helmet>
-          <title>Sign In & Register | Uniform trends</title>
-        </Helmet>
+        <SEO
+          title="Sign In & Register"
+          description="Login or register for a Uniform Trends customer account to complete purchases and view your order updates."
+          robots="noindex, nofollow"
+        />
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -275,9 +277,11 @@ export default function Account() {
 
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>My Account | Uniform trends</title>
-      </Helmet>
+      <SEO
+        title="My Account"
+        description="Uniform Trends customer account dashboard. Access your orders, billing address, profile, and security settings."
+        robots="noindex, nofollow"
+      />
       <div className="container mx-auto px-4 max-w-[1600px]">
         {successMsg && (
           <div className="mb-6 p-4 bg-success/10 border border-success/20 text-success rounded-xl text-sm font-bold text-center">

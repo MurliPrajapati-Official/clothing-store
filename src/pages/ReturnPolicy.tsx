@@ -1,13 +1,13 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 
 export default function ReturnPolicy() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>Return Policy | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.in/return-policy" />
-      </Helmet>
+      <SEO
+        title="Return Policy"
+        description="Learn about the return and refund policy at Uniform Trends. Check eligibility conditions for standard size replacements and custom-tailored uniforms."
+      />
       <div className="container-custom max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

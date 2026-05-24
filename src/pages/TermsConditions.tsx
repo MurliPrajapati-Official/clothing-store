@@ -1,13 +1,13 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 
 export default function TermsConditions() {
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>Terms & Conditions | Uniform Trends</title>
-        <link rel="canonical" href="https://uniformtrends.in/terms" />
-      </Helmet>
+      <SEO
+        title="Terms & Conditions"
+        description="Terms and conditions for using the Uniform Trends web platform. Read about license usage, liability disclaimers, governing laws, and purchase policies."
+      />
       <div className="container-custom max-w-4xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

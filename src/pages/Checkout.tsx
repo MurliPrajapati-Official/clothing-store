@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link, useNavigate } from 'react-router-dom';
 import { getApiUrl } from '../config';
@@ -104,10 +104,11 @@ export default function Checkout() {
   if (orderComplete) {
     return (
       <div className="pt-32 pb-24 min-h-screen bg-canvas flex flex-col items-center justify-center">
-        <Helmet>
-          <title>Order Confirmed | Uniform trends</title>
-          <link rel="canonical" href="https://uniformtrends.in/checkout" />
-        </Helmet>
+        <SEO
+          title="Order Confirmed"
+          description="Order confirmation for your premium Uniform Trends products."
+          robots="noindex, nofollow"
+        />
         <motion.div
           initial={{ scale: 0.8, opacity: 0, y: 40 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
@@ -130,10 +131,11 @@ export default function Checkout() {
   if (items.length === 0) {
     return (
       <div className="pt-32 pb-24 text-center min-h-[70vh] flex flex-col items-center justify-center">
-        <Helmet>
-          <title>Checkout | Uniform trends</title>
-          <link rel="canonical" href="https://uniformtrends.in/checkout" />
-        </Helmet>
+        <SEO
+          title="Checkout"
+          description="Checkout and buy your uniform supplies on Uniform Trends."
+          robots="noindex, nofollow"
+        />
         <motion.h1
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -154,10 +156,11 @@ export default function Checkout() {
 
   return (
     <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <Helmet>
-        <title>Secure Checkout | Uniform trends</title>
-        <link rel="canonical" href="https://uniformtrends.in/checkout" />
-      </Helmet>
+      <SEO
+        title="Secure Checkout"
+        description="Securely complete your billing and shipping details to finalize your Uniform Trends order."
+        robots="noindex, nofollow"
+      />
       <div className="container mx-auto px-4 max-w-6xl">
 
         {/* Progress Steps */}

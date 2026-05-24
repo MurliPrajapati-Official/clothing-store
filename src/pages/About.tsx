@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { ShieldCheck, Heart, Award } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -17,11 +17,10 @@ export default function About() {
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
-      <Helmet>
-        <title>About Uniform Trends | Premium Uniforms in India</title>
-        <meta name="description" content="Uniform Trends is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms across India." />
-        <link rel="canonical" href="https://uniformtrends.in/about" />
-      </Helmet>
+      <SEO
+        title="About Uniform Trends | Premium Uniforms in India"
+        description="Uniform Trends is a leading manufacturer and supplier of specialized school, hospital, and corporate uniforms across India."
+      />
 
       <div className="container mx-auto px-4">
         {/* Header Section */}

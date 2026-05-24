@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+import SEO from '../components/layout/SEO';
 import { motion } from 'motion/react';
 import { Calendar, User, ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -46,11 +46,10 @@ export default function Blog() {
 
   return (
     <div className="pt-32 pb-24 min-h-screen bg-canvas text-body-text">
-      <Helmet>
-        <title>Uniform Industry Insights & Trends | Uniform Trends</title>
-        <meta name="description" content="Read our blog for the latest trends in school uniforms, healthcare scrub fabrics, and corporate wear tips. Expert insights by Uniform Trends." />
-        <link rel="canonical" href="https://uniformtrends.in/blog" />
-      </Helmet>
+      <SEO
+        title="Uniform Industry Insights & Trends"
+        description="Read our blog for the latest trends in school uniforms, healthcare scrub fabrics, and corporate wear tips. Expert insights by Uniform Trends."
+      />
 
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
@@ -100,9 +99,9 @@ export default function Blog() {
                   <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-primary mb-4">
                     <span>{post.category}</span>
                   </div>
-                  <h3 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                  <h2 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
                     {post.title}
-                  </h3>
+                  </h2>
                   <p className="text-muted font-light mb-6 line-clamp-2">
                     {post.excerpt}
                   </p>

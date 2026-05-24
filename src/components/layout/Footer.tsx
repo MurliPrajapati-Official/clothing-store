@@ -73,7 +73,7 @@ export default function Footer() {
                   <a href="#" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
                     <Facebook size={18} />
                   </a>
-                  <a href="https://www.instagram.com/walrie_exclusive_apparels/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                  <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
                     <Instagram size={18} />
                   </a>
                 </div>
@@ -186,7 +186,7 @@ export default function Footer() {
                 </ul>
                 <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
                   <iframe
-                    src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d4506.666925674507!2d85.33548!3d23.367912!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f4e17341d1d58f%3A0xc973b664ccbfcfa5!2sWALRIE%20-%20Exclusive%20Gown%20Store!5e1!3m2!1sen!2sin!4v1778774668294!5m2!1sen!2sin"
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14902268.423984257!2d72.74109865611082!3d26.270222045558913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e0!3m2!1sen!2sin!4v1714123456789!5m2!1sen!2sin"
                     width="100%"
                     height="100%"
                     style={{ border: 0 }}
