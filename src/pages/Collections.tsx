@@ -122,20 +122,60 @@ export default function Collections() {
           ))}
         </div>
 
-        {/* SEO Content Block */}
+        {/* Expanded SEO & Catalog Styling Guidelines */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-surface-card p-12 rounded-[40px] border border-hairline shadow-xl text-center max-w-5xl mx-auto"
+          className="bg-surface-card p-8 md:p-16 rounded-[40px] border border-hairline shadow-xl max-w-5xl mx-auto text-left"
         >
-          <h2 className="text-3xl font-bold text-ink mb-6">Optimized Uniform Asset Management</h2>
-          <p className="text-lg text-muted font-light leading-relaxed max-w-3xl mx-auto">
-            Our PNG uniform assets are optimized for Google Image Search with descriptive ALT tags and structured data. 
-            Whether you are searching for <Link to="/shop?category=School" className="text-primary font-medium hover:underline">school uniform photos</Link> or 
-            <Link to="/shop?category=Corporate" className="text-primary font-medium hover:underline">corporate wear PNGs</Link>, 
-            our showcase ensures maximum visibility for institutional buyers in India.
-          </p>
+          <h2 className="text-3xl font-bold text-ink mb-8 text-center tracking-tight">Designing a Unified Corporate & School Collection</h2>
+          <div className="space-y-8 text-muted font-light leading-relaxed text-sm">
+            <p>
+              At Uniform Trends, we design our uniform collections with a focus on institutional identity and day-long practicality. Every garment type undergoes testing to ensure comfort under variable weather conditions. Our design process matches school color palettes and corporate brand guides to deliver durable clothing.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="font-bold text-ink mb-2">School & Academic Uniform Collections</h4>
+                <p className="mb-2">
+                  Academic uniform collections need to look smart while remaining comfortable. Our academic apparel is made with breathable cotton-polyester blends that are easy to launder.
+                </p>
+                <p>
+                  Features like adjustable waistbands in trousers, double-stitch reinforcements on active friction spots, and colorfast plaids ensure our school uniforms look great all year.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold text-ink mb-2">Corporate Wear & Administrative Collections</h4>
+                <p className="mb-2">
+                  Administrative apparel is designed to reflect your organization's core values. Our collections include executive blazers, wrinkle-resistant shirts, and tailored trousers.
+                </p>
+                <p>
+                  We prioritize premium linings and light poly-wool fabrics that feel fresh throughout long office hours. These designs project a professional corporate image.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold text-ink mb-2">Hospital Scrubs & Clinical Uniform Collections</h4>
+                <p className="mb-2">
+                  Medical attire requires strict fabric hygiene standards. Our scrubs and medical laboratory coats are constructed from soft, antimicrobial-treated fabrics.
+                </p>
+                <p>
+                  These garments are fade-resistant under high-temperature washing and features include quick-access utility pockets, side-slits, and reinforced necklines.
+                </p>
+              </div>
+              <div>
+                <h4 className="font-bold text-ink mb-2">Industrial Workwear & Safety Apparel</h4>
+                <p className="mb-2">
+                  Our heavy-duty industrial workwear collections are built for physical protection. We use fire-resistant materials and double-layer paneling.
+                </p>
+                <p>
+                  Additional elements like high-visibility reflective bands, bar-tack sewing at pockets, and robust fasteners ensure safety compliance in industrial environments.
+                </p>
+              </div>
+            </div>
+            <p className="text-center pt-6 border-t border-hairline/30 text-xs">
+              All collections are available for custom sizing. Whether you require <Link to="/shop?category=School" className="text-primary font-medium hover:underline">school uniform photos</Link> or <Link to="/shop?category=Corporate" className="text-primary font-medium hover:underline">corporate wear catalogs</Link>, our resources help institutional buyers throughout India source their uniform supplies easily.
+            </p>
+          </div>
         </motion.div>
       </div>
     </div>

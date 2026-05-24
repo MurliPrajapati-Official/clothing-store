@@ -201,6 +201,54 @@ export default function Contact() {
             )}
           </motion.div>
         </div>
+
+        {/* Detailed FAQ / Guidelines Section */}
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-20 max-w-5xl mx-auto border-t border-hairline pt-16"
+        >
+          <h2 className="text-3xl font-bold text-ink mb-10 text-center tracking-tight">Bulk Ordering & Corporate Procurement</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-muted font-light leading-relaxed text-sm">
+            <div>
+              <h4 className="font-bold text-ink mb-2 text-base">Customization & Computerized Embroidery</h4>
+              <p className="mb-4">
+                Uniform Trends offers advanced computerized embroidery and high-definition screen printing solutions. You can upload or email your vector logos (.SVG, .AI, or .EPS), and our digital layout artists will configure thread colors (utilizing Pantone matching systems) to guarantee perfect brand alignment.
+              </p>
+              <p>
+                We provide physical and digital embroidery proofs for admin signatures before outfitting. This custom branding is available for blazers, shirts, aprons, lab coats, and safety vests.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-ink mb-2 text-base">Fabric Sample Dispatch & Fitting Sessions</h4>
+              <p className="mb-4">
+                To help schools and clinical committees make informed decisions, we dispatch free sample folders containing premium fabric swatches (varying by weight, cotton-polyester ratio, and colors).
+              </p>
+              <p>
+                Additionally, for bulk purchases exceeding 200 units, we organize on-premise fitting sessions at your administrative site in major cities (Mumbai, Delhi, Bangalore, etc.) to ensure that every employee or student obtains a comfortable size fit.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-ink mb-2 text-base">B2B Institutional Volume Discount & Credit Terms</h4>
+              <p className="mb-4">
+                As a primary manufacturer, we provide direct pricing to institutional buyers. Bulk orders of 100+ sets qualify for standard volume discounts. For approved corporate entities, school trusts, and hospital chains, we offer flexible B2B Net 30 payment schedules.
+              </p>
+              <p>
+                Please include your GST details in your query or email to ensure that commercial tax invoices are generated correctly for compliance.
+              </p>
+            </div>
+            <div>
+              <h4 className="font-bold text-ink mb-2 text-base">Manufacturing Lead Times & Urgent Handover</h4>
+              <p className="mb-4">
+                Standard lead times for customized bulk uniforms range from 3 to 4 weeks, depending on the complexity and volume of customization. This includes custom fabric dyeing, stitching, quality inspection, and packaging.
+              </p>
+              <p>
+                For urgent requirements (such as sports tournaments or corporate annual handovers), please contact our emergency service line directly. We will evaluate our factory capacity to prioritize your production.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </div>
   );

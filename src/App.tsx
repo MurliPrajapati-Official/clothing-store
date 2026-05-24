@@ -25,11 +25,13 @@ import ReturnPolicy from './pages/ReturnPolicy';
 import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import CookiesPolicy from './pages/CookiesPolicy';
+import SEO from './components/layout/SEO';
 import { useCartStore } from './store/cartStore';
 
 // Placeholder components for other pages
 const Placeholder = ({ name }: { name: string }) => (
   <div className="pt-[140px] pb-20 text-center container mx-auto bg-canvas min-h-[70vh] flex flex-col items-center justify-center">
+    <SEO title={`${name} | Under Development`} description="This section is currently under development at Uniform Trends." robots="noindex, nofollow" />
     <h1 className="text-[40px] font-bold mb-4 uppercase tracking-tight text-ink">{name}</h1>
     <p className="text-muted tracking-wide font-medium">This section is currently under development.</p>
   </div>
