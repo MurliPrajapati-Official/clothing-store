@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { getSupabase, verifyUser } from '../supabase';
+import { z } from 'zod';
 
 const router = new Hono<{ Variables: { user: any } }>();
 
@@ -38,16 +39,18 @@ router.get('/:productId', async (c) => {
 router.post('/', verifyUser, async (c) => {
   try {
     const supabase = getSupabase(c.env);
-    const { product_id, rating, comment } = await c.req.json();
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    const body = await c.req.json();
+    const reviewSchema = z.object({
+      product_id: z.string().uuid("Valid product ID is required"),
+      rating: z.number().min(1).max(5, "Rating is required between 1 and 5"),
+      comment: z.string().optional()
+    });
 
-    if (!product_id || !uuidRegex.test(product_id)) {
-      return c.json({ error: 'Valid product ID is required' }, 400);
+    const parseResult = reviewSchema.safeParse(body);
+    if (!parseResult.success) {
+      return c.json({ error: parseResult.error.issues[0].message }, 400);
     }
-
-    if (!rating) {
-      return c.json({ error: 'Rating is required' }, 400);
-    }
+    const { product_id, rating, comment } = parseResult.data;
 
     // Securely pull session information from validated user token
     const authenticatedUser = c.get('user');

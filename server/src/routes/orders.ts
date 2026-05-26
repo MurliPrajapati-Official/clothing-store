@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { getSupabase, verifyAdmin, verifyUser, rateLimiter } from '../supabase';
+import { z } from 'zod';
 
 const router = new Hono<{ Variables: { user: any } }>();
 
@@ -9,7 +10,19 @@ router.post('/', rateLimiter(5, 60000), verifyUser, async (c) => {
     const supabase = getSupabase(c.env);
     const authenticatedUser = c.get('user');
     const user_id = authenticatedUser.id; // Securely pull user ID from JWT, preventing payload spoofing
-    const { total_amount, shipping_address, items } = await c.req.json();
+    const body = await c.req.json();
+    
+    const orderSchema = z.object({
+      total_amount: z.number().nonnegative(),
+      shipping_address: z.string().min(5),
+      items: z.array(z.any())
+    });
+
+    const parseResult = orderSchema.safeParse(body);
+    if (!parseResult.success) {
+      return c.json({ error: 'Invalid request data', details: parseResult.error.issues }, 400);
+    }
+    const { total_amount, shipping_address, items } = parseResult.data;
 
     // Validate items and product IDs to prevent UUID syntax errors
     const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;

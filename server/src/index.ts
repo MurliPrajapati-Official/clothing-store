@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { cors } from 'hono/cors';
+import { secureHeaders } from 'hono/secure-headers';
 import { getSupabase, verifyAdmin, rateLimiter } from './supabase';
 
 // Routes
@@ -8,6 +9,9 @@ import orderRoutes from './routes/orders';
 import reviewRoutes from './routes/reviews';
 
 const app = new Hono<{ Bindings: { SUPABASE_URL: string; SUPABASE_SERVICE_ROLE_KEY: string; FRONTEND_URL: string } }>();
+
+// Security Headers
+app.use('*', secureHeaders());
 
 // CORS Dynamic Handler
 app.use('*', async (c, next) => {
@@ -51,8 +55,8 @@ app.use('*', async (c, next) => {
   return corsMiddleware(c, next);
 });
 
-// Apply global edge rate limiting on all dynamic API endpoints (100 requests per minute per IP)
-app.use('/api/*', rateLimiter(100, 60000));
+// Apply global edge rate limiting on all dynamic API endpoints (60 requests per minute per IP)
+app.use('/api/*', rateLimiter(60, 60000));
 
 // Root route
 app.get('/', (c) => {
@@ -106,7 +110,7 @@ app.onError((err, c) => {
   console.error('Unhandled Server Error:', err);
   return c.json({
     error: 'Internal Server Error',
-    message: err.message,
+    message: 'An unexpected error occurred. Please try again later.',
   }, 500);
 });
 

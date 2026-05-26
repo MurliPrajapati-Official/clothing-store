@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { getSupabase, verifyAdmin } from '../supabase'; 
+import { z } from 'zod'; 
 
 const router = new Hono();
 
@@ -59,15 +60,31 @@ router.post('/', verifyAdmin, async (c) => {
     const file = formData.get('image') as File | null;
 
     // Server-side validation
-    if (!name || name.length < 3) return c.json({ error: 'Valid product name is required' }, 400);
-    if (!price || isNaN(Number(price))) return c.json({ error: 'A valid numeric price is required' }, 400);
-    if (!category) return c.json({ error: 'Category is required' }, 400);
+    const productSchema = z.object({
+      name: z.string().min(3, 'Valid product name is required'),
+      price: z.number().positive('A valid numeric price is required'),
+      category: z.string().min(1, 'Category is required')
+    });
+    
+    const parseResult = productSchema.safeParse({ name, price: Number(price), category });
+    if (!parseResult.success) {
+      return c.json({ error: parseResult.error.issues[0].message }, 400);
+    }
+
     if (!file || file.size === 0) return c.json({ error: 'Product image is required' }, 400);
 
     let imageUrls: string[] = [];
 
     // 1. Upload image to Supabase Storage if present
     if (file && file.size > 0) {
+      if (file.size > 5 * 1024 * 1024) {
+        return c.json({ error: 'Image size exceeds 5MB limit' }, 400);
+      }
+      const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedMimeTypes.includes(file.type)) {
+        return c.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, 400);
+      }
+
       const fileName = `${Date.now()}_${file.name}`;
       const fileBuffer = await file.arrayBuffer();
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -147,10 +164,28 @@ router.put('/:id', verifyAdmin, async (c) => {
     
     const file = formData.get('image') as File | null;
 
+    const productSchema = z.object({
+      name: z.string().min(3, 'Valid product name is required'),
+      price: z.number().positive('A valid numeric price is required'),
+      category: z.string().min(1, 'Category is required')
+    });
+    
+    const parseResult = productSchema.safeParse({ name, price: Number(price), category });
+    if (!parseResult.success) {
+      return c.json({ error: parseResult.error.issues[0].message }, 400);
+    }
+
     let imageUrls: string[] = existing_images ? JSON.parse(existing_images) : [];
 
     // 1. Upload new image if present
     if (file && file.size > 0) {
+      if (file.size > 5 * 1024 * 1024) {
+        return c.json({ error: 'Image size exceeds 5MB limit' }, 400);
+      }
+      const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!allowedMimeTypes.includes(file.type)) {
+        return c.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, 400);
+      }
       const fileName = `${Date.now()}_${file.name}`;
       const fileBuffer = await file.arrayBuffer();
       const { data: uploadData, error: uploadError } = await supabase.storage
