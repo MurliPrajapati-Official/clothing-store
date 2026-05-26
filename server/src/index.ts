@@ -21,9 +21,7 @@ app.use('*', async (c, next) => {
     'http://localhost:5173',
     'http://localhost:5174',
     'https://uniformtrends.in',
-    'https://www.uniformtrends.in',
-    'https://uniformtrends.onrender.com',
-    'https://uniform-trends-backend.onrender.com'
+    'https://www.uniformtrends.in'
   ].filter(Boolean) as string[];
 
   const isOriginAllowed = (origin: string): boolean => {
