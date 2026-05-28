@@ -93,8 +93,16 @@ router.post('/', verifyAdmin, async (c) => {
         throw new Error(`Image ${file.name} exceeds 5MB limit`);
       }
       const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedMimeTypes.includes(file.type)) {
-        throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+      let contentType = file.type;
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+      if (!allowedMimeTypes.includes(contentType)) {
+        if (fileExt && validExtensions.includes(fileExt)) {
+          contentType = fileExt === 'png' ? 'image/png' : (fileExt === 'webp' ? 'image/webp' : 'image/jpeg');
+        } else {
+          throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+        }
       }
 
       const fileName = `${Date.now()}_${file.name}`;
@@ -102,7 +110,7 @@ router.post('/', verifyAdmin, async (c) => {
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('products')
         .upload(fileName, fileBuffer, {
-          contentType: file.type,
+          contentType: contentType,
         });
 
       if (uploadError) throw uploadError;
@@ -235,8 +243,16 @@ router.put('/:id', verifyAdmin, async (c) => {
         throw new Error(`Image ${file.name} exceeds 5MB limit`);
       }
       const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
-      if (!allowedMimeTypes.includes(file.type)) {
-        throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+      let contentType = file.type;
+      const fileExt = file.name.split('.').pop()?.toLowerCase();
+      const validExtensions = ['jpg', 'jpeg', 'png', 'webp'];
+
+      if (!allowedMimeTypes.includes(contentType)) {
+        if (fileExt && validExtensions.includes(fileExt)) {
+          contentType = fileExt === 'png' ? 'image/png' : (fileExt === 'webp' ? 'image/webp' : 'image/jpeg');
+        } else {
+          throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+        }
       }
 
       const fileName = `${Date.now()}_${file.name}`;
@@ -244,7 +260,7 @@ router.put('/:id', verifyAdmin, async (c) => {
       const { data: uploadData, error: uploadError } = await supabase.storage
         .from('products')
         .upload(fileName, fileBuffer, {
-          contentType: file.type,
+          contentType: contentType,
         });
 
       if (uploadError) throw uploadError;
