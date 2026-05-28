@@ -8,6 +8,37 @@ import { Product } from '../types';
 import { formatCurrency, cn } from '../lib/utils';
 import { getApiUrl } from '../config';
 import { CATEGORIES } from '../constants';
+interface FilePreviewProps {
+  file: File;
+}
+
+function FilePreview({ file }: FilePreviewProps) {
+  const [previewUrl, setPreviewUrl] = React.useState<string>('');
+
+  React.useEffect(() => {
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => {
+      URL.revokeObjectURL(url);
+    };
+  }, [file]);
+
+  if (!previewUrl) {
+    return (
+      <div className="w-full h-full flex items-center justify-center bg-canvas">
+        <Loader2 className="animate-spin text-primary" size={16} />
+      </div>
+    );
+  }
+
+  return (
+    <img 
+      src={previewUrl} 
+      alt="" 
+      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" 
+    />
+  );
+}
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'stats' | 'add' | 'manage' | 'orders'>('stats');
@@ -1111,30 +1142,26 @@ export default function AdminDashboard() {
                       ))}
 
                       {/* Default New Files */}
-                      {newFiles.map((file, index) => {
-                        const previewUrl = URL.createObjectURL(file);
-                        return (
-                          <div key={`new-def-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
-                            <img src={previewUrl} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <button 
-                                type="button" 
-                                onClick={() => {
-                                  setNewFiles(prev => prev.filter((_, idx) => idx !== index));
-                                  URL.revokeObjectURL(previewUrl);
-                                }}
-                                className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
-                                title="Remove File"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                            <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
-                              New {index + 1}
-                            </span>
+                      {newFiles.map((file, index) => (
+                        <div key={`new-def-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                          <FilePreview file={file} />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                setNewFiles(prev => prev.filter((_, idx) => idx !== index));
+                              }}
+                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                              title="Remove File"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </div>
-                        );
-                      })}
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                            New {index + 1}
+                          </span>
+                        </div>
+                      ))}
 
                       {/* Default Add Slot */}
                       {existingImages.length + newFiles.length < 5 && (
@@ -1185,34 +1212,30 @@ export default function AdminDashboard() {
                       ))}
 
                       {/* Color New Files */}
-                      {(newColorFiles[activeColorTab] || []).map((file, index) => {
-                        const previewUrl = URL.createObjectURL(file);
-                        return (
-                          <div key={`new-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
-                            <img src={previewUrl} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
-                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                              <button 
-                                type="button" 
-                                onClick={() => {
-                                  const currentFiles = newColorFiles[activeColorTab] || [];
-                                  setNewColorFiles(prev => ({
-                                    ...prev,
-                                    [activeColorTab]: currentFiles.filter((_, idx) => idx !== index)
-                                  }));
-                                  URL.revokeObjectURL(previewUrl);
-                                }}
-                                className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
-                                title="Remove File"
-                              >
-                                <Trash2 size={16} />
-                              </button>
-                            </div>
-                            <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
-                              New {index + 1}
-                            </span>
+                      {(newColorFiles[activeColorTab] || []).map((file, index) => (
+                        <div key={`new-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                          <FilePreview file={file} />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                const currentFiles = newColorFiles[activeColorTab] || [];
+                                setNewColorFiles(prev => ({
+                                  ...prev,
+                                  [activeColorTab]: currentFiles.filter((_, idx) => idx !== index)
+                                }));
+                              }}
+                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                              title="Remove File"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </div>
-                        );
-                      })}
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                            New {index + 1}
+                          </span>
+                        </div>
+                      ))}
 
                       {/* Color Add Slot */}
                       {((existingColorImages[activeColorTab] || []).length + (newColorFiles[activeColorTab] || []).length) < 5 && (
