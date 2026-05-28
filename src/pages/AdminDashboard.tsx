@@ -27,6 +27,7 @@ export default function AdminDashboard() {
   const [orderFilter, setOrderFilter] = useState<'all' | 'standard' | 'bulk'>('all');
   const [colorsInput, setColorsInput] = useState<string>('');
   const [colors, setColors] = useState<string[]>([]);
+  const [sizesInput, setSizesInput] = useState<string>('');
   const [activeColorTab, setActiveColorTab] = useState<string>('default');
   const [existingImages, setExistingImages] = useState<string[]>([]);
   const [newFiles, setNewFiles] = useState<File[]>([]);
@@ -161,6 +162,7 @@ export default function AdminDashboard() {
     setNewFiles([]);
     setColors(product.colors || []);
     setColorsInput(product.colors?.join(', ') || '');
+    setSizesInput(product.sizes?.join(', ') || '');
     setActiveColorTab('default');
     setExistingColorImages(product.color_images || product.colorImages || {});
     setNewColorFiles({});
@@ -173,6 +175,7 @@ export default function AdminDashboard() {
     setNewFiles([]);
     setColors([]);
     setColorsInput('');
+    setSizesInput('');
     setActiveColorTab('default');
     setExistingColorImages({});
     setNewColorFiles({});
@@ -417,6 +420,7 @@ export default function AdminDashboard() {
       setNewFiles([]);
       setColors([]);
       setColorsInput('');
+      setSizesInput('');
       setExistingColorImages({});
       setNewColorFiles({});
       setActiveColorTab('default');
@@ -524,6 +528,7 @@ export default function AdminDashboard() {
                 setNewFiles([]);
                 setColors([]);
                 setColorsInput('');
+                setSizesInput('');
                 setActiveColorTab('default');
                 setExistingColorImages({});
                 setNewColorFiles({});
@@ -992,7 +997,37 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  <div>
                   <label className="block text-sm font-bold text-ink mb-2">Sizes (Comma separated)</label>
-                  <input name="sizes" type="text" defaultValue={editingProduct?.sizes?.join(', ') || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="S, M, L, XL" />
+                  <input 
+                    name="sizes" 
+                    type="text" 
+                    value={sizesInput} 
+                    onChange={(e) => setSizesInput(e.target.value)} 
+                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" 
+                    placeholder="S, M, L, XL" 
+                  />
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    <button
+                      type="button"
+                      onClick={() => setSizesInput('S, M, L, XL, 2XL, 3XL, 4XL, 5XL')}
+                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                    >
+                      Adult (S-5XL)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSizesInput('24, 26, 28, 30, 32, 34')}
+                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                    >
+                      Junior (24-34)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setSizesInput('S, M, L, XL')}
+                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                    >
+                      Adult (S-XL)
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Colors (Comma separated)</label>

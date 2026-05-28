@@ -669,36 +669,79 @@ export default function ProductDetail() {
                 </button>
               </div>
 
-              <h2 className="text-2xl font-bold mb-8 text-ink tracking-tight">Size Guide</h2>
+              {(() => {
+                const isAdultProduct = product.sizes.some(size => 
+                  ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL', 'XXL', 'XXXL'].includes(size.toUpperCase())
+                );
+                return (
+                  <>
+                    <h2 className="text-2xl font-bold mb-8 text-ink tracking-tight">
+                      {isAdultProduct ? "Adult Sizing Guide" : "Junior Sizing Guide"}
+                    </h2>
 
-              <div className="overflow-x-auto rounded-xl border border-hairline-strong">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-surface-elevated border-b border-hairline-strong">
-                      <th className="p-4 font-semibold text-sm text-ink">Size</th>
-                      <th className="p-4 font-semibold text-sm text-ink">Chest (inches)</th>
-                      <th className="p-4 font-semibold text-sm text-ink">Length (inches)</th>
-                      <th className="p-4 font-semibold text-sm text-ink">Recommended Age</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-hairline-strong">
-                    {[
-                      { s: '24', c: '26', l: '18', a: '4-5 Yrs' },
-                      { s: '26', c: '28', l: '20', a: '6-7 Yrs' },
-                      { s: '28', c: '30', l: '22', a: '8-9 Yrs' },
-                      { s: '30', c: '32', l: '24', a: '10-11 Yrs' },
-                      { s: '32', c: '34', l: '26', a: '12-13 Yrs' },
-                    ].map((row, i) => (
-                      <tr key={i} className="hover:bg-surface-elevated transition-colors">
-                        <td className="p-4 font-semibold text-ink">{row.s}</td>
-                        <td className="p-4 text-body-text">{row.c}</td>
-                        <td className="p-4 text-body-text">{row.l}</td>
-                        <td className="p-4 text-body-text">{row.a}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                    <div className="overflow-x-auto rounded-xl border border-hairline-strong max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline pr-2">
+                      {isAdultProduct ? (
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-surface-elevated border-b border-hairline-strong">
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Size</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Equivalent Fit</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Chest (in)</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Waist (in)</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-hairline-strong">
+                            {[
+                              { s: 'S', f: "Men's S / Women's M", c: '35" - 37"', w: '30" - 32"' },
+                              { s: 'M', f: "Men's M / Women's L", c: '37" - 39"', w: '32" - 34"' },
+                              { s: 'L', f: "Men's L / Women's XL", c: '39" - 41"', w: '34" - 36"' },
+                              { s: 'XL', f: "Men's XL / Women's XXL", c: '41" - 43"', w: '36" - 38"' },
+                              { s: '2XL', f: "Men's XXL / Women's 3XL", c: '43" - 46"', w: '38" - 41"' },
+                              { s: '3XL', f: "Men's 3XL / Women's 4XL", c: '46" - 49"', w: '41" - 44"' },
+                              { s: '4XL', f: "Men's 4XL / Women's 5XL", c: '49" - 52"', w: '44" - 47"' },
+                              { s: '5XL', f: "Men's 5XL / Women's 6XL", c: '52" - 55"', w: '47" - 50"' },
+                            ].map((row, i) => (
+                              <tr key={i} className="hover:bg-surface-elevated/30 transition-colors">
+                                <td className="p-4 font-semibold text-ink text-xs md:text-sm">{row.s}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.f}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.c}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.w}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      ) : (
+                        <table className="w-full text-left border-collapse">
+                          <thead>
+                            <tr className="bg-surface-elevated border-b border-hairline-strong">
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Size</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Chest (in)</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Length (in)</th>
+                              <th className="p-4 font-semibold text-xs md:text-sm text-ink">Age Range</th>
+                            </tr>
+                          </thead>
+                          <tbody className="divide-y divide-hairline-strong">
+                            {[
+                              { s: '24', c: '26', l: '18', a: '4-5 Yrs' },
+                              { s: '26', c: '28', l: '20', a: '6-7 Yrs' },
+                              { s: '28', c: '30', l: '22', a: '8-9 Yrs' },
+                              { s: '30', c: '32', l: '24', a: '10-11 Yrs' },
+                              { s: '32', c: '34', l: '26', a: '12-13 Yrs' },
+                            ].map((row, i) => (
+                              <tr key={i} className="hover:bg-surface-elevated/30 transition-colors">
+                                <td className="p-4 font-semibold text-ink text-xs md:text-sm">{row.s}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.c}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.l}</td>
+                                <td className="p-4 text-muted text-xs md:text-sm">{row.a}</td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      )}
+                    </div>
+                  </>
+                );
+              })()}
               <button
                 onClick={() => setShowSizeChart(false)}
                 className="mt-8 w-full btn-primary py-6 rounded-xl shadow-[0_4px_20px_rgba(255,255,255,0.1)]"

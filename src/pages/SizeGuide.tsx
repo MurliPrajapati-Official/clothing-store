@@ -227,11 +227,32 @@ export default function SizeGuide() {
                   <td className="p-4">26.5"</td>
                 </tr>
                 <tr className="hover:bg-surface-elevated/30 transition-colors">
-                  <td className="p-4 font-medium text-ink">Size 44 (XXL)</td>
-                  <td className="p-4">Men's XXL / Women's XXXL</td>
+                  <td className="p-4 font-medium text-ink">Size 44 (2XL)</td>
+                  <td className="p-4">Men's XXL / Women's 3XL</td>
                   <td className="p-4">43" - 46"</td>
                   <td className="p-4">38" - 41"</td>
                   <td className="p-4">27.0"</td>
+                </tr>
+                <tr className="hover:bg-surface-elevated/30 transition-colors">
+                  <td className="p-4 font-medium text-ink">Size 46 (3XL)</td>
+                  <td className="p-4">Men's 3XL / Women's 4XL</td>
+                  <td className="p-4">46" - 49"</td>
+                  <td className="p-4">41" - 44"</td>
+                  <td className="p-4">27.5"</td>
+                </tr>
+                <tr className="hover:bg-surface-elevated/30 transition-colors">
+                  <td className="p-4 font-medium text-ink">Size 48 (4XL)</td>
+                  <td className="p-4">Men's 4XL / Women's 5XL</td>
+                  <td className="p-4">49" - 52"</td>
+                  <td className="p-4">44" - 47"</td>
+                  <td className="p-4">28.0"</td>
+                </tr>
+                <tr className="hover:bg-surface-elevated/30 transition-colors">
+                  <td className="p-4 font-medium text-ink">Size 50 (5XL)</td>
+                  <td className="p-4">Men's 5XL / Women's 6XL</td>
+                  <td className="p-4">52" - 55"</td>
+                  <td className="p-4">47" - 50"</td>
+                  <td className="p-4">28.5"</td>
                 </tr>
               </tbody>
             </table>
