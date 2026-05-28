@@ -394,17 +394,6 @@ export default function AdminDashboard() {
     formData.delete('image');
     formData.delete('images');
 
-    // Perform client-side validation
-    if (!editingProduct && newFiles.length === 0) {
-      setErrorMsg("At least one default product image is required.");
-      setIsSubmitting(false);
-      return;
-    }
-    if (existingImages.length + newFiles.length === 0) {
-      setErrorMsg("At least one default product image is required.");
-      setIsSubmitting(false);
-      return;
-    }
     if (existingImages.length + newFiles.length > 5) {
       setErrorMsg("Maximum of 5 default images are allowed.");
       setIsSubmitting(false);

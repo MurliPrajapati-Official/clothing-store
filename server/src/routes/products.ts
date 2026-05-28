@@ -78,9 +78,6 @@ router.post('/', verifyAdmin, async (c) => {
       return c.json({ error: parseResult.error.issues[0].message }, 400);
     }
 
-    if (finalFiles.length === 0) {
-      return c.json({ error: 'At least one default product image is required' }, 400);
-    }
     if (finalFiles.length > 5) {
       return c.json({ error: 'Maximum of 5 default images are allowed' }, 400);
     }
