@@ -14,6 +14,9 @@ export interface Product {
   schoolId: string;
   images: string[];
   sizes: string[];
+  colors?: string[];
+  color_images?: Record<string, string[]>;
+  colorImages?: Record<string, string[]>;
   gender: 'boys' | 'girls' | 'unisex';
   grade: string;
   inStock: boolean;
@@ -34,5 +37,6 @@ export interface School {
 
 export interface CartItem extends Product {
   selectedSize: string;
+  selectedColor?: string;
   quantity: number;
 }

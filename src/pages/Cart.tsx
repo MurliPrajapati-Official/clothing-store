@@ -114,7 +114,7 @@ export default function Cart() {
 
                 return (
                   <motion.div
-                    key={`${item.id}-${item.selectedSize}`}
+                    key={`${item.id}-${item.selectedSize}-${item.selectedColor || 'none'}`}
                     variants={itemVariants}
                     layout
                     className="bg-surface-card p-4 md:p-6 rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline flex flex-col md:flex-row gap-6 md:items-center"
@@ -127,15 +127,18 @@ export default function Cart() {
                       <div className="flex justify-between items-start mb-2">
                         <h3 className="font-bold text-lg text-ink line-clamp-2 pr-4">{item.name}</h3>
                         <button
-                          onClick={() => removeItem(item.id, item.selectedSize)}
+                          onClick={() => removeItem(item.id, item.selectedSize, item.selectedColor)}
                           className="p-2 text-muted hover:text-m-red bg-canvas rounded-full transition-colors shrink-0"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
 
-                      <div className="flex gap-4 mb-4">
-                        <span className="text-xs font-semibold text-muted border border-hairline-strong rounded-md px-2 py-1">Size: {item.selectedSize}</span>
+                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted">
+                        <span className="border border-hairline-strong rounded-md px-2 py-1">Size: {item.selectedSize}</span>
+                        {item.selectedColor && (
+                          <span className="border border-hairline-strong rounded-md px-2 py-1">Color: {item.selectedColor}</span>
+                        )}
                       </div>
 
                       {isBulk ? (
@@ -155,7 +158,7 @@ export default function Cart() {
                       <div className="flex items-center gap-2 bg-canvas rounded-lg border border-hairline-strong p-1">
                         <motion.button
                           whileTap={{ scale: 0.9 }}
-                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1, item.selectedColor)}
                           className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
                         >
                           <Minus size={14} />
@@ -163,7 +166,7 @@ export default function Cart() {
                         <span className="font-semibold text-sm text-ink w-6 text-center">{item.quantity}</span>
                         <motion.button
                           whileTap={{ scale: 0.9 }}
-                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                          onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1, item.selectedColor)}
                           className="w-8 h-8 flex items-center justify-center text-body-text hover:text-ink hover:bg-surface-elevated rounded-md transition-colors"
                         >
                           <Plus size={14} />

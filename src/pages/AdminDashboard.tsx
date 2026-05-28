@@ -24,8 +24,14 @@ export default function AdminDashboard() {
   const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [hasInitialData, setHasInitialData] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [orderFilter, setOrderFilter] = useState<'all' | 'standard' | 'bulk'>('all');
+  const [colorsInput, setColorsInput] = useState<string>('');
+  const [colors, setColors] = useState<string[]>([]);
+  const [activeColorTab, setActiveColorTab] = useState<string>('default');
+  const [existingImages, setExistingImages] = useState<string[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const [existingColorImages, setExistingColorImages] = useState<Record<string, string[]>>({});
+  const [newColorFiles, setNewColorFiles] = useState<Record<string, File[]>>({});
   
   const navigate = useNavigate();
 
@@ -151,13 +157,25 @@ export default function AdminDashboard() {
   const handleEditProduct = (product: Product) => {
     setEditingProduct(product);
     setActiveTab('add');
-    setImagePreview(product.images?.[0] || null);
+    setExistingImages(product.images || []);
+    setNewFiles([]);
+    setColors(product.colors || []);
+    setColorsInput(product.colors?.join(', ') || '');
+    setActiveColorTab('default');
+    setExistingColorImages(product.color_images || product.colorImages || {});
+    setNewColorFiles({});
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleCancelEdit = () => {
     setEditingProduct(null);
-    setImagePreview(null);
+    setExistingImages([]);
+    setNewFiles([]);
+    setColors([]);
+    setColorsInput('');
+    setActiveColorTab('default');
+    setExistingColorImages({});
+    setNewColorFiles({});
     setActiveTab('manage');
   };
 
@@ -284,16 +302,48 @@ export default function AdminDashboard() {
     };
   }, [isAdmin]);
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      const total = existingImages.length + newFiles.length;
+      const allowedCount = 5 - total;
+
+      if (allowedCount <= 0) {
+        alert("Maximum of 5 default images are allowed.");
+        return;
+      }
+
+      const filesToAdd = filesArray.slice(0, allowedCount);
+      if (filesArray.length > allowedCount) {
+        alert(`You can only add up to 5 default images. Only the first ${allowedCount} images were selected.`);
+      }
+
+      setNewFiles(prev => [...prev, ...filesToAdd]);
+    }
+  };
+
+  const handleColorFileChange = (color: string, e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const filesArray = Array.from(e.target.files);
+      const existingUrls = existingColorImages[color] || [];
+      const newFilesForColor = newColorFiles[color] || [];
+      const total = existingUrls.length + newFilesForColor.length;
+      const allowedCount = 5 - total;
+
+      if (allowedCount <= 0) {
+        alert(`Maximum of 5 images are allowed for ${color}.`);
+        return;
+      }
+
+      const filesToAdd = filesArray.slice(0, allowedCount);
+      if (filesArray.length > allowedCount) {
+        alert(`You can only add up to 5 images for ${color}. Only the first ${allowedCount} images were selected.`);
+      }
+
+      setNewColorFiles(prev => ({
+        ...prev,
+        [color]: [...newFilesForColor, ...filesToAdd]
+      }));
     }
   };
 
@@ -305,11 +355,45 @@ export default function AdminDashboard() {
 
     const formData = new FormData(e.currentTarget);
     const apiUrl = getApiUrl();
-    
-    if (editingProduct) {
-      // Add existing images if no new image is uploaded
-      formData.append('existing_images', JSON.stringify(editingProduct.images || []));
+
+    // Clean up default image fields
+    formData.delete('image');
+    formData.delete('images');
+
+    // Perform client-side validation
+    if (!editingProduct && newFiles.length === 0) {
+      setErrorMsg("At least one default product image is required.");
+      setIsSubmitting(false);
+      return;
     }
+    if (existingImages.length + newFiles.length === 0) {
+      setErrorMsg("At least one default product image is required.");
+      setIsSubmitting(false);
+      return;
+    }
+    if (existingImages.length + newFiles.length > 5) {
+      setErrorMsg("Maximum of 5 default images are allowed.");
+      setIsSubmitting(false);
+      return;
+    }
+
+    // Append default images
+    formData.append('existing_images', JSON.stringify(existingImages));
+    newFiles.forEach(file => {
+      formData.append('images', file);
+    });
+
+    // Append colors
+    formData.set('colors', colors.join(','));
+
+    // Append color-specific images
+    formData.append('existing_color_images', JSON.stringify(existingColorImages));
+    Object.keys(newColorFiles).forEach(color => {
+      const filesForColor = newColorFiles[color] || [];
+      filesForColor.forEach(file => {
+        formData.append(`color_images_${color}`, file);
+      });
+    });
 
     try {
       const url = editingProduct 
@@ -329,7 +413,13 @@ export default function AdminDashboard() {
       setSuccessMsg(`Product ${editingProduct ? 'updated' : 'added'} successfully!`);
       if (!editingProduct) (e.target as HTMLFormElement).reset();
       setEditingProduct(null);
-      setImagePreview(null);
+      setExistingImages([]);
+      setNewFiles([]);
+      setColors([]);
+      setColorsInput('');
+      setExistingColorImages({});
+      setNewColorFiles({});
+      setActiveColorTab('default');
       fetchProducts();
       fetchStats();
     } catch (err: any) {
@@ -430,7 +520,13 @@ export default function AdminDashboard() {
             <button 
               onClick={() => {
                 setEditingProduct(null);
-                setImagePreview(null);
+                setExistingImages([]);
+                setNewFiles([]);
+                setColors([]);
+                setColorsInput('');
+                setActiveColorTab('default');
+                setExistingColorImages({});
+                setNewColorFiles({});
                 setActiveTab('add');
               }}
               className={cn(
@@ -778,8 +874,15 @@ export default function AdminDashboard() {
                                                           </span>
                                                         )}
                                                       </p>
-                                                      <p className="text-[10px] text-muted font-mono mt-0.5">
-                                                        {formatCurrency(item.price_at_time)} × {item.quantity} units
+                                                      <p className="text-[10px] text-muted font-mono mt-0.5 flex flex-wrap gap-1.5 items-center">
+                                                        <span>{formatCurrency(item.price_at_time)} × {item.quantity} units</span>
+                                                        {(item.size || item.color) && (
+                                                          <span className="text-[9px] font-bold text-muted bg-surface-elevated border border-hairline px-1.5 py-0.5 rounded uppercase shrink-0">
+                                                            {item.size ? `Size: ${item.size}` : ''}
+                                                            {item.size && item.color ? ' | ' : ''}
+                                                            {item.color ? `Color: ${item.color}` : ''}
+                                                          </span>
+                                                        )}
                                                       </p>
                                                     </div>
                                                   </div>
@@ -886,10 +989,25 @@ export default function AdminDashboard() {
                 ></textarea>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                  <div>
                   <label className="block text-sm font-bold text-ink mb-2">Sizes (Comma separated)</label>
                   <input name="sizes" type="text" defaultValue={editingProduct?.sizes?.join(', ') || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="S, M, L, XL" />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-ink mb-2">Colors (Comma separated)</label>
+                  <input 
+                    name="colors" 
+                    type="text" 
+                    value={colorsInput}
+                    onChange={(e) => {
+                      setColorsInput(e.target.value);
+                      const parsed = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
+                      setColors(parsed);
+                    }}
+                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" 
+                    placeholder="Navy Blue, Royal Blue, White" 
+                  />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Gender</label>
@@ -902,32 +1020,183 @@ export default function AdminDashboard() {
               </div>
 
               <div>
-                <label className="block text-sm font-bold text-ink mb-2">Product Image {editingProduct && '(Leave blank to keep existing)'}</label>
-                <div className="relative w-full h-48 rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors flex items-center justify-center bg-canvas group cursor-pointer overflow-hidden">
-                  <input 
-                    type="file" 
-                    name="image" 
-                    accept="image/*" 
-                    required={!editingProduct} 
-                    onChange={handleImageChange}
-                    className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                  />
-                  
-                  {imagePreview ? (
-                    <div className="absolute inset-0 w-full h-full">
-                      <img src={imagePreview} alt="Preview" className="w-full h-full object-contain" />
-                      <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <ImageIcon size={32} className="text-white" />
-                        <span className="ml-2 text-white font-bold">Change Image</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-center text-muted group-hover:text-primary transition-colors pointer-events-none">
-                      <ImageIcon size={32} className="mb-2" />
-                      <span className="text-sm font-medium">{editingProduct ? 'Change image (optional)' : 'Click to upload image'}</span>
-                    </div>
-                  )}
+                <label className="block text-sm font-bold text-ink mb-3">Product Image & Color Galleries</label>
+                
+                {/* Visual Color Tabs */}
+                <div className="flex bg-surface-elevated p-1 rounded-2xl border border-hairline mb-6 overflow-x-auto scrollbar-hide max-w-full">
+                  <button 
+                    type="button"
+                    onClick={() => setActiveColorTab('default')}
+                    className={cn(
+                      "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap",
+                      activeColorTab === 'default' ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                    )}
+                  >
+                    Default Images
+                  </button>
+                  {colors.map(color => (
+                    <button
+                      key={color}
+                      type="button"
+                      onClick={() => setActiveColorTab(color)}
+                      className={cn(
+                        "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2",
+                        activeColorTab === color ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                      )}
+                    >
+                      <span className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
+                      {color}
+                    </button>
+                  ))}
                 </div>
+
+                {/* Grid Gallery for active tab */}
+                {activeColorTab === 'default' ? (
+                  <div>
+                    <p className="text-xs text-muted font-medium mb-3">Default images displayed on cards and catalogs (Up to 5 max).</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                      {/* Default Existing Images */}
+                      {existingImages.map((url, index) => (
+                        <div key={`exist-def-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                          <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button 
+                              type="button" 
+                              onClick={() => setExistingImages(prev => prev.filter((_, idx) => idx !== index))}
+                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                              title="Delete Image"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/60 text-white rounded">
+                            Exist {index + 1}
+                          </span>
+                        </div>
+                      ))}
+
+                      {/* Default New Files */}
+                      {newFiles.map((file, index) => {
+                        const previewUrl = URL.createObjectURL(file);
+                        return (
+                          <div key={`new-def-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                            <img src={previewUrl} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  setNewFiles(prev => prev.filter((_, idx) => idx !== index));
+                                  URL.revokeObjectURL(previewUrl);
+                                }}
+                                className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                                title="Remove File"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                            <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                              New {index + 1}
+                            </span>
+                          </div>
+                        );
+                      })}
+
+                      {/* Default Add Slot */}
+                      {existingImages.length + newFiles.length < 5 && (
+                        <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
+                          <input 
+                            type="file" 
+                            multiple
+                            accept="image/*" 
+                            onChange={handleFileChange}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                          />
+                          <PlusCircle size={24} className="mb-1.5 transition-colors" />
+                          <span className="text-[10px] font-bold tracking-wider uppercase text-center px-1">Upload</span>
+                          <span className="text-[8px] opacity-60 mt-0.5">({5 - (existingImages.length + newFiles.length)} slots left)</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  // Color tab active
+                  <div>
+                    <p className="text-xs text-muted font-medium mb-3">Images displayed when the color variant <strong>{activeColorTab}</strong> is selected by the user (Up to 5 max).</p>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                      {/* Color Existing Images */}
+                      {(existingColorImages[activeColorTab] || []).map((url, index) => (
+                        <div key={`exist-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                          <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                            <button 
+                              type="button" 
+                              onClick={() => {
+                                const currentList = existingColorImages[activeColorTab] || [];
+                                setExistingColorImages(prev => ({
+                                  ...prev,
+                                  [activeColorTab]: currentList.filter((_, idx) => idx !== index)
+                                }));
+                              }}
+                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                              title="Delete Image"
+                            >
+                              <Trash2 size={16} />
+                            </button>
+                          </div>
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/60 text-white rounded">
+                            Exist {index + 1}
+                          </span>
+                        </div>
+                      ))}
+
+                      {/* Color New Files */}
+                      {(newColorFiles[activeColorTab] || []).map((file, index) => {
+                        const previewUrl = URL.createObjectURL(file);
+                        return (
+                          <div key={`new-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                            <img src={previewUrl} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                              <button 
+                                type="button" 
+                                onClick={() => {
+                                  const currentFiles = newColorFiles[activeColorTab] || [];
+                                  setNewColorFiles(prev => ({
+                                    ...prev,
+                                    [activeColorTab]: currentFiles.filter((_, idx) => idx !== index)
+                                  }));
+                                  URL.revokeObjectURL(previewUrl);
+                                }}
+                                className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                                title="Remove File"
+                              >
+                                <Trash2 size={16} />
+                              </button>
+                            </div>
+                            <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                              New {index + 1}
+                            </span>
+                          </div>
+                        );
+                      })}
+
+                      {/* Color Add Slot */}
+                      {((existingColorImages[activeColorTab] || []).length + (newColorFiles[activeColorTab] || []).length) < 5 && (
+                        <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
+                          <input 
+                            type="file" 
+                            multiple
+                            accept="image/*" 
+                            onChange={(e) => handleColorFileChange(activeColorTab, e)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                          />
+                          <PlusCircle size={24} className="mb-1.5 transition-colors" />
+                          <span className="text-[10px] font-bold tracking-wider uppercase text-center px-1">Upload ({activeColorTab})</span>
+                          <span className="text-[8px] opacity-60 mt-0.5">({5 - ((existingColorImages[activeColorTab] || []).length + (newColorFiles[activeColorTab] || []).length)} slots left)</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <button

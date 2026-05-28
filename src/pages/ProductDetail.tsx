@@ -62,6 +62,7 @@ export default function ProductDetail() {
   const [isLoading, setIsLoading] = useState(true);
 
   const [selectedSize, setSelectedSize] = useState<string>('');
+  const [selectedColor, setSelectedColor] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const [isBulkMode, setIsBulkMode] = useState(false);
   const [activeImage, setActiveImage] = useState(0);
@@ -99,6 +100,8 @@ export default function ProductDetail() {
           schoolId: data.school_id,
           images: data.images || [],
           sizes: data.sizes || [],
+          colors: data.colors || [],
+          colorImages: data.color_images || data.colorImages || {},
           gender: data.gender,
           grade: data.grade,
           inStock: data.in_stock,
@@ -195,13 +198,18 @@ export default function ProductDetail() {
       return;
     }
 
+    if (product.colors && product.colors.length > 0 && !selectedColor) {
+      alert('Please select a color');
+      return;
+    }
+
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       navigate('/account?redirect=checkout');
       return;
     }
 
-    addItem(product, selectedSize, quantity);
+    addItem(product, selectedSize, quantity, selectedColor || undefined);
   };
 
   return (
@@ -262,50 +270,60 @@ export default function ProductDetail() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-4 lg:sticky lg:top-32 self-start"
           >
-            <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
-              {product.images && product.images.length > 0 ? (
-                <motion.img
-                  key={activeImage}
-                  initial={{ opacity: 0, scale: 1.1 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.6 }}
-                  src={product.images[activeImage]}
-                  alt={product.name}
-                  className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                  referrerPolicy="no-referrer"
-                />
-              ) : (
-                <span className="text-6xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
-              )}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-                onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
-                className={cn(
-                  "absolute top-6 right-6 p-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300",
-                  exists ? "bg-m-red text-white" : "bg-surface-card/80 backdrop-blur-md text-ink hover:bg-surface-card hover:text-m-red"
-                )}
-              >
-                <Heart size={20} fill={exists ? "currentColor" : "none"} />
-              </motion.button>
-            </div>
-            
-            {product.images && product.images.length > 1 && (
-              <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
-                {product.images.map((img, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => setActiveImage(idx)}
-                    className={cn(
-                      "w-20 h-20 overflow-hidden rounded-xl border-2 transition-all shrink-0",
-                      activeImage === idx ? "border-ink shadow-[0_4px_20px_rgba(0,0,0,0.5)]" : "border-transparent opacity-70 hover:opacity-100"
+            {(() => {
+              const activeImages = (selectedColor && (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor]) && (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor])!.length > 0)
+                ? (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor])!
+                : product.images;
+
+              return (
+                <>
+                  <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
+                    {activeImages && activeImages.length > 0 ? (
+                      <motion.img
+                        key={`${selectedColor}-${activeImage}`}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.6 }}
+                        src={activeImages[activeImage] || activeImages[0]}
+                        alt={product.name}
+                        className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
+                        referrerPolicy="no-referrer"
+                      />
+                    ) : (
+                      <span className="text-6xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
                     )}
-                  >
-                    <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
-                  </button>
-                ))}
-              </div>
-            )}
+                    <motion.button
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
+                      onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
+                      className={cn(
+                        "absolute top-6 right-6 p-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300",
+                        exists ? "bg-m-red text-white" : "bg-surface-card/80 backdrop-blur-md text-ink hover:bg-surface-card hover:text-m-red"
+                      )}
+                    >
+                      <Heart size={20} fill={exists ? "currentColor" : "none"} />
+                    </motion.button>
+                  </div>
+                  
+                  {activeImages && activeImages.length > 1 && (
+                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                      {activeImages.map((img, idx) => (
+                        <button
+                          key={idx}
+                          onClick={() => setActiveImage(idx)}
+                          className={cn(
+                            "w-20 h-20 overflow-hidden rounded-xl border-2 transition-all shrink-0",
+                            activeImage === idx ? "border-ink shadow-[0_4px_20px_rgba(0,0,0,0.5)]" : "border-transparent opacity-70 hover:opacity-100"
+                          )}
+                        >
+                          <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
           </motion.div>
 
           {/* Info */}
@@ -387,6 +405,39 @@ export default function ProductDetail() {
                 ))}
               </div>
             </motion.div>
+
+            {/* Color Selector */}
+            {product.colors && product.colors.length > 0 && (
+              <motion.div variants={fadeUpVariant} className="mb-10 pt-6 border-t border-hairline/30">
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="font-semibold text-ink flex items-center gap-2">
+                    Select Color {selectedColor && <span className="text-sm font-normal text-muted">— {selectedColor}</span>}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {product.colors.map(color => (
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      key={color}
+                      onClick={() => {
+                        setSelectedColor(color);
+                        setActiveImage(0);
+                      }}
+                      className={cn(
+                        "px-5 py-2.5 rounded-xl font-semibold text-sm transition-all border flex items-center gap-2.5",
+                        selectedColor === color 
+                          ? "bg-primary border-primary text-on-primary shadow-[0_8px_30px_rgba(255,255,255,0.1)]" 
+                          : "bg-surface-card border-hairline text-ink hover:border-body-text shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                      )}
+                    >
+                      <span className="w-3.5 h-3.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
+                      {color}
+                    </motion.button>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {/* Bulk & Institutional Ordering Panel */}
             <motion.div 

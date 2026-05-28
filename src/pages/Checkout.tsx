@@ -67,7 +67,9 @@ export default function Checkout() {
         items: items.map(item => ({
           productId: item.id,
           quantity: item.quantity,
-          price: item.quantity >= 100 ? item.price * 0.9 : item.price
+          price: item.quantity >= 100 ? item.price * 0.9 : item.price,
+          size: item.selectedSize,
+          color: item.selectedColor || null
         }))
       };
 
@@ -323,7 +325,7 @@ export default function Checkout() {
 
                   <div className="space-y-6 mb-10">
                     {items.map(item => (
-                      <div key={`${item.id}-${item.selectedSize}`} className="flex gap-6 items-center">
+                      <div key={`${item.id}-${item.selectedSize}-${item.selectedColor || 'none'}`} className="flex gap-6 items-center">
                         <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0 flex items-center justify-center border border-hairline">
                           {item.images && item.images.length > 0 ? (
                             <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
@@ -333,8 +335,16 @@ export default function Checkout() {
                         </div>
                         <div className="flex-1">
                           <h4 className="font-bold text-ink line-clamp-2">{item.name}</h4>
-                          <p className="text-sm text-muted mt-1">Size: {item.selectedSize}</p>
-                          <p className="text-sm text-muted mt-1">Qty: {item.quantity}</p>
+                          <p className="text-sm text-muted mt-1 flex flex-wrap gap-2">
+                            <span>Size: {item.selectedSize}</span>
+                            {item.selectedColor && (
+                              <>
+                                <span className="text-muted/30">|</span>
+                                <span>Color: {item.selectedColor}</span>
+                              </>
+                            )}
+                          </p>
+                          <p className="text-sm text-muted mt-0.5">Qty: {item.quantity}</p>
                         </div>
                         <div className="font-bold text-ink text-right flex flex-col items-end gap-0.5">
                           {item.quantity >= 100 ? (

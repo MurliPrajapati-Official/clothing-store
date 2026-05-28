@@ -56,8 +56,15 @@ router.post('/', verifyAdmin, async (c) => {
     const grade = formData.get('grade') as string;
     const in_stock = formData.get('in_stock');
     const is_featured = formData.get('is_featured');
+    const colors = formData.get('colors') as string;
     
-    const file = formData.get('image') as File | null;
+    // Parse colors list
+    const parsedColors = colors ? colors.split(',').map((s: string) => s.trim()).filter(Boolean) : [];
+    
+    // Support multi-image files
+    const files = formData.getAll('images') as File[];
+    const singleFile = formData.get('image') as File | null;
+    const finalFiles = files.length > 0 ? files : (singleFile && singleFile.size > 0 ? [singleFile] : []);
 
     // Server-side validation
     const productSchema = z.object({
@@ -71,18 +78,23 @@ router.post('/', verifyAdmin, async (c) => {
       return c.json({ error: parseResult.error.issues[0].message }, 400);
     }
 
-    if (!file || file.size === 0) return c.json({ error: 'Product image is required' }, 400);
+    if (finalFiles.length === 0) {
+      return c.json({ error: 'At least one default product image is required' }, 400);
+    }
+    if (finalFiles.length > 5) {
+      return c.json({ error: 'Maximum of 5 default images are allowed' }, 400);
+    }
 
     let imageUrls: string[] = [];
 
-    // 1. Upload image to Supabase Storage if present
-    if (file && file.size > 0) {
+    // Helper function to validate and upload a single file to Supabase Storage
+    const uploadProductImage = async (file: File): Promise<string> => {
       if (file.size > 5 * 1024 * 1024) {
-        return c.json({ error: 'Image size exceeds 5MB limit' }, 400);
+        throw new Error(`Image ${file.name} exceeds 5MB limit`);
       }
       const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
       if (!allowedMimeTypes.includes(file.type)) {
-        return c.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, 400);
+        throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
       }
 
       const fileName = `${Date.now()}_${file.name}`;
@@ -95,17 +107,44 @@ router.post('/', verifyAdmin, async (c) => {
 
       if (uploadError) throw uploadError;
 
-      // Get public URL
       const { data: publicUrlData } = supabase.storage
         .from('products')
         .getPublicUrl(fileName);
 
-      if (publicUrlData) {
-         imageUrls.push(publicUrlData.publicUrl);
+      if (!publicUrlData) {
+        throw new Error(`Failed to retrieve public URL for ${file.name}`);
+      }
+
+      return publicUrlData.publicUrl;
+    };
+
+    // 1. Upload default images
+    for (const file of finalFiles) {
+      if (file && file.size > 0) {
+        const url = await uploadProductImage(file);
+        imageUrls.push(url);
       }
     }
 
-    // 2. Insert product into database
+    // 2. Upload color-specific images
+    const colorImagesMap: Record<string, string[]> = {};
+    for (const color of parsedColors) {
+      const colorFiles = formData.getAll(`color_images_${color}`) as File[];
+      if (colorFiles.length > 5) {
+        return c.json({ error: `Maximum of 5 images are allowed for color: ${color}` }, 400);
+      }
+      
+      const urlsForColor: string[] = [];
+      for (const file of colorFiles) {
+        if (file && file.size > 0) {
+          const url = await uploadProductImage(file);
+          urlsForColor.push(url);
+        }
+      }
+      colorImagesMap[color] = urlsForColor;
+    }
+
+    // 3. Insert product into database
     const { data: productData, error: dbError } = await supabase
       .from('products')
       .insert([
@@ -117,12 +156,14 @@ router.post('/', verifyAdmin, async (c) => {
           description,
           category, 
           school_id: school_id || null, 
-          sizes: sizes ? sizes.split(',') : [], // Basic parsing
+          sizes: sizes ? sizes.split(',') : [],
           gender, 
           grade, 
           in_stock: in_stock === 'true' || in_stock === '1', 
           is_featured: is_featured === 'true' || is_featured === '1',
-          images: imageUrls
+          images: imageUrls,
+          colors: parsedColors,
+          color_images: colorImagesMap
         }
       ])
       .select();
@@ -161,8 +202,15 @@ router.put('/:id', verifyAdmin, async (c) => {
     const in_stock = formData.get('in_stock');
     const is_featured = formData.get('is_featured');
     const existing_images = formData.get('existing_images') as string;
+    const colors = formData.get('colors') as string;
+    const existing_color_images = formData.get('existing_color_images') as string;
+
+    const parsedColors = colors ? (Array.isArray(colors) ? colors : colors.split(',').map((s: string) => s.trim()).filter(Boolean)) : [];
+    let colorImagesMap: Record<string, string[]> = existing_color_images ? JSON.parse(existing_color_images) : {};
     
-    const file = formData.get('image') as File | null;
+    const files = formData.getAll('images') as File[];
+    const singleFile = formData.get('image') as File | null;
+    const finalFiles = files.length > 0 ? files : (singleFile && singleFile.size > 0 ? [singleFile] : []);
 
     const productSchema = z.object({
       name: z.string().min(3, 'Valid product name is required'),
@@ -177,15 +225,20 @@ router.put('/:id', verifyAdmin, async (c) => {
 
     let imageUrls: string[] = existing_images ? JSON.parse(existing_images) : [];
 
-    // 1. Upload new image if present
-    if (file && file.size > 0) {
+    if (imageUrls.length + finalFiles.length > 5) {
+      return c.json({ error: 'Maximum of 5 default images are allowed in total' }, 400);
+    }
+
+    // Helper function to validate and upload a single file to Supabase Storage
+    const uploadProductImage = async (file: File): Promise<string> => {
       if (file.size > 5 * 1024 * 1024) {
-        return c.json({ error: 'Image size exceeds 5MB limit' }, 400);
+        throw new Error(`Image ${file.name} exceeds 5MB limit`);
       }
       const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp'];
       if (!allowedMimeTypes.includes(file.type)) {
-        return c.json({ error: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.' }, 400);
+        throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
       }
+
       const fileName = `${Date.now()}_${file.name}`;
       const fileBuffer = await file.arrayBuffer();
       const { data: uploadData, error: uploadError } = await supabase.storage
@@ -200,12 +253,42 @@ router.put('/:id', verifyAdmin, async (c) => {
         .from('products')
         .getPublicUrl(fileName);
 
-      if (publicUrlData) {
-         imageUrls = [publicUrlData.publicUrl]; // For now, replace images if a new one is uploaded
+      if (!publicUrlData) {
+        throw new Error(`Failed to retrieve public URL for ${file.name}`);
+      }
+
+      return publicUrlData.publicUrl;
+    };
+
+    // 1. Upload new default images if present
+    for (const file of finalFiles) {
+      if (file && file.size > 0) {
+        const url = await uploadProductImage(file);
+        imageUrls.push(url);
       }
     }
 
-    // 2. Update product in database
+    // 2. Upload new color-specific images
+    const finalColorImagesMap: Record<string, string[]> = {};
+    for (const color of parsedColors) {
+      const existingUrls = colorImagesMap[color] || [];
+      const newFilesForColor = formData.getAll(`color_images_${color}`) as File[];
+      
+      if (existingUrls.length + newFilesForColor.length > 5) {
+        return c.json({ error: `Maximum of 5 images are allowed in total for color: ${color}` }, 400);
+      }
+
+      const urlsForColor: string[] = [...existingUrls];
+      for (const file of newFilesForColor) {
+        if (file && file.size > 0) {
+          const url = await uploadProductImage(file);
+          urlsForColor.push(url);
+        }
+      }
+      finalColorImagesMap[color] = urlsForColor;
+    }
+
+    // 3. Update product in database
     const { data: productData, error: dbError } = await supabase
       .from('products')
       .update({
@@ -221,7 +304,9 @@ router.put('/:id', verifyAdmin, async (c) => {
         grade, 
         in_stock: in_stock === 'true' || in_stock === '1',
         is_featured: is_featured === 'true' || is_featured === '1',
-        images: imageUrls
+        images: imageUrls,
+        colors: parsedColors,
+        color_images: finalColorImagesMap
       })
       .eq('id', id)
       .select();

@@ -82,7 +82,7 @@ export default function CartDrawer() {
                 </div>
               ) : (
                 items.map((item) => (
-                  <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4 group">
+                  <div key={`${item.id}-${item.selectedSize}-${item.selectedColor || 'none'}`} className="flex gap-4 group">
                     <div className="w-24 h-32 bg-canvas rounded-xl overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
                       {item.images && item.images.length > 0 ? (
                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
@@ -94,25 +94,33 @@ export default function CartDrawer() {
                       <div className="flex justify-between items-start gap-2 mb-1">
                         <h4 className="font-bold text-ink truncate leading-tight">{item.name}</h4>
                         <button
-                          onClick={() => removeItem(item.id, item.selectedSize)}
+                          onClick={() => removeItem(item.id, item.selectedSize, item.selectedColor)}
                           className="text-muted hover:text-m-red transition-colors shrink-0"
                         >
                           <Trash2 size={16} />
                         </button>
                       </div>
-                      <span className="text-xs font-semibold text-muted mb-3">Size: {item.selectedSize}</span>
+                      <div className="flex flex-wrap gap-2 text-xs font-semibold text-muted mb-3">
+                        <span>Size: {item.selectedSize}</span>
+                        {item.selectedColor && (
+                          <>
+                            <span className="text-muted/30">|</span>
+                            <span>Color: {item.selectedColor}</span>
+                          </>
+                        )}
+                      </div>
                       
                       <div className="mt-auto flex items-center justify-between">
                         <div className="flex items-center bg-canvas rounded-lg border border-hairline-strong p-1">
                           <button
-                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1)}
+                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1, item.selectedColor)}
                             className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors"
                           >
                             <Minus size={12} />
                           </button>
                           <span className="w-6 text-center text-sm font-bold text-ink">{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity + 1, item.selectedColor)}
                             className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors"
                           >
                             <Plus size={12} />

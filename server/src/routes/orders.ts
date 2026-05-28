@@ -88,7 +88,9 @@ router.post('/', rateLimiter(5, 60000), verifyUser, async (c) => {
       order_id: orderData.id,
       product_id: item.productId,
       quantity: item.quantity,
-      price_at_time: item.price
+      price_at_time: item.price,
+      size: item.size || null,
+      color: item.color || null
     }));
 
     const { error: itemsError } = await supabase
