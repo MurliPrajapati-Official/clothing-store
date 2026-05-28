@@ -1078,35 +1078,37 @@ export default function AdminDashboard() {
                 <label className="block text-sm font-bold text-ink mb-3">Product Image & Color Galleries</label>
                 
                 {/* Visual Color Tabs */}
-                <div className="flex bg-surface-elevated p-1 rounded-2xl border border-hairline mb-6 overflow-x-auto scrollbar-hide max-w-full">
-                  <button 
-                    type="button"
-                    onClick={() => setActiveColorTab('default')}
-                    className={cn(
-                      "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap",
-                      activeColorTab === 'default' ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
-                    )}
-                  >
-                    Default Images
-                  </button>
-                  {colors.map(color => (
-                    <button
-                      key={color}
+                {colors.length > 0 && (
+                  <div className="flex bg-surface-elevated p-1 rounded-2xl border border-hairline mb-6 overflow-x-auto scrollbar-hide max-w-full">
+                    <button 
                       type="button"
-                      onClick={() => setActiveColorTab(color)}
+                      onClick={() => setActiveColorTab('default')}
                       className={cn(
-                        "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2",
-                        activeColorTab === color ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                        "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap",
+                        activeColorTab === 'default' ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
                       )}
                     >
-                      <span className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
-                      {color}
+                      Default Images
                     </button>
-                  ))}
-                </div>
+                    {colors.map(color => (
+                      <button
+                        key={color}
+                        type="button"
+                        onClick={() => setActiveColorTab(color)}
+                        className={cn(
+                          "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2",
+                          activeColorTab === color ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                        )}
+                      >
+                        <span className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
+                        {color}
+                      </button>
+                    ))}
+                  </div>
+                )}
 
                 {/* Grid Gallery for active tab */}
-                {activeColorTab === 'default' ? (
+                {(activeColorTab === 'default' || !colors.includes(activeColorTab)) ? (
                   <div>
                     <p className="text-xs text-muted font-medium mb-3">Default images displayed on cards and catalogs (Up to 5 max).</p>
                     <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">

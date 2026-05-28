@@ -150,27 +150,30 @@ router.post('/', verifyAdmin, async (c) => {
     }
 
     // 3. Insert product into database
+    const insertPayload: any = {
+      name, 
+      slug, 
+      price: Number(price), 
+      original_price: original_price ? Number(original_price) : null, 
+      description,
+      category, 
+      school_id: school_id || null, 
+      sizes: sizes ? sizes.split(',') : [],
+      gender, 
+      grade, 
+      in_stock: in_stock === 'true' || in_stock === '1', 
+      is_featured: is_featured === 'true' || is_featured === '1',
+      images: imageUrls
+    };
+
+    if (parsedColors && parsedColors.length > 0) {
+      insertPayload.colors = parsedColors;
+      insertPayload.color_images = colorImagesMap;
+    }
+
     const { data: productData, error: dbError } = await supabase
       .from('products')
-      .insert([
-        {
-          name, 
-          slug, 
-          price: Number(price), 
-          original_price: original_price ? Number(original_price) : null, 
-          description,
-          category, 
-          school_id: school_id || null, 
-          sizes: sizes ? sizes.split(',') : [],
-          gender, 
-          grade, 
-          in_stock: in_stock === 'true' || in_stock === '1', 
-          is_featured: is_featured === 'true' || is_featured === '1',
-          images: imageUrls,
-          colors: parsedColors,
-          color_images: colorImagesMap
-        }
-      ])
+      .insert([insertPayload])
       .select();
 
     if (dbError) throw dbError;
@@ -302,25 +305,30 @@ router.put('/:id', verifyAdmin, async (c) => {
     }
 
     // 3. Update product in database
+    const updatePayload: any = {
+      name, 
+      slug, 
+      price: Number(price), 
+      original_price: original_price ? Number(original_price) : null, 
+      description,
+      category, 
+      school_id: school_id || null, 
+      sizes: sizes ? (Array.isArray(sizes) ? sizes : sizes.split(',')) : [],
+      gender, 
+      grade, 
+      in_stock: in_stock === 'true' || in_stock === '1',
+      is_featured: is_featured === 'true' || is_featured === '1',
+      images: imageUrls
+    };
+
+    if (parsedColors && parsedColors.length > 0) {
+      updatePayload.colors = parsedColors;
+      updatePayload.color_images = finalColorImagesMap;
+    }
+
     const { data: productData, error: dbError } = await supabase
       .from('products')
-      .update({
-        name, 
-        slug, 
-        price: Number(price), 
-        original_price: original_price ? Number(original_price) : null, 
-        description,
-        category, 
-        school_id: school_id || null, 
-        sizes: sizes ? (Array.isArray(sizes) ? sizes : sizes.split(',')) : [],
-        gender, 
-        grade, 
-        in_stock: in_stock === 'true' || in_stock === '1',
-        is_featured: is_featured === 'true' || is_featured === '1',
-        images: imageUrls,
-        colors: parsedColors,
-        color_images: finalColorImagesMap
-      })
+      .update(updatePayload)
       .eq('id', id)
       .select();
 
