@@ -359,8 +359,14 @@ export default function AdminDashboard() {
   const handleColorFileChange = (color: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const filesArray = Array.from(e.target.files);
-      const existingUrls = existingColorImages[color] || [];
-      const newFilesForColor = newColorFiles[color] || [];
+      const matchedColorKey = Object.keys(existingColorImages).find(
+        k => k.trim().toLowerCase() === color.trim().toLowerCase()
+      ) || Object.keys(newColorFiles).find(
+        k => k.trim().toLowerCase() === color.trim().toLowerCase()
+      ) || color;
+
+      const existingUrls = existingColorImages[matchedColorKey] || [];
+      const newFilesForColor = newColorFiles[matchedColorKey] || [];
       const total = existingUrls.length + newFilesForColor.length;
       const allowedCount = 5 - total;
 
@@ -376,7 +382,7 @@ export default function AdminDashboard() {
 
       setNewColorFiles(prev => ({
         ...prev,
-        [color]: [...newFilesForColor, ...filesToAdd]
+        [matchedColorKey]: [...newFilesForColor, ...filesToAdd]
       }));
     }
   };
@@ -409,12 +415,33 @@ export default function AdminDashboard() {
     // Append colors
     formData.set('colors', colors.join(','));
 
+    // Clean, synchronize and sanitize color maps matching the current colors array
+    const cleanedExistingColorImages: Record<string, string[]> = {};
+    const cleanedNewColorFiles: Record<string, File[]> = {};
+
+    colors.forEach(color => {
+      const existingMatch = Object.keys(existingColorImages).find(
+        k => k.trim().toLowerCase() === color.trim().toLowerCase()
+      );
+      if (existingMatch) {
+        cleanedExistingColorImages[color] = existingColorImages[existingMatch];
+      }
+
+      const newFilesMatch = Object.keys(newColorFiles).find(
+        k => k.trim().toLowerCase() === color.trim().toLowerCase()
+      );
+      if (newFilesMatch) {
+        cleanedNewColorFiles[color] = newColorFiles[newFilesMatch];
+      }
+    });
+
     // Append color-specific images
-    formData.append('existing_color_images', JSON.stringify(existingColorImages));
-    Object.keys(newColorFiles).forEach(color => {
-      const filesForColor = newColorFiles[color] || [];
+    formData.append('existing_color_images', JSON.stringify(cleanedExistingColorImages));
+    Object.keys(cleanedNewColorFiles).forEach(color => {
+      const filesForColor = cleanedNewColorFiles[color] || [];
+      const sanitizedColorKey = `color_images_${color.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       filesForColor.forEach(file => {
-        formData.append(`color_images_${color}`, file);
+        formData.append(sanitizedColorKey, file);
       });
     });
 
@@ -1173,78 +1200,89 @@ export default function AdminDashboard() {
                   </div>
                 ) : (
                   // Color tab active
-                  <div>
-                    <p className="text-xs text-muted font-medium mb-3">Images displayed when the color variant <strong>{activeColorTab}</strong> is selected by the user (Up to 5 max).</p>
-                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
-                      {/* Color Existing Images */}
-                      {(existingColorImages[activeColorTab] || []).map((url, index) => (
-                        <div key={`exist-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
-                          <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button 
-                              type="button" 
-                              onClick={() => {
-                                const currentList = existingColorImages[activeColorTab] || [];
-                                setExistingColorImages(prev => ({
-                                  ...prev,
-                                  [activeColorTab]: currentList.filter((_, idx) => idx !== index)
-                                }));
-                              }}
-                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
-                              title="Delete Image"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/60 text-white rounded">
-                            Exist {index + 1}
-                          </span>
-                        </div>
-                      ))}
+                  (() => {
+                    const matchedColorKey = Object.keys(existingColorImages).find(
+                      k => k.trim().toLowerCase() === activeColorTab.trim().toLowerCase()
+                    ) || Object.keys(newColorFiles).find(
+                      k => k.trim().toLowerCase() === activeColorTab.trim().toLowerCase()
+                    ) || activeColorTab;
 
-                      {/* Color New Files */}
-                      {(newColorFiles[activeColorTab] || []).map((file, index) => (
-                        <div key={`new-${activeColorTab}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
-                          <FilePreview file={file} />
-                          <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                            <button 
-                              type="button" 
-                              onClick={() => {
-                                const currentFiles = newColorFiles[activeColorTab] || [];
-                                setNewColorFiles(prev => ({
-                                  ...prev,
-                                  [activeColorTab]: currentFiles.filter((_, idx) => idx !== index)
-                                }));
-                              }}
-                              className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
-                              title="Remove File"
-                            >
-                              <Trash2 size={16} />
-                            </button>
-                          </div>
-                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
-                            New {index + 1}
-                          </span>
-                        </div>
-                      ))}
+                    const colorExistingList = existingColorImages[matchedColorKey] || [];
+                    const colorNewList = newColorFiles[matchedColorKey] || [];
 
-                      {/* Color Add Slot */}
-                      {((existingColorImages[activeColorTab] || []).length + (newColorFiles[activeColorTab] || []).length) < 5 && (
-                        <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
-                          <input 
-                            type="file" 
-                            multiple
-                            accept="image/*" 
-                            onChange={(e) => handleColorFileChange(activeColorTab, e)}
-                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
-                          />
-                          <PlusCircle size={24} className="mb-1.5 transition-colors" />
-                          <span className="text-[10px] font-bold tracking-wider uppercase text-center px-1">Upload ({activeColorTab})</span>
-                          <span className="text-[8px] opacity-60 mt-0.5">({5 - ((existingColorImages[activeColorTab] || []).length + (newColorFiles[activeColorTab] || []).length)} slots left)</span>
+                    return (
+                      <div>
+                        <p className="text-xs text-muted font-medium mb-3">Images displayed when the color variant <strong>{activeColorTab}</strong> is selected by the user (Up to 5 max).</p>
+                        <div className="grid grid-cols-2 sm:grid-cols-5 gap-4">
+                          {/* Color Existing Images */}
+                          {colorExistingList.map((url, index) => (
+                            <div key={`exist-${matchedColorKey}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                              <img src={url} alt="" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" referrerPolicy="no-referrer" />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button 
+                                  type="button" 
+                                  onClick={() => {
+                                    setExistingColorImages(prev => ({
+                                      ...prev,
+                                      [matchedColorKey]: colorExistingList.filter((_, idx) => idx !== index)
+                                    }));
+                                  }}
+                                  className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                                  title="Delete Image"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                              <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-black/60 text-white rounded">
+                                Exist {index + 1}
+                              </span>
+                            </div>
+                          ))}
+
+                          {/* Color New Files */}
+                          {colorNewList.map((file, index) => (
+                            <div key={`new-${matchedColorKey}-${index}`} className="relative aspect-[4/5] rounded-xl border border-hairline overflow-hidden group bg-canvas flex items-center justify-center">
+                              <FilePreview file={file} />
+                              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                                <button 
+                                  type="button" 
+                                  onClick={() => {
+                                    setNewColorFiles(prev => ({
+                                      ...prev,
+                                      [matchedColorKey]: colorNewList.filter((_, idx) => idx !== index)
+                                    }));
+                                  }}
+                                  className="p-2.5 bg-m-red/90 text-white rounded-full hover:bg-m-red transition-colors duration-200 shadow-md"
+                                  title="Remove File"
+                                >
+                                  <Trash2 size={16} />
+                                </button>
+                              </div>
+                              <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                                New {index + 1}
+                              </span>
+                            </div>
+                          ))}
+
+                          {/* Color Add Slot */}
+                          {(colorExistingList.length + colorNewList.length) < 5 && (
+                            <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
+                              <input 
+                                type="file" 
+                                multiple
+                                accept="image/*" 
+                                onChange={(e) => handleColorFileChange(matchedColorKey, e)}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10" 
+                              />
+                              <PlusCircle size={24} className="mb-1.5 transition-colors" />
+                              <span className="text-[10px] font-bold tracking-wider uppercase text-center px-1">Upload ({activeColorTab})</span>
+                              <span className="text-[8px] opacity-60 mt-0.5">({5 - (colorExistingList.length + colorNewList.length)} slots left)</span>
+                            </div>
+                          )}
                         </div>
-                      )}
-                    </div>
-                  </div>
+                      </div>
+                    );
+                  })()
                 )}
               </div>
 

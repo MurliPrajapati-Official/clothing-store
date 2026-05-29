@@ -134,7 +134,8 @@ router.post('/', verifyAdmin, async (c) => {
     // 2. Upload color-specific images
     const colorImagesMap: Record<string, string[]> = {};
     for (const color of parsedColors) {
-      const colorFiles = formData.getAll(`color_images_${color}`) as File[];
+      const sanitizedColorKey = `color_images_${color.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+      const colorFiles = formData.getAll(sanitizedColorKey) as File[];
       if (colorFiles.length > 5) {
         return c.json({ error: `Maximum of 5 images are allowed for color: ${color}` }, 400);
       }
@@ -287,8 +288,9 @@ router.put('/:id', verifyAdmin, async (c) => {
     // 2. Upload new color-specific images
     const finalColorImagesMap: Record<string, string[]> = {};
     for (const color of parsedColors) {
+      const sanitizedColorKey = `color_images_${color.trim().toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
       const existingUrls = colorImagesMap[color] || [];
-      const newFilesForColor = formData.getAll(`color_images_${color}`) as File[];
+      const newFilesForColor = formData.getAll(sanitizedColorKey) as File[];
       
       if (existingUrls.length + newFilesForColor.length > 5) {
         return c.json({ error: `Maximum of 5 images are allowed in total for color: ${color}` }, 400);
