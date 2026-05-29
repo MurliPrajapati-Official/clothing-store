@@ -396,24 +396,22 @@ export default function AdminDashboard() {
       ) || color;
 
       const existingUrls = existingColorImages[matchedColorKey] || [];
-      const newFilesForColor = newColorFiles[matchedColorKey] || [];
-      const total = existingUrls.length + newFilesForColor.length;
-      const allowedCount = 5 - total;
-
-      if (allowedCount <= 0) {
-        alert(`Maximum of 5 images are allowed for ${color}.`);
-        return;
-      }
-
-      const filesToAdd = validFiles.slice(0, allowedCount);
-      if (validFiles.length > allowedCount) {
-        alert(`You can only add up to 5 images for ${color}. Only the first ${allowedCount} images were selected.`);
-      }
-
-      setNewColorFiles(prev => ({
-        ...prev,
-        [matchedColorKey]: [...newFilesForColor, ...filesToAdd]
-      }));
+      
+      setNewColorFiles(prev => {
+        const prevFilesForColor = prev[matchedColorKey] || [];
+        const currentTotal = existingUrls.length + prevFilesForColor.length;
+        const currentAllowed = 5 - currentTotal;
+        
+        if (currentAllowed <= 0) {
+          return prev;
+        }
+        
+        const filesToAddFinal = validFiles.slice(0, currentAllowed);
+        return {
+          ...prev,
+          [matchedColorKey]: [...prevFilesForColor, ...filesToAddFinal]
+        };
+      });
     }
   };
 
