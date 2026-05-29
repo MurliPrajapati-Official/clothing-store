@@ -271,8 +271,16 @@ export default function ProductDetail() {
             className="space-y-4 lg:sticky lg:top-32 self-start"
           >
             {(() => {
-              const activeImages = (selectedColor && (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor]) && (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor])!.length > 0)
-                ? (product.colorImages?.[selectedColor] || product.color_images?.[selectedColor])!
+              const matchedColorKey = selectedColor ? (
+                Object.keys(product.colorImages || {}).find(
+                  k => k.trim().toLowerCase() === selectedColor.trim().toLowerCase()
+                ) || Object.keys(product.color_images || {}).find(
+                  k => k.trim().toLowerCase() === selectedColor.trim().toLowerCase()
+                )
+              ) : undefined;
+
+              const activeImages = (matchedColorKey && (product.colorImages?.[matchedColorKey] || product.color_images?.[matchedColorKey]) && (product.colorImages?.[matchedColorKey] || product.color_images?.[matchedColorKey])!.length > 0)
+                ? (product.colorImages?.[matchedColorKey] || product.color_images?.[matchedColorKey])!
                 : product.images;
 
               return (
