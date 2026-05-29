@@ -164,13 +164,10 @@ router.post('/', verifyAdmin, async (c) => {
       grade, 
       in_stock: in_stock === 'true' || in_stock === '1', 
       is_featured: is_featured === 'true' || is_featured === '1',
-      images: imageUrls
+      images: imageUrls,
+      colors: parsedColors,
+      color_images: colorImagesMap
     };
-
-    if (parsedColors && parsedColors.length > 0) {
-      insertPayload.colors = parsedColors;
-      insertPayload.color_images = colorImagesMap;
-    }
 
     const { data: productData, error: dbError } = await supabase
       .from('products')
@@ -252,7 +249,7 @@ router.put('/:id', verifyAdmin, async (c) => {
         if (fileExt && validExtensions.includes(fileExt)) {
           contentType = fileExt === 'png' ? 'image/png' : (fileExt === 'webp' ? 'image/webp' : 'image/jpeg');
         } else {
-          throw new Error(`Invalid file type for ${file.name}. Only JPEG, PNG, and WebP are allowed.`);
+          throw new Error(`Invalid file type for ${file.name}. Please upload a valid image file (JPEG, PNG, or WebP).`);
         }
       }
 
@@ -320,13 +317,10 @@ router.put('/:id', verifyAdmin, async (c) => {
       grade, 
       in_stock: in_stock === 'true' || in_stock === '1',
       is_featured: is_featured === 'true' || is_featured === '1',
-      images: imageUrls
+      images: imageUrls,
+      colors: parsedColors,
+      color_images: finalColorImagesMap
     };
-
-    if (parsedColors && parsedColors.length > 0) {
-      updatePayload.colors = parsedColors;
-      updatePayload.color_images = finalColorImagesMap;
-    }
 
     const { data: productData, error: dbError } = await supabase
       .from('products')

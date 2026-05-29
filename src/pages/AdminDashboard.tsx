@@ -338,7 +338,22 @@ export default function AdminDashboard() {
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
+      const filesArray = Array.from(e.target.files) as File[];
+      
+      const validFiles = filesArray.filter(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`Image ${file.name} is too large (max 5MB)`);
+          return false;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert(`File ${file.name} is not a valid image format. Please use JPEG, PNG, or WebP.`);
+          return false;
+        }
+        return true;
+      });
+
+      if (validFiles.length === 0) return;
+
       const total = existingImages.length + newFiles.length;
       const allowedCount = 5 - total;
 
@@ -347,8 +362,8 @@ export default function AdminDashboard() {
         return;
       }
 
-      const filesToAdd = filesArray.slice(0, allowedCount);
-      if (filesArray.length > allowedCount) {
+      const filesToAdd = validFiles.slice(0, allowedCount);
+      if (validFiles.length > allowedCount) {
         alert(`You can only add up to 5 default images. Only the first ${allowedCount} images were selected.`);
       }
 
@@ -358,7 +373,22 @@ export default function AdminDashboard() {
 
   const handleColorFileChange = (color: string, e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      const filesArray = Array.from(e.target.files);
+      const filesArray = Array.from(e.target.files) as File[];
+
+      const validFiles = filesArray.filter(file => {
+        if (file.size > 5 * 1024 * 1024) {
+          alert(`Image ${file.name} is too large (max 5MB)`);
+          return false;
+        }
+        if (!file.type.startsWith('image/')) {
+          alert(`File ${file.name} is not a valid image format. Please use JPEG, PNG, or WebP.`);
+          return false;
+        }
+        return true;
+      });
+
+      if (validFiles.length === 0) return;
+
       const matchedColorKey = Object.keys(existingColorImages).find(
         k => k.trim().toLowerCase() === color.trim().toLowerCase()
       ) || Object.keys(newColorFiles).find(
@@ -375,8 +405,8 @@ export default function AdminDashboard() {
         return;
       }
 
-      const filesToAdd = filesArray.slice(0, allowedCount);
-      if (filesArray.length > allowedCount) {
+      const filesToAdd = validFiles.slice(0, allowedCount);
+      if (validFiles.length > allowedCount) {
         alert(`You can only add up to 5 images for ${color}. Only the first ${allowedCount} images were selected.`);
       }
 
@@ -461,7 +491,7 @@ export default function AdminDashboard() {
       }
 
       setSuccessMsg(`Product ${editingProduct ? 'updated' : 'added'} successfully!`);
-      if (!editingProduct) (e.target as HTMLFormElement).reset();
+      (e.target as HTMLFormElement).reset(); // Always reset the form to prevent stale data
       setEditingProduct(null);
       setExistingImages([]);
       setNewFiles([]);
@@ -473,6 +503,9 @@ export default function AdminDashboard() {
       setActiveColorTab('default');
       fetchProducts();
       fetchStats();
+      
+      // Navigate to the manage tab smoothly after success
+      setTimeout(() => setActiveTab('manage'), 1500);
     } catch (err: any) {
       setErrorMsg(err.message);
     } finally {
