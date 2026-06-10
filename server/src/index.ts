@@ -35,10 +35,19 @@ app.use('*', async (c, next) => {
     }
   };
 
+  const path = c.req.path;
+  const method = c.req.method;
+  const isPublicGet = (method === 'GET' || method === 'OPTIONS') && (
+    path === '/' ||
+    path === '/api/health' ||
+    path.startsWith('/api/products') ||
+    path.startsWith('/api/reviews')
+  );
+
   const corsMiddleware = cors({
     origin: (origin) => {
       if (!origin) return 'https://uniformtrends.in';
-      if (isOriginAllowed(origin)) {
+      if (isPublicGet || isOriginAllowed(origin)) {
         return origin;
       }
       // Strictly block access from foreign, non-whitelisted domains
