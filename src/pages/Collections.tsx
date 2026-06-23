@@ -68,7 +68,7 @@ export default function Collections() {
           animate={{ opacity: 1, y: 0 }}
           className="max-w-4xl mx-auto text-center mb-20"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full mb-6 font-bold text-sm uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated border border-hairline-strong text-ink rounded-full mb-6 font-bold text-sm uppercase tracking-widest shadow-sm">
             <Camera size={16} />
             Visual Showcase
           </div>
@@ -108,8 +108,8 @@ export default function Collections() {
               </div>
               <div className="p-8">
                 <div className="flex items-center gap-2 mb-3">
-                  <ShieldCheck size={16} className="text-primary" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-primary">{img.category}</span>
+                  <ShieldCheck size={16} className="text-ink" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-ink">{img.category}</span>
                 </div>
                 <h3 className="text-2xl font-bold text-ink mb-2">{img.title}</h3>
                 <p className="text-muted text-sm font-light leading-relaxed mb-6">{img.desc}</p>
@@ -173,7 +173,7 @@ export default function Collections() {
               </div>
             </div>
             <p className="text-center pt-6 border-t border-hairline/30 text-xs">
-              All collections are available for custom sizing. Whether you require <Link to="/shop?category=School" className="text-primary font-medium hover:underline">school uniform photos</Link> or <Link to="/shop?category=Corporate" className="text-primary font-medium hover:underline">corporate wear catalogs</Link>, our resources help institutional buyers throughout India source their uniform supplies easily.
+              All collections are available for custom sizing. Whether you require <Link to="/shop?category=School" className="text-ink font-semibold hover:underline">school uniform photos</Link> or <Link to="/shop?category=Corporate" className="text-ink font-semibold hover:underline">corporate wear catalogs</Link>, our resources help institutional buyers throughout India source their uniform supplies easily.
             </p>
           </div>
         </motion.div>

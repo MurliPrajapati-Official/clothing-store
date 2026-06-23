@@ -43,12 +43,12 @@ function FilterDropdown({ label, icon, current, options, onSelect }: FilterDropd
         onClick={() => setIsOpen(!isOpen)}
         onBlur={() => setTimeout(() => setIsOpen(false), 200)}
         className={cn(
-          "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-xl text-sm font-medium transition-all min-w-[160px] justify-between",
-          isOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+          "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-none text-sm font-medium transition-all min-w-[160px] justify-between",
+          isOpen ? "border-ink" : "border-hairline hover:border-muted"
         )}
       >
         <span className="flex items-center gap-2 text-ink">
-          {icon && <span className="text-primary">{icon}</span>}
+          {icon && <span className="text-ink">{icon}</span>}
           <span className="text-muted mr-1">{label}:</span>
           {current}
         </span>
@@ -61,7 +61,7 @@ function FilterDropdown({ label, icon, current, options, onSelect }: FilterDropd
             initial={{ opacity: 0, y: 10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+            className="absolute top-full left-0 mt-2 w-64 bg-white border border-[#0f172a] rounded-none shadow-[8px_8px_0_rgba(15,23,42,0.1)] z-50 p-2"
           >
             <div className="max-h-64 overflow-y-auto scrollbar-hide space-y-1">
               {options.map((opt) => (
@@ -72,8 +72,8 @@ function FilterDropdown({ label, icon, current, options, onSelect }: FilterDropd
                     setIsOpen(false);
                   }}
                   className={cn(
-                    "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
-                    current === opt.name || current === opt.id ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                    "w-full text-left px-4 py-2.5 rounded-none text-sm transition-all flex items-center justify-between",
+                    current === opt.name || current === opt.id ? "bg-ink text-white font-bold" : "text-muted hover:bg-canvas hover:text-ink"
                   )}
                 >
                   {opt.name}
@@ -253,7 +253,7 @@ export default function Shop() {
       />
 
       {/* Hero / Header Section */}
-      <div className="bg-surface-card border-b border-hairline py-8 md:py-12">
+      <div className="bg-surface-soft border-b border-hairline py-8 md:py-12">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl">
             {isLoading ? (
@@ -267,7 +267,7 @@ export default function Shop() {
             ) : (
               <>
                 <h1 className="text-2xl sm:text-4xl md:text-6xl font-bold text-ink tracking-tight mb-4 md:mb-6 break-words">
-                  Specialized <span className="text-primary">Uniform</span> Catalog
+                  Specialized Uniform Catalog
                 </h1>
                 <p className="text-base md:text-xl text-muted font-light leading-relaxed max-w-2xl">
                   Precision-engineered garments for academic, medical, and industrial excellence. Filter through our premium collection to find your perfect fit.
@@ -279,19 +279,19 @@ export default function Shop() {
       </div>
 
       {/* Filter Bar */}
-      <div className="bg-surface-card border-b border-hairline py-6 mb-10 shadow-sm">
+      <div className="bg-white border-b border-hairline py-6 mb-10 shadow-sm">
         <div className="container mx-auto px-4">
           <div className="flex flex-col gap-6">
             {/* Search & Sort Group - High Priority on Mobile */}
             <div className="flex items-center gap-3 w-full md:hidden">
               <div className="relative flex-1 group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-primary transition-colors" size={16} />
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-ink transition-colors" size={16} />
                 <input
                   type="text"
                   placeholder="Search..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-surface-card border border-hairline py-3 pl-10 pr-4 text-sm outline-none focus:border-primary transition-all text-ink rounded-xl"
+                  className="w-full bg-white border border-hairline py-3 pl-10 pr-4 text-sm outline-none focus:border-[#0f172a] transition-all text-ink rounded-none"
                 />
               </div>
 
@@ -300,11 +300,11 @@ export default function Shop() {
                   onClick={() => setIsSortOpen(!isSortOpen)}
                   onBlur={() => setTimeout(() => setIsSortOpen(false), 200)}
                   className={cn(
-                    "flex items-center gap-2 px-4 py-3 bg-surface-card border rounded-xl text-sm font-medium transition-all justify-between",
-                    isSortOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+                    "flex items-center gap-2 px-4 py-3 bg-white border rounded-none text-sm font-medium transition-all justify-between",
+                    isSortOpen ? "border-ink" : "border-hairline hover:border-muted"
                   )}
                 >
-                  <SlidersHorizontal size={16} className="text-primary" />
+                  <SlidersHorizontal size={16} className="text-ink" />
                 </button>
                 <AnimatePresence>
                   {isSortOpen && (
@@ -312,7 +312,7 @@ export default function Shop() {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-full right-0 mt-2 w-56 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+                      className="absolute top-full right-0 mt-2 w-56 bg-white border border-[#0f172a] rounded-none shadow-[8px_8px_0_rgba(15,23,42,0.1)] z-50 p-2"
                     >
                       {[
                         { id: 'popular', name: 'Relevance' },
@@ -328,8 +328,8 @@ export default function Shop() {
                             setIsSortOpen(false);
                           }}
                           className={cn(
-                            "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
-                            sortBy === opt.id ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                            "w-full text-left px-4 py-2.5 rounded-none text-sm transition-all flex items-center justify-between",
+                            sortBy === opt.id ? "bg-ink text-white font-bold" : "text-muted hover:bg-canvas hover:text-ink"
                           )}
                         >
                           {opt.name}
@@ -348,7 +348,7 @@ export default function Shop() {
                 {isLoading ? (
                   <>
                     {[...Array(4)].map((_, i) => (
-                      <Skeleton key={i} className="min-w-[140px] h-[42px] rounded-xl" />
+                      <Skeleton key={i} className="min-w-[140px] h-[42px] rounded-none" />
                     ))}
                   </>
                 ) : (
@@ -361,8 +361,8 @@ export default function Shop() {
                           setIsCategoryOpen(!isCategoryOpen);
                         }}
                         className={cn(
-                          "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-xl text-sm font-medium transition-all min-w-[160px] justify-between",
-                          isCategoryOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+                          "flex items-center gap-2 px-4 py-2.5 bg-canvas border rounded-none text-sm font-medium transition-all min-w-[160px] justify-between",
+                          isCategoryOpen ? "border-ink" : "border-hairline hover:border-muted"
                         )}
                       >
                         <span className="flex items-center gap-2 text-ink">
@@ -379,7 +379,7 @@ export default function Shop() {
                               initial={{ opacity: 0, y: 10, scale: 0.95 }}
                               animate={{ opacity: 1, y: 0, scale: 1 }}
                               exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                              className="absolute top-full left-0 mt-2 w-64 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+                              className="absolute top-full left-0 mt-2 w-64 bg-white border border-[#0f172a] rounded-none shadow-[8px_8px_0_rgba(15,23,42,0.1)] z-50 p-2"
                             >
                               <div
                                 data-lenis-prevent
@@ -390,8 +390,8 @@ export default function Shop() {
                                     key={cat}
                                     onClick={() => handleToggleCategory(cat)}
                                     className={cn(
-                                      "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
-                                      categoryFilter.includes(cat) ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                                      "w-full text-left px-4 py-2.5 rounded-none text-sm transition-all flex items-center justify-between",
+                                      categoryFilter.includes(cat) ? "bg-ink text-white font-bold" : "text-muted hover:bg-canvas hover:text-ink"
                                     )}
                                   >
                                     {cat}
@@ -406,7 +406,7 @@ export default function Shop() {
                                     p.delete('category');
                                     setSearchParams(p);
                                   }}
-                                  className="w-full mt-2 py-2 text-[11px] font-bold text-m-red uppercase tracking-wider border-t border-hairline hover:bg-m-red/5 rounded-b-lg"
+                                  className="w-full mt-2 py-2 text-[11px] font-bold text-m-red uppercase tracking-wider border-t border-hairline hover:bg-m-red/5 rounded-none"
                                 >
                                   Reset Categories
                                 </button>
@@ -470,13 +470,13 @@ export default function Shop() {
               {/* Desktop Search & Sort Group */}
               <div className="hidden md:flex items-center gap-3 ml-auto w-full md:w-auto">
                 <div className="relative flex-1 md:w-64 group">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-primary transition-colors" size={16} />
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-muted group-focus-within:text-ink transition-colors" size={16} />
                   <input
                     type="text"
                     placeholder="Search..."
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-surface-card border border-hairline py-2.5 pl-10 pr-4 text-sm outline-none focus:border-primary transition-all text-ink rounded-xl"
+                    className="w-full bg-white border border-hairline py-2.5 pl-10 pr-4 text-sm outline-none focus:border-[#0f172a] transition-all text-ink rounded-none"
                   />
                 </div>
 
@@ -485,12 +485,12 @@ export default function Shop() {
                     onClick={() => setIsSortOpen(!isSortOpen)}
                     onBlur={() => setTimeout(() => setIsSortOpen(false), 200)}
                     className={cn(
-                      "flex items-center gap-2 px-4 py-2.5 bg-surface-card border rounded-xl text-sm font-medium transition-all min-w-[180px] justify-between",
-                      isSortOpen ? "border-primary shadow-[0_0_0_1px_var(--color-primary)]" : "border-hairline hover:border-muted"
+                      "flex items-center gap-2 px-4 py-2.5 bg-white border rounded-none text-sm font-medium transition-all min-w-[180px] justify-between",
+                      isSortOpen ? "border-ink" : "border-hairline hover:border-muted"
                     )}
                   >
                     <span className="flex items-center gap-2 text-ink">
-                      <SlidersHorizontal size={14} className="text-primary" />
+                      <SlidersHorizontal size={14} className="text-ink" />
                       {getSortLabel(sortBy)}
                     </span>
                     <ChevronDown size={14} className={cn("text-muted transition-transform duration-300", isSortOpen && "rotate-180")} />
@@ -501,7 +501,7 @@ export default function Shop() {
                         initial={{ opacity: 0, y: 10, scale: 0.95 }}
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                        className="absolute top-full right-0 mt-2 w-56 bg-surface-card border border-hairline rounded-2xl shadow-2xl z-50 p-2"
+                        className="absolute top-full right-0 mt-2 w-56 bg-white border border-[#0f172a] rounded-none shadow-[8px_8px_0_rgba(15,23,42,0.1)] z-50 p-2"
                       >
                         {[
                           { id: 'popular', name: 'Relevance' },
@@ -517,8 +517,8 @@ export default function Shop() {
                               setIsSortOpen(false);
                             }}
                             className={cn(
-                              "w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all flex items-center justify-between",
-                              sortBy === opt.id ? "bg-primary/10 text-primary font-bold" : "text-muted hover:bg-canvas hover:text-ink"
+                              "w-full text-left px-4 py-2.5 rounded-none text-sm transition-all flex items-center justify-between",
+                              sortBy === opt.id ? "bg-ink text-white font-bold" : "text-muted hover:bg-canvas hover:text-ink"
                             )}
                           >
                             {opt.name}
@@ -581,7 +581,7 @@ export default function Shop() {
                       disabled={mobilePage === 1}
                       className={cn(
                         "w-9 h-9 rounded-xl border border-hairline bg-surface-card flex items-center justify-center shadow-sm transition-all active:scale-90",
-                        mobilePage === 1 ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-primary hover:text-primary"
+                        mobilePage === 1 ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-ink hover:text-ink"
                       )}
                       aria-label="Previous Page"
                     >
@@ -600,10 +600,10 @@ export default function Shop() {
                             window.scrollTo({ top: 320, behavior: 'smooth' });
                           }}
                           className={cn(
-                            "w-9 h-9 rounded-xl border text-xs font-bold transition-all active:scale-90 flex items-center justify-center",
+                            "w-9 h-9 rounded-none border text-xs font-bold transition-all active:scale-90 flex items-center justify-center",
                             isActive
-                              ? "bg-primary border-primary text-on-primary shadow-lg shadow-primary/25"
-                              : "border-hairline bg-surface-card text-muted hover:text-ink hover:border-muted"
+                              ? "bg-ink border-ink text-white"
+                              : "border-hairline bg-white text-muted hover:text-ink hover:border-[#0f172a]"
                           )}
                         >
                           {pageNum}
@@ -620,8 +620,8 @@ export default function Shop() {
                             window.scrollTo({ top: 320, behavior: 'smooth' });
                           }}
                           className={cn(
-                            "px-3 h-9 rounded-xl border border-hairline bg-surface-card text-[11px] font-bold text-muted hover:text-ink hover:border-muted transition-all active:scale-90 flex items-center justify-center whitespace-nowrap",
-                            mobilePage > 4 && mobilePage < totalMobilePages && "border-primary/50 text-primary bg-primary/5"
+                            "px-3 h-9 rounded-none border border-hairline bg-white text-[11px] font-bold text-muted hover:text-ink hover:border-muted transition-all active:scale-90 flex items-center justify-center whitespace-nowrap",
+                            mobilePage > 4 && mobilePage < totalMobilePages && "border-ink/50 text-ink bg-surface-elevated"
                           )}
                         >
                           more pages
@@ -634,7 +634,7 @@ export default function Shop() {
                               setMobilePage(mobilePage);
                               window.scrollTo({ top: 320, behavior: 'smooth' });
                             }}
-                            className="w-9 h-9 rounded-xl border bg-primary border-primary text-on-primary shadow-lg shadow-primary/25 text-xs font-bold flex items-center justify-center"
+                            className="w-9 h-9 rounded-none border bg-ink border-ink text-white text-xs font-bold flex items-center justify-center"
                           >
                             {mobilePage}
                           </button>
@@ -650,8 +650,8 @@ export default function Shop() {
                       }}
                       disabled={mobilePage === totalMobilePages}
                       className={cn(
-                        "w-9 h-9 rounded-xl border border-hairline bg-surface-card flex items-center justify-center shadow-sm transition-all active:scale-90",
-                        mobilePage === totalMobilePages ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-primary hover:text-primary"
+                        "w-9 h-9 rounded-none border border-hairline bg-white flex items-center justify-center transition-all active:scale-90",
+                        mobilePage === totalMobilePages ? "opacity-30 cursor-not-allowed text-muted" : "text-ink hover:border-ink hover:text-ink"
                       )}
                       aria-label="Next Page"
                     >
@@ -679,9 +679,9 @@ export default function Shop() {
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="py-32 px-12 text-center bg-surface-card rounded-3xl shadow-xl border border-hairline max-w-2xl mx-auto my-12"
+              className="py-32 px-12 text-center bg-white rounded-none shadow-[12px_12px_0_rgba(15,23,42,0.15)] border-2 border-[#0f172a] max-w-2xl mx-auto my-12"
             >
-              <div className="w-24 h-24 bg-canvas rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+              <div className="w-24 h-24 bg-canvas border border-[#0f172a] rounded-none flex items-center justify-center mx-auto mb-8">
                 {fetchError ? (
                   <RefreshCw className="text-m-red animate-spin-slow" size={40} />
                 ) : (
@@ -699,7 +699,7 @@ export default function Shop() {
               <div className="flex justify-center gap-4">
                 <button
                   onClick={() => window.location.reload()}
-                  className="btn-primary px-10 py-4 rounded-xl flex items-center gap-2"
+                  className="btn-primary px-10 py-4 rounded-none flex items-center gap-2 font-bold uppercase tracking-widest text-xs"
                 >
                   <RefreshCw size={18} />
                   Retry Connection

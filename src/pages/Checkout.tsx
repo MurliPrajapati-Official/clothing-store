@@ -115,14 +115,14 @@ export default function Checkout() {
           initial={{ scale: 0.8, opacity: 0, y: 40 }}
           animate={{ scale: 1, opacity: 1, y: 0 }}
           transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
-          className="bg-surface-card p-12 rounded-3xl shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-hairline max-w-lg text-center"
+          className="bg-surface-card p-12 rounded-none shadow-2xl border border-hairline max-w-lg text-center"
         >
-          <div className="w-20 h-20 bg-success/20 text-success rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-ink text-white rounded-none flex items-center justify-center mx-auto mb-6 shadow-md shadow-ink/10">
             <CheckCircle2 size={40} />
           </div>
           <h1 className="text-3xl font-bold text-ink mb-4">Order Confirmed!</h1>
           <p className="text-muted mb-8 text-lg">Thank you for choosing Uniform Trends. Your order #{orderId ? orderId.substring(0, 8) : Math.floor(Math.random() * 100000)} represents the beginning of a fresh academic year.</p>
-          <Link to="/" className="btn-primary w-full shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+          <Link to="/" className="btn-primary w-full shadow-lg">
             Return Home
           </Link>
         </motion.div>
@@ -174,17 +174,17 @@ export default function Checkout() {
         >
           <div className="flex items-center gap-4">
             <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 1 ? "text-ink" : "text-muted")}>
-              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 1 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>1</div>
+              <div className={cn("w-10 h-10 rounded-none border border-hairline flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 1 ? "bg-ink text-white border-ink" : "bg-surface-elevated text-muted")}>1</div>
               <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Shipping</span>
             </div>
-            <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 2 ? "bg-primary" : "bg-surface-elevated")} />
+            <div className={cn("w-12 sm:w-24 h-0.5 transition-colors duration-500", step >= 2 ? "bg-ink" : "bg-surface-elevated")} />
             <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 2 ? "text-ink" : "text-muted")}>
-              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 2 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>2</div>
+              <div className={cn("w-10 h-10 rounded-none border border-hairline flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 2 ? "bg-ink text-white border-ink" : "bg-surface-elevated text-muted")}>2</div>
               <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Payment</span>
             </div>
-            <div className={cn("w-12 sm:w-24 h-1 rounded-full transition-colors duration-500", step >= 3 ? "bg-primary" : "bg-surface-elevated")} />
+            <div className={cn("w-12 sm:w-24 h-0.5 transition-colors duration-500", step >= 3 ? "bg-ink" : "bg-surface-elevated")} />
             <div className={cn("flex flex-col items-center gap-2 transition-colors duration-500", step >= 3 ? "text-ink" : "text-muted")}>
-              <div className={cn("w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 3 ? "bg-primary text-on-primary" : "bg-surface-elevated text-muted")}>3</div>
+              <div className={cn("w-10 h-10 rounded-none border border-hairline flex items-center justify-center font-bold text-sm transition-colors duration-500", step >= 3 ? "bg-ink text-white border-ink" : "bg-surface-elevated text-muted")}>3</div>
               <span className="text-xs font-semibold uppercase tracking-widest hidden sm:block">Review</span>
             </div>
           </div>
@@ -201,7 +201,7 @@ export default function Checkout() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                  className="bg-surface-card rounded-none shadow-xl border border-hairline p-8"
                 >
                   <div className="flex items-center justify-between mb-8">
                     <h2 className="text-2xl font-bold text-ink">Shipping Address</h2>
@@ -216,7 +216,7 @@ export default function Checkout() {
                             } catch (e) {}
                           }
                         }}
-                        className="text-xs font-bold uppercase tracking-widest text-primary bg-primary/10 px-4 py-2 rounded-lg hover:bg-primary hover:text-white transition-colors"
+                        className="text-xs font-bold uppercase tracking-widest text-ink bg-surface-elevated border border-hairline px-4 py-2 rounded-none hover:bg-ink hover:text-white transition-colors"
                       >
                         Use Saved Address
                       </button>
@@ -226,29 +226,29 @@ export default function Checkout() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                         <label className="block text-sm font-semibold text-ink mb-2">First Name</label>
-                        <input required type="text" onChange={(e) => setAddressData({...addressData, firstName: e.target.value})} value={addressData.firstName} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, firstName: e.target.value})} value={addressData.firstName} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div>
                         <label className="block text-sm font-semibold text-ink mb-2">Last Name</label>
-                        <input required type="text" onChange={(e) => setAddressData({...addressData, lastName: e.target.value})} value={addressData.lastName} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, lastName: e.target.value})} value={addressData.lastName} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-sm font-semibold text-ink mb-2">Delivery Address</label>
-                      <input required type="text" onChange={(e) => setAddressData({...addressData, street: e.target.value})} value={addressData.street} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
+                      <input required type="text" onChange={(e) => setAddressData({...addressData, street: e.target.value})} value={addressData.street} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors mb-4" placeholder="Street Address" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">City</label>
-                        <input required type="text" onChange={(e) => setAddressData({...addressData, city: e.target.value})} value={addressData.city} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, city: e.target.value})} value={addressData.city} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">State</label>
-                        <input required type="text" onChange={(e) => setAddressData({...addressData, state: e.target.value})} value={addressData.state} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, state: e.target.value})} value={addressData.state} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                       <div className="md:col-span-1">
                         <label className="block text-sm font-semibold text-ink mb-2">PIN Code</label>
-                        <input required type="text" onChange={(e) => setAddressData({...addressData, pin: e.target.value})} value={addressData.pin} className="w-full bg-canvas border border-hairline-strong rounded-xl px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
+                        <input required type="text" onChange={(e) => setAddressData({...addressData, pin: e.target.value})} value={addressData.pin} className="w-full bg-canvas border border-hairline-strong rounded-none px-4 py-3 text-ink focus:border-ink outline-none transition-colors" />
                       </div>
                     </div>
                     <div className="pt-6">
@@ -256,7 +256,7 @@ export default function Checkout() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         type="submit"
-                        className="btn-primary w-full md:w-auto shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                        className="btn-primary w-full md:w-auto shadow-md"
                       >
                         Continue to Confirmation
                       </motion.button>
@@ -272,20 +272,20 @@ export default function Checkout() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                  className="bg-surface-card rounded-none shadow-xl border border-hairline p-8"
                 >
                   <h2 className="text-2xl font-bold text-ink mb-8">Confirm Order Method</h2>
                   <div className="space-y-4 mb-8">
-                    <label className="flex items-center gap-4 p-5 border-2 border-ink rounded-xl cursor-pointer bg-canvas shadow-[0_2px_10px_rgba(0,0,0,0.5)] transition-all">
+                    <label className="flex items-center gap-4 p-5 border border-ink rounded-none cursor-pointer bg-canvas shadow-sm transition-all">
                       <input type="radio" name="payment" defaultChecked className="hidden" />
                       <Truck className="text-ink" />
                       <span className="font-semibold text-ink">{hasBulkItems ? 'Institutional Bulk Billing' : 'Cash on Delivery'}</span>
-                      <div className="w-4 h-4 rounded-full border border-ink ml-auto flex items-center justify-center">
-                        <div className="w-2 h-2 bg-ink rounded-full" />
+                      <div className="w-4 h-4 rounded-none border border-ink ml-auto flex items-center justify-center">
+                        <div className="w-2 h-2 bg-ink rounded-none" />
                       </div>
                     </label>
                     {hasBulkItems ? (
-                      <div className="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-xl text-sm leading-relaxed flex gap-3 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+                      <div className="p-4 bg-amber-500/10 border border-amber-500/20 text-amber-400 rounded-none text-sm leading-relaxed flex gap-3 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
                         <span className="text-lg">ℹ️</span>
                         <div>
                           <strong className="font-semibold text-ink block mb-0.5">Institutional Order Billing:</strong>
@@ -304,7 +304,7 @@ export default function Checkout() {
                       whileTap={{ scale: 0.98 }}
                       type="button"
                       onClick={() => setStep(3)}
-                      className="btn-primary shadow-[0_4px_20px_rgba(0,0,0,0.5)]"
+                      className="btn-primary shadow-lg"
                     >
                       Review Order
                     </motion.button>
@@ -319,14 +319,14 @@ export default function Checkout() {
                   animate={{ opacity: 1, x: 0, scale: 1 }}
                   exit={{ opacity: 0, x: 20, scale: 0.98 }}
                   transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-                  className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-8"
+                  className="bg-surface-card rounded-none shadow-xl border border-hairline p-8"
                 >
                   <h2 className="text-2xl font-bold text-ink mb-8">Review Your Order</h2>
 
                   <div className="space-y-6 mb-10">
                     {items.map(item => (
                       <div key={`${item.id}-${item.selectedSize}-${item.selectedColor || 'none'}`} className="flex gap-6 items-center">
-                        <div className="w-20 h-24 overflow-hidden rounded-lg bg-canvas shrink-0 flex items-center justify-center border border-hairline">
+                        <div className="w-20 h-24 overflow-hidden rounded-none bg-canvas shrink-0 flex items-center justify-center border border-hairline">
                           {item.images && item.images.length > 0 ? (
                             <img src={item.images[0]} alt="" className="w-full h-full object-cover" />
                           ) : (
@@ -336,22 +336,22 @@ export default function Checkout() {
                         <div className="flex-1">
                           <h4 className="font-bold text-ink line-clamp-2">{item.name}</h4>
                           <p className="text-sm text-muted mt-1 flex flex-wrap gap-2">
-                            <span>Size: {item.selectedSize}</span>
-                            {item.selectedColor && (
-                              <>
-                                <span className="text-muted/30">|</span>
-                                <span>Color: {item.selectedColor}</span>
-                              </>
-                            )}
+                             <span>Size: {item.selectedSize}</span>
+                             {item.selectedColor && (
+                               <>
+                                 <span className="text-muted/30">|</span>
+                                 <span>Color: {item.selectedColor}</span>
+                               </>
+                             )}
                           </p>
                           <p className="text-sm text-muted mt-0.5">Qty: {item.quantity}</p>
                         </div>
                         <div className="font-bold text-ink text-right flex flex-col items-end gap-0.5">
                           {item.quantity >= 100 ? (
                             <>
-                              <span className="text-success">{formatCurrency(item.price * 0.9 * item.quantity)}</span>
+                              <span className="text-ink font-bold">{formatCurrency(item.price * 0.9 * item.quantity)}</span>
                               <span className="text-xs text-muted line-through">{formatCurrency(item.price * item.quantity)}</span>
-                              <span className="text-[10px] text-emerald-400 bg-emerald-500/10 px-1 rounded border border-emerald-500/20 mt-0.5">10% Off Applied</span>
+                              <span className="text-[10px] text-ink bg-surface-elevated border border-hairline px-2 py-0.5 rounded-none mt-0.5 font-medium">10% Off Applied</span>
                             </>
                           ) : (
                             formatCurrency(item.price * item.quantity)
@@ -389,7 +389,7 @@ export default function Checkout() {
                       type="button"
                       onClick={handlePlaceOrder}
                       disabled={isSubmitting}
-                      className="btn-primary w-full border border-transparent flex items-center justify-center gap-2 shadow-[0_4px_14px_0_rgba(10,37,64,0.5)] disabled:opacity-70"
+                      className="btn-primary w-full border border-transparent flex items-center justify-center gap-2 shadow-md disabled:opacity-70"
                     >
                       {isSubmitting ? (
                         <><Loader2 className="animate-spin" size={20} /> Processing...</>
@@ -407,7 +407,7 @@ export default function Checkout() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="lg:col-span-1"
           >
-            <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)] transition-shadow border border-hairline p-8 sticky top-28">
+            <div className="bg-surface-card rounded-none shadow-xl border border-hairline p-8 sticky top-28">
               <h3 className="text-xl font-bold text-ink mb-6 pb-4 border-b border-hairline">Order Summary</h3>
 
               <div className="space-y-4 mb-6">
@@ -416,14 +416,14 @@ export default function Checkout() {
                   <span className="font-semibold text-ink">{formatCurrency(total + totalSavings)}</span>
                 </div>
                 {hasBulkItems && (
-                  <div className="flex flex-col gap-1 text-success bg-emerald-500/10 border border-emerald-500/20 p-3 rounded-xl shadow-[0_0_15px_rgba(16,185,129,0.05)]">
+                  <div className="flex flex-col gap-1 text-ink bg-surface-elevated border border-hairline p-3 rounded-none">
                     <div className="flex justify-between items-center">
                       <span className="text-xs font-semibold uppercase tracking-wider flex items-center gap-1.5">
                         🎉 Bulk Discount Applied
                       </span>
                       <span className="font-bold">-10%</span>
                     </div>
-                    <span className="text-[11px] text-emerald-400">
+                    <span className="text-[11px] text-muted">
                       Saved {formatCurrency(totalSavings)} on volume items (MOQ &gt;= 100).
                     </span>
                   </div>
@@ -434,7 +434,7 @@ export default function Checkout() {
                 </div>
                 <div className="flex justify-between items-center text-body-text">
                   <span className="text-sm">Shipping Delivery</span>
-                  <span className="font-semibold text-success">Free</span>
+                  <span className="font-semibold text-ink">Free</span>
                 </div>
               </div>
 
@@ -443,7 +443,7 @@ export default function Checkout() {
                 <span className="font-bold text-ink text-2xl">{formatCurrency(total * 1.18)}</span>
               </div>
 
-              <div className="p-4 bg-canvas rounded-xl border border-hairline-strong transition-colors hover:border-ink/50">
+              <div className="p-4 bg-canvas rounded-none border border-hairline-strong transition-colors hover:border-ink/50">
                 <div className="flex items-center gap-3 mb-2">
                   <ShieldCheck size={18} className="text-warning" />
                   <span className="font-semibold text-ink text-sm">Safe & Secure Payment</span>

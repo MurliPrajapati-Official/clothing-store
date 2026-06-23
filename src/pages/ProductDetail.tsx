@@ -12,7 +12,7 @@ import QuickViewModal from '../components/product/QuickViewModal';
 import ProductDetailSkeleton from '../components/product/ProductDetailSkeleton';
 import ProductReviews from '../components/product/ProductReviews';
 import { Product } from '../types';
-import { supabase } from '../lib/supabase';
+import { supabase, useAuth } from '../lib/supabase';
 import { getApiUrl } from '../config';
 
 const fadeUpVariant = {
@@ -55,6 +55,7 @@ const splitDescription = (text: string) => {
 };
 
 export default function ProductDetail() {
+  const { isLoggedIn } = useAuth();
   const { slug } = useParams();
   const navigate = useNavigate();
   
@@ -253,11 +254,11 @@ export default function ProductDetail() {
           animate={{ opacity: 1, x: 0 }}
           className="mb-12 flex items-center gap-3 text-sm font-medium"
         >
-          <Link to="/" className="text-muted hover:text-primary transition-colors">Home</Link>
+          <Link to="/" className="text-muted hover:text-ink transition-colors">Home</Link>
           <ChevronRight size={14} className="text-muted/40" />
-          <Link to="/shop" className="text-muted hover:text-primary transition-colors">Shop</Link>
+          <Link to="/shop" className="text-muted hover:text-ink transition-colors">Shop</Link>
           <ChevronRight size={14} className="text-muted/40" />
-          <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="text-muted hover:text-primary transition-colors">{product.category}</Link>
+          <Link to={`/shop?category=${encodeURIComponent(product.category)}`} className="text-muted hover:text-ink transition-colors">{product.category}</Link>
           <ChevronRight size={14} className="text-muted/40" />
           <span className="text-ink truncate max-w-[150px] sm:max-w-none">{product.name}</span>
         </motion.div>
@@ -284,44 +285,50 @@ export default function ProductDetail() {
                 : product.images;
 
               return (
-                <>
-                  <div className="aspect-[4/5] overflow-hidden bg-surface-card rounded-2xl border border-hairline relative group shadow-[0_2px_10px_rgba(0,0,0,0.5)] flex items-center justify-center">
-                    {activeImages && activeImages.length > 0 ? (
-                      <motion.img
-                        key={`${selectedColor}-${activeImage}`}
-                        initial={{ opacity: 0, scale: 1.1 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.6 }}
-                        src={activeImages[activeImage] || activeImages[0]}
-                        alt={product.name}
-                        className="w-full h-full object-cover transition-transform duration-[1.5s] group-hover:scale-105"
-                        referrerPolicy="no-referrer"
-                      />
-                    ) : (
-                      <span className="text-6xl font-bold text-muted/30 uppercase tracking-widest">{product.name.charAt(0)}</span>
-                    )}
-                    <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
-                      className={cn(
-                        "absolute top-6 right-6 p-3 rounded-full shadow-[0_4px_20px_rgba(0,0,0,0.5)] transition-all duration-300",
-                        exists ? "bg-m-red text-white" : "bg-surface-card/80 backdrop-blur-md text-ink hover:bg-surface-card hover:text-m-red"
+                <div className="space-y-6">
+                  {/* Main Image Frame with Offset Backdrop */}
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-[#0f172a]/5 border border-[#0f172a]/15 translate-x-3 translate-y-3 z-0 pointer-events-none" />
+                    <div className="aspect-[3/4] overflow-hidden bg-surface-card rounded-none border border-hairline relative z-10 flex items-center justify-center">
+                      {activeImages && activeImages.length > 0 ? (
+                        <motion.img
+                          key={`${selectedColor}-${activeImage}`}
+                          initial={{ opacity: 0, scale: 1.15 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+                          src={activeImages[activeImage] || activeImages[0]}
+                          alt={product.name}
+                          className="w-full h-full object-cover"
+                          referrerPolicy="no-referrer"
+                        />
+                      ) : (
+                        <span className="text-6xl font-bold text-[#0f172a]/20 uppercase tracking-widest">{product.name.charAt(0)}</span>
                       )}
-                    >
-                      <Heart size={20} fill={exists ? "currentColor" : "none"} />
-                    </motion.button>
+                      {isLoggedIn && (
+                        <motion.button
+                          whileHover={{ scale: 1.05 }}
+                          whileTap={{ scale: 0.95 }}
+                          onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
+                          className={cn(
+                            "absolute top-6 right-6 w-11 h-11 rounded-none shadow-md transition-all duration-300 flex items-center justify-center border border-hairline z-20",
+                            exists ? "bg-[#ef4444] text-white border-[#ef4444]" : "bg-white/90 backdrop-blur-md text-[#0f172a] hover:bg-[#0f172a] hover:text-white"
+                          )}
+                        >
+                          <Heart size={20} fill={exists ? "currentColor" : "none"} />
+                        </motion.button>
+                      )}
+                    </div>
                   </div>
                   
                   {activeImages && activeImages.length > 1 && (
-                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar">
+                    <div className="flex gap-4 overflow-x-auto pb-4 hide-scrollbar pt-2">
                       {activeImages.map((img, idx) => (
                         <button
                           key={idx}
                           onClick={() => setActiveImage(idx)}
                           className={cn(
-                            "w-20 h-20 overflow-hidden rounded-xl border-2 transition-all shrink-0",
-                            activeImage === idx ? "border-ink shadow-[0_4px_20px_rgba(0,0,0,0.5)]" : "border-transparent opacity-70 hover:opacity-100"
+                            "w-20 h-24 overflow-hidden rounded-none border transition-all shrink-0",
+                            activeImage === idx ? "border-[#0f172a] shadow-md scale-95" : "border-hairline opacity-70 hover:opacity-100"
                           )}
                         >
                           <img src={img} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
@@ -329,7 +336,7 @@ export default function ProductDetail() {
                       ))}
                     </div>
                   )}
-                </>
+                </div>
               );
             })()}
           </motion.div>
@@ -357,14 +364,14 @@ export default function ProductDetail() {
 
             <motion.div variants={fadeUpVariant} className="flex flex-wrap items-center gap-3 mb-8">
               {school && (
-                <Link to={`/schools/${school.slug}`} className="flex items-center gap-2 bg-surface-card px-3 py-1.5 rounded-full border border-hairline-strong hover:border-ink transition-colors shadow-[0_2px_10px_rgba(0,0,0,0.5)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
-                  <div className="w-6 h-6 overflow-hidden aspect-square rounded-full">
+                <Link to={`/schools/${school.slug}`} className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-none border border-[#0f172a] hover:bg-[#0f172a] hover:text-white transition-colors">
+                  <div className="w-6 h-6 overflow-hidden aspect-square rounded-none border border-hairline">
                     <img src={school.logo} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
                   </div>
-                  <span className="text-sm font-semibold text-ink">{school.name}</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">{school.name}</span>
                 </Link>
               )}
-              <span className="text-sm font-medium border border-hairline-strong text-ink px-4 py-1.5 rounded-full bg-surface-card shadow-[0_2px_10px_rgba(0,0,0,0.5)]">Grade: {product.grade}</span>
+              <span className="text-xs font-bold border border-hairline-strong text-ink px-4 py-2 bg-[#f9fafb] uppercase tracking-wider">Grade: {product.grade}</span>
             </motion.div>
 
             <motion.div variants={fadeUpVariant} className="flex items-baseline gap-4 mb-8">
@@ -404,8 +411,8 @@ export default function ProductDetail() {
                     key={size}
                     onClick={() => setSelectedSize(size)}
                     className={cn(
-                      "min-w-14 h-12 px-4 rounded-xl font-semibold text-sm transition-all border",
-                      selectedSize === size ? "bg-primary border-primary text-on-primary shadow-[0_8px_30px_rgba(255,255,255,0.1)]" : "bg-surface-card border-hairline text-ink hover:border-body-text shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                      "min-w-14 h-12 px-4 rounded-none font-bold text-xs transition-all border uppercase tracking-wider",
+                      selectedSize === size ? "bg-ink border-ink text-white" : "bg-white border-hairline text-ink hover:border-[#0f172a]"
                     )}
                   >
                     {size}
@@ -433,13 +440,13 @@ export default function ProductDetail() {
                         setActiveImage(0);
                       }}
                       className={cn(
-                        "px-5 py-2.5 rounded-xl font-semibold text-sm transition-all border flex items-center gap-2.5",
+                        "px-5 py-2.5 rounded-none font-bold text-xs transition-all border flex items-center gap-2.5",
                         selectedColor === color 
-                          ? "bg-primary border-primary text-on-primary shadow-[0_8px_30px_rgba(255,255,255,0.1)]" 
-                          : "bg-surface-card border-hairline text-ink hover:border-body-text shadow-[0_2px_10px_rgba(0,0,0,0.3)]"
+                          ? "bg-ink border-ink text-white" 
+                          : "bg-white border-hairline text-ink hover:border-[#0f172a]"
                       )}
                     >
-                      <span className="w-3.5 h-3.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
+                      <span className="w-3.5 h-3.5 rounded-none border border-black/15 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
                       {color}
                     </motion.button>
                   ))}
@@ -450,13 +457,13 @@ export default function ProductDetail() {
             {/* Bulk & Institutional Ordering Panel */}
             <motion.div 
               variants={fadeUpVariant} 
-              className="mb-8 p-6 rounded-2xl bg-surface-card border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-hairline-strong"
+              className="mb-8 p-6 rounded-none bg-white border border-hairline transition-all hover:border-[#0f172a]"
             >
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <span className="text-2xl leading-none">📦</span>
                   <div>
-                    <h3 className="font-bold text-ink text-base">Bulk & Institutional Orders</h3>
+                    <h3 className="font-extrabold text-ink text-base tracking-tight">Bulk & Institutional Orders</h3>
                     <p className="text-xs text-muted">Order 100+ units for exclusive benefits</p>
                   </div>
                 </div>
@@ -472,10 +479,10 @@ export default function ProductDetail() {
                     }
                   }}
                   className={cn(
-                    "text-xs font-bold uppercase tracking-widest px-4 py-2 rounded-xl transition-all border",
+                    "text-[10px] font-bold uppercase tracking-widest px-4 py-2 rounded-none transition-all border",
                     isBulkMode 
-                      ? "bg-primary border-primary text-on-primary shadow-lg shadow-primary/10" 
-                      : "bg-canvas border-hairline text-ink hover:border-ink"
+                      ? "bg-ink border-ink text-white" 
+                      : "bg-canvas border-hairline text-ink hover:border-[#0f172a]"
                   )}
                 >
                   {isBulkMode ? 'Bulk Enabled' : 'Enable Bulk'}
@@ -504,9 +511,9 @@ export default function ProductDetail() {
                           key={tier.label}
                           onClick={() => setQuantity(tier.qty)}
                           className={cn(
-                            "flex flex-col items-center justify-center p-3 rounded-xl border transition-all text-center",
+                            "flex flex-col items-center justify-center p-3 rounded-none border transition-all text-center",
                             quantity === tier.qty 
-                              ? "bg-primary/10 border-primary text-primary" 
+                              ? "bg-ink/5 border-ink text-ink font-bold" 
                               : "bg-canvas/50 border-hairline text-body-text hover:border-body-text"
                           )}
                         >
@@ -518,7 +525,7 @@ export default function ProductDetail() {
                     </div>
 
                     {/* Pricing info display */}
-                    <div className="bg-canvas/80 rounded-xl p-4 border border-hairline-strong space-y-2">
+                    <div className="bg-canvas/80 rounded-none p-4 border border-hairline-strong space-y-2">
                       <div className="flex justify-between items-center text-xs">
                         <span className="text-muted">Standard Price:</span>
                         <span className="text-ink line-through">{formatCurrency(product.price)} / unit</span>
@@ -540,7 +547,7 @@ export default function ProductDetail() {
                     </div>
                     
                     {/* Dynamic Tier Message */}
-                    <div className="text-[11px] text-muted flex items-center gap-2 bg-canvas/30 px-3 py-2.5 rounded-lg border border-hairline/30">
+                    <div className="text-[11px] text-muted flex items-center gap-2 bg-canvas/30 px-3 py-2.5 rounded-none border border-hairline/30">
                       <span className="text-base">💡</span>
                       <span>
                         {quantity >= 2000 ? 'Platinum Tier: Dedicated institutional manager assigned + custom fabrics.' :
@@ -556,7 +563,7 @@ export default function ProductDetail() {
 
             {/* Quantity and CTA */}
             <motion.div variants={fadeUpVariant} className="flex flex-col sm:flex-row gap-4 mb-12">
-              <div className="flex items-center bg-surface-card rounded-xl border border-hairline-strong overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              <div className="flex items-center bg-white rounded-none border border-hairline-strong overflow-hidden">
                 <button
                   onClick={() => setQuantity(q => Math.max(1, q - 1))}
                   className="w-12 h-14 flex items-center justify-center text-muted hover:text-ink hover:bg-surface-elevated transition-colors active:bg-hairline"
@@ -575,7 +582,7 @@ export default function ProductDetail() {
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleAddToCart}
-                className="flex-1 btn-primary py-6 rounded-xl shadow-[0_15px_40px_rgba(255,255,255,0.05)] w-full"
+                className="flex-1 btn-primary py-6 rounded-none w-full uppercase tracking-widest text-sm font-bold"
               >
                 <ShoppingBag size={20} />
                 Add to Cart
@@ -629,7 +636,7 @@ export default function ProductDetail() {
         >
           <div className="flex items-end justify-between mb-12">
             <h2 className="text-3xl font-bold text-ink tracking-tight">You Might Also Like</h2>
-            <Link to="/shop" className="text-ink font-semibold hover:text-m-red">View More</Link>
+            <Link to="/shop" className="text-ink font-semibold hover:underline">View More</Link>
           </div>
           <motion.div
             variants={staggerContainer}
@@ -669,10 +676,10 @@ export default function ProductDetail() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl bg-surface-card rounded-2xl shadow-xl z-[110] p-8 md:p-12 overflow-hidden border border-hairline"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl bg-white rounded-none shadow-2xl z-[110] p-8 md:p-12 overflow-hidden border border-hairline"
             >
               <div className="absolute top-4 right-4 relative">
-                <button onClick={() => setShowSizeChart(false)} className="absolute -top-4 -right-4 p-2 bg-surface-elevated rounded-full text-muted hover:text-ink transition-colors shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+                <button onClick={() => setShowSizeChart(false)} className="absolute -top-4 -right-4 p-2 bg-white rounded-none border border-hairline-strong text-muted hover:text-ink transition-colors shadow-sm">
                   <X size={20} />
                 </button>
               </div>
@@ -687,7 +694,7 @@ export default function ProductDetail() {
                       {isAdultProduct ? "Adult Sizing Guide" : "Junior Sizing Guide"}
                     </h2>
 
-                    <div className="overflow-x-auto rounded-xl border border-hairline-strong max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline pr-2">
+                    <div className="overflow-x-auto rounded-none border border-hairline-strong max-h-[350px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline pr-2">
                       {isAdultProduct ? (
                         <table className="w-full text-left border-collapse">
                           <thead>
@@ -752,7 +759,7 @@ export default function ProductDetail() {
               })()}
               <button
                 onClick={() => setShowSizeChart(false)}
-                className="mt-8 w-full btn-primary py-6 rounded-xl shadow-[0_4px_20px_rgba(255,255,255,0.1)]"
+                className="mt-8 w-full btn-primary py-6 rounded-none"
               >
                 Close Guide
               </button>

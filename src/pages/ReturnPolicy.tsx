@@ -16,7 +16,7 @@ export default function ReturnPolicy() {
           transition={{ duration: 0.6 }}
         >
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full mb-6 font-bold text-sm uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated border border-hairline-strong text-ink rounded-none mb-6 font-bold text-sm uppercase tracking-widest shadow-sm">
               <RefreshCcw size={16} />
               Customer Assurance
             </div>
@@ -27,10 +27,10 @@ export default function ReturnPolicy() {
             </p>
           </div>
           
-          <div className="bg-surface-card rounded-3xl p-8 md:p-12 border border-hairline shadow-sm space-y-10 text-muted font-light leading-relaxed text-[15px]">
+          <div className="bg-surface-card rounded-none p-8 md:p-12 border border-hairline shadow-sm space-y-10 text-muted font-light leading-relaxed text-[15px]">
             <section className="border-b border-hairline-strong pb-6">
               <h2 className="text-xl font-bold text-ink mb-4 flex items-center gap-3">
-                <Info className="text-primary" size={20} />
+                <Info className="text-ink" size={20} />
                 1. Eligibility for Standard Size Returns
               </h2>
               <p className="mb-4">
@@ -69,7 +69,7 @@ export default function ReturnPolicy() {
               </p>
               <p>
                 You must email clear photographs of the defect along with your order number to 
-                <a href="mailto:uniformtrends01@gmail.com" className="text-primary hover:underline ml-1">uniformtrends01@gmail.com</a>. 
+                <a href="mailto:uniformtrends01@gmail.com" className="text-ink hover:underline font-semibold ml-1">uniformtrends01@gmail.com</a>. 
                 Once our quality control team inspects the photos and approves the claim, we will schedule a pickup at our expense and 
                 expedite a replacement garment or offer a full refund for that item.
               </p>
@@ -103,7 +103,7 @@ export default function ReturnPolicy() {
 
             <section>
               <h2 className="text-xl font-bold text-ink mb-4 flex items-center gap-2">
-                <CheckCircle2 className="text-primary" size={20} /> Bulk Institutional Exchanges
+                <CheckCircle2 className="text-ink" size={20} /> Bulk Institutional Exchanges
               </h2>
               <p className="mb-4">
                 For schools and large corporate accounts that place bulk orders, we understand that occasional fitting adjustments are 

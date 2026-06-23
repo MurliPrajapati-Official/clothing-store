@@ -16,7 +16,7 @@ export default function SizeGuide() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-16 text-center"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full mb-6 font-bold text-sm uppercase tracking-widest">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated border border-hairline-strong text-ink rounded-none mb-6 font-bold text-sm uppercase tracking-widest shadow-sm">
             <Ruler size={16} />
             Fit & Measurement Resource
           </div>
@@ -31,9 +31,9 @@ export default function SizeGuide() {
         {/* Detailed Measuring Instructions */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-16">
           <div className="lg:col-span-2 space-y-6">
-            <div className="bg-surface-card rounded-3xl p-8 md:p-10 shadow-sm border border-hairline">
+            <div className="bg-surface-card rounded-none p-8 md:p-10 shadow-sm border border-hairline">
               <h2 className="text-2xl font-bold mb-6 text-ink flex items-center gap-3">
-                <Sparkles className="text-primary" size={24} />
+                <Sparkles className="text-ink" size={24} />
                 How to Measure Your Body Correctly
               </h2>
               <p className="text-muted font-light leading-relaxed mb-6 text-sm">
@@ -55,27 +55,21 @@ export default function SizeGuide() {
                 <div>
                   <h3 className="font-bold text-ink text-base mb-1">2. Waist Measurement</h3>
                   <p className="text-muted text-sm font-light leading-relaxed">
-                    Locate your natural waistline, which is the narrowest part of your torso, typically positioned just above the 
-                    belly button and below the rib cage. Wrap the tape around this line. Do not suck in your stomach; stand in a 
-                    relaxed, natural posture to ensure trousers or skirts fit comfortably throughout the day.
+                    Wrap the tape around your natural waistline, positioned just above the belly button. Stand relaxed to ensure comfort.
                   </p>
                 </div>
                 
                 <div>
                   <h3 className="font-bold text-ink text-base mb-1">3. Hip Measurement</h3>
                   <p className="text-muted text-sm font-light leading-relaxed">
-                    Stand with your heels together and wrap the tape around the widest, fullest part of your hips and seat. This 
-                    is particularly important for tailored pencil skirts, girls' school skirts, and unisex industrial trousers 
-                    to prevent tight binding when sitting.
+                    Stand with your heels together and wrap the tape around the fullest part of your hips. This is vital for tailored skirts and trousers.
                   </p>
                 </div>
 
                 <div>
                   <h3 className="font-bold text-ink text-base mb-1">4. Shoulder Width & Inseam</h3>
                   <p className="text-muted text-sm font-light leading-relaxed">
-                    For blazers and shirts, measure from the outer edge of one shoulder bone across the back neck to the outer edge 
-                    of the other shoulder. For pants, measure from the crotch seam down the inside of the leg to the desired hemline 
-                    (normally sitting slightly below the ankle bone).
+                    Measure shoulder-to-shoulder for blazers/shirts, and crotch-to-hem for pants.
                   </p>
                 </div>
               </div>
@@ -83,29 +77,29 @@ export default function SizeGuide() {
           </div>
 
           <div className="space-y-6">
-            <div className="bg-surface-card rounded-3xl p-8 shadow-sm border border-hairline flex flex-col justify-between h-full">
+            <div className="bg-surface-card rounded-none p-8 shadow-sm border border-hairline flex flex-col justify-between h-full">
               <div>
                 <h3 className="text-xl font-bold text-ink mb-4">Pro Fitting Tips</h3>
                 <ul className="space-y-4 text-sm text-muted font-light leading-relaxed">
                   <li className="flex gap-2 items-start">
-                    <CheckCircle className="text-primary shrink-0 mt-1" size={16} />
+                    <CheckCircle className="text-ink shrink-0 mt-1" size={16} />
                     <span><strong>Uniform Relaxed Fit:</strong> If you prefer a loose, active fit for movement, consider ordering one size larger than your exact body measurement.</span>
                   </li>
                   <li className="flex gap-2 items-start">
-                    <CheckCircle className="text-primary shrink-0 mt-1" size={16} />
+                    <CheckCircle className="text-ink shrink-0 mt-1" size={16} />
                     <span><strong>School Growth Margin:</strong> For school children who grow quickly, we suggest ordering school shirts and blazers 1 to 2 sizes larger to ensure the uniform lasts the full academic year.</span>
                   </li>
                   <li className="flex gap-2 items-start">
-                    <CheckCircle className="text-primary shrink-0 mt-1" size={16} />
+                    <CheckCircle className="text-ink shrink-0 mt-1" size={16} />
                     <span><strong>Shrinkage Allowance:</strong> Our high-quality poly-cotton fabrics are pre-shrunk, but a minor 1-2% shrinkage may still occur during the first few hot-water washes. Keep this in mind when measuring.</span>
                   </li>
                 </ul>
               </div>
-              <div className="bg-surface-elevated rounded-2xl p-6 mt-6 border border-hairline-strong flex items-center justify-center">
+              <div className="bg-surface-elevated rounded-none p-6 mt-6 border border-hairline-strong flex items-center justify-center">
                 <img 
                   src="https://picsum.photos/seed/measurement/300/400" 
                   alt="Standard body measuring guide illustration" 
-                  className="max-h-56 object-contain rounded-lg" 
+                  className="max-h-56 object-contain rounded-none border border-hairline" 
                   referrerPolicy="no-referrer" 
                 />
               </div>
@@ -114,13 +108,13 @@ export default function SizeGuide() {
         </div>
 
         {/* Kids Sizing Table */}
-        <div className="bg-surface-card rounded-3xl p-8 md:p-10 shadow-sm border border-hairline mb-12">
+        <div className="bg-surface-card rounded-none p-8 md:p-10 shadow-sm border border-hairline mb-12">
           <h2 className="text-2xl font-bold mb-3 text-ink">Junior & Kids Sizing Chart (School Uniforms)</h2>
           <p className="text-sm text-muted font-light mb-6">
             These measurements correspond to children's apparel (shirts, pinafores, trousers, and skirts). Ages are approximate 
             averages; we strongly recommend measuring chest and waist sizes directly.
           </p>
-          <div className="overflow-x-auto rounded-xl border border-hairline-strong">
+          <div className="overflow-x-auto rounded-none border border-hairline-strong">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-surface-elevated border-b border-hairline-strong">
@@ -173,13 +167,13 @@ export default function SizeGuide() {
         </div>
 
         {/* Adult Sizing Table */}
-        <div className="bg-surface-card rounded-3xl p-8 md:p-10 shadow-sm border border-hairline mb-12">
+        <div className="bg-surface-card rounded-none p-8 md:p-10 shadow-sm border border-hairline mb-12">
           <h2 className="text-2xl font-bold mb-3 text-ink">Adult Sizing Chart (Corporate, Medical & Hospitality)</h2>
           <p className="text-sm text-muted font-light mb-6">
             These standards cover our unisex scrubs, formal corporate collared shirts, blazers, and chef aprons. Please cross-reference 
             with physical chest measurements.
           </p>
-          <div className="overflow-x-auto rounded-xl border border-hairline-strong">
+          <div className="overflow-x-auto rounded-none border border-hairline-strong">
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className="bg-surface-elevated border-b border-hairline-strong">
@@ -260,8 +254,8 @@ export default function SizeGuide() {
         </div>
 
         {/* Fit tolerance and replacement policy */}
-        <div className="bg-surface-card rounded-3xl p-8 md:p-10 shadow-sm border border-hairline text-center">
-          <RefreshCw className="mx-auto text-primary mb-4" size={32} />
+        <div className="bg-surface-card rounded-none p-8 md:p-10 shadow-sm border border-hairline text-center">
+          <RefreshCw className="mx-auto text-ink mb-4" size={32} />
           <h3 className="text-xl font-bold text-ink mb-2">Need a Size Exchange?</h3>
           <p className="text-muted font-light text-sm max-w-2xl mx-auto leading-relaxed mb-6">
             We understand that fit preferences vary. If you receive your standard size uniform and find that it does 

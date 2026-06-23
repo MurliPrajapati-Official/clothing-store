@@ -58,7 +58,7 @@ export const useCartStore = create<CartState>()(
       }, 0),
     }),
     {
-      name: 'uniform-kart-cart',
+      name: 'uniform-trends-cart',
       // Only persist items, not the drawer state
       partialize: (state) => ({ items: state.items }),
     }

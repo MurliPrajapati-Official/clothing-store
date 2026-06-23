@@ -2,7 +2,7 @@ import Skeleton from '../ui/Skeleton';
 
 export default function BlogSkeleton() {
   return (
-    <div className="bg-surface-card rounded-3xl overflow-hidden border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)] h-full">
+    <div className="bg-surface-card rounded-none overflow-hidden border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)] h-full">
       <Skeleton className="aspect-[16/10] w-full" />
       <div className="p-8 space-y-4">
         <Skeleton className="w-20 h-4" />
@@ -16,7 +16,7 @@ export default function BlogSkeleton() {
         </div>
         <div className="flex justify-between items-center pt-4">
           <Skeleton className="w-24 h-4" />
-          <Skeleton className="w-8 h-8 rounded-full" />
+          <Skeleton className="w-8 h-8 rounded-none" />
         </div>
       </div>
     </div>

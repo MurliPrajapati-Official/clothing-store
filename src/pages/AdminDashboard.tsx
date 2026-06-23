@@ -514,7 +514,7 @@ export default function AdminDashboard() {
   if (isAdmin === null) {
     return (
       <div className="min-h-screen bg-canvas flex flex-col items-center justify-center p-4">
-        <Loader2 size={48} className="text-primary animate-spin mb-6" />
+        <Loader2 size={48} className="text-ink animate-spin mb-6" />
         <h2 className="text-2xl font-bold text-ink">Verifying Admin Access...</h2>
         <p className="text-muted mt-2">Please wait while we secure your session.</p>
       </div>
@@ -576,7 +576,7 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab('stats')}
               className={cn(
                 "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
-                activeTab === 'stats' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
+                activeTab === 'stats' ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"
               )}
             >
               <LayoutDashboard size={16} className="md:w-[18px]" /> Overview
@@ -585,7 +585,7 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab('manage')}
               className={cn(
                 "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
-                activeTab === 'manage' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
+                activeTab === 'manage' ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"
               )}
             >
               <Package size={16} className="md:w-[18px]" /> Inventory
@@ -594,7 +594,7 @@ export default function AdminDashboard() {
               onClick={() => setActiveTab('orders')}
               className={cn(
                 "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
-                activeTab === 'orders' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
+                activeTab === 'orders' ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"
               )}
             >
               <ShoppingBag size={16} className="md:w-[18px]" /> Orders
@@ -614,7 +614,7 @@ export default function AdminDashboard() {
               }}
               className={cn(
                 "px-4 md:px-6 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all flex items-center gap-2 whitespace-nowrap",
-                activeTab === 'add' ? "bg-primary text-on-primary shadow-md" : "text-muted hover:text-ink"
+                activeTab === 'add' ? "bg-ink text-white shadow-md" : "text-muted hover:text-ink"
               )}
             >
               <PlusCircle size={16} className="md:w-[18px]" /> {editingProduct ? 'Editing' : 'Add New'}
@@ -648,7 +648,7 @@ export default function AdminDashboard() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-sm">
-              <div className="w-12 h-12 bg-green-500/10 text-green-500 rounded-2xl flex items-center justify-center mb-6">
+              <div className="w-12 h-12 bg-ink/5 text-ink rounded-2xl flex items-center justify-center mb-6 border border-hairline">
                 <ShoppingBag size={24} />
               </div>
               <p className="text-sm font-medium text-muted mb-1">Total Orders</p>
@@ -656,12 +656,12 @@ export default function AdminDashboard() {
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-sm relative overflow-hidden group">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none transition-all group-hover:scale-110" />
-              <div className="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-2xl flex items-center justify-center mb-6 shadow-[0_0_15px_rgba(16,185,129,0.1)]">
-                <Package size={24} className="text-emerald-400" />
+              <div className="absolute top-0 right-0 w-24 h-24 bg-ink/5 rounded-bl-full pointer-events-none transition-all group-hover:scale-110" />
+              <div className="w-12 h-12 bg-ink/10 text-ink rounded-2xl flex items-center justify-center mb-6 shadow-sm border border-hairline">
+                <Package size={24} className="text-ink" />
               </div>
               <p className="text-sm font-medium text-muted mb-1">Bulk Orders 📦</p>
-              <h3 className="text-4xl font-bold text-success">{bulkOrdersCount}</h3>
+              <h3 className="text-4xl font-bold text-ink">{bulkOrdersCount}</h3>
             </motion.div>
           </div>
         )}
@@ -713,10 +713,10 @@ export default function AdminDashboard() {
                       </td>
                       <td className="px-4 md:px-6 py-4">
                         <div className="flex items-center justify-end gap-1 md:gap-3">
-                          <Link to={`/product/${product.slug}`} target="_blank" className="p-1.5 md:p-2 text-muted hover:text-primary transition-colors">
+                          <Link to={`/product/${product.slug}`} target="_blank" className="p-1.5 md:p-2 text-muted hover:text-ink transition-colors">
                             <ExternalLink size={16} className="md:w-[18px]" />
                           </Link>
-                          <button onClick={() => handleEditProduct(product)} className="p-1.5 md:p-2 text-muted hover:text-primary transition-colors">
+                          <button onClick={() => handleEditProduct(product)} className="p-1.5 md:p-2 text-muted hover:text-ink transition-colors">
                             <Edit size={16} className="md:w-[18px]" />
                           </button>
                           <button onClick={() => handleDeleteProduct(product.id)} className="p-1.5 md:p-2 text-muted hover:text-m-red transition-colors">
@@ -763,7 +763,7 @@ export default function AdminDashboard() {
                   onClick={() => setOrderFilter('bulk')}
                   className={cn(
                     "px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5",
-                    orderFilter === 'bulk' ? "bg-emerald-500/10 text-emerald-400 shadow-sm border border-emerald-500/20" : "text-muted hover:text-emerald-400"
+                    orderFilter === 'bulk' ? "bg-ink text-white shadow-sm border border-hairline" : "text-muted hover:text-ink"
                   )}
                 >
                   📦 Bulk Orders
@@ -812,7 +812,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2 flex-wrap">
                               <p className="text-xs md:text-sm font-bold text-ink">{customerName}</p>
                               {isBulk && (
-                                <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 rounded-md animate-pulse">
+                                <span className="px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider bg-ink text-white rounded-md">
                                   📦 BULK
                                 </span>
                               )}
@@ -856,7 +856,7 @@ export default function AdminDashboard() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
-                                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-primary/10 text-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                                className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest bg-surface-elevated text-ink border border-hairline rounded-lg hover:bg-ink hover:text-white transition-all shadow-sm"
                               >
                                 {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
                               </button>
@@ -878,25 +878,25 @@ export default function AdminDashboard() {
                               <div className="bg-surface-card p-6 rounded-2xl border border-hairline shadow-sm">
 
                                 {isBulk && (
-                                  <div className="mb-6 bg-emerald-500/5 p-5 rounded-xl border border-emerald-500/20 shadow-[0_0_15px_rgba(16,185,129,0.05)] relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-emerald-500/5 rounded-bl-full pointer-events-none" />
+                                  <div className="mb-6 bg-surface-elevated p-5 rounded-xl border border-hairline relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 w-24 h-24 bg-ink/5 rounded-bl-full pointer-events-none" />
                                     <div className="flex items-start gap-4">
-                                      <div className="w-10 h-10 bg-emerald-500/10 text-emerald-400 rounded-xl flex items-center justify-center font-bold text-lg shrink-0">
+                                      <div className="w-10 h-10 bg-ink text-white rounded-xl flex items-center justify-center font-bold text-lg shrink-0">
                                         📦
                                       </div>
                                       <div>
-                                        <h4 className="text-sm font-bold text-emerald-400 uppercase tracking-wider">B2B Institutional Order Details</h4>
+                                        <h4 className="text-sm font-bold text-ink uppercase tracking-wider">B2B Institutional Order Details</h4>
                                         <p className="text-xs text-muted mt-1 leading-relaxed max-w-3xl">
                                           This high-volume purchase includes a 10% volume discount applied directly to item unit prices. The order is cleared for priority manufacturing scheduling, multi-step quality audit validation, and dedicated transport container dispatch.
                                         </p>
                                         <div className="mt-3 flex flex-wrap items-center gap-3 text-[10px] font-mono font-bold">
-                                          <span className="text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded border border-emerald-500/20">
+                                          <span className="text-ink bg-white px-2.5 py-1 rounded border border-hairline">
                                             ✓ 10% VOLUME DISCOUNT APPLIED
                                           </span>
-                                          <span className="text-indigo-400 bg-indigo-500/10 px-2.5 py-1 rounded border border-indigo-500/20">
+                                          <span className="text-ink bg-white px-2.5 py-1 rounded border border-hairline">
                                             ✓ B2B NET 30 INVOICING ACCOUNTING SCHEDULE
                                           </span>
-                                          <span className="text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded border border-amber-500/20">
+                                          <span className="text-ink bg-white px-2.5 py-1 rounded border border-hairline">
                                             ✓ PRIORITY MANUFACTURING LOGISTICS
                                           </span>
                                         </div>
@@ -952,7 +952,7 @@ export default function AdminDashboard() {
                                                   <p className="text-xs md:text-sm font-bold text-ink flex items-center gap-2 flex-wrap">
                                                     {item.products?.name || 'Unknown Product'}
                                                     {isItemBulk && (
-                                                      <span className="px-1.5 py-0.5 text-[8px] font-bold bg-emerald-500/10 text-emerald-400 rounded">
+                                                      <span className="px-1.5 py-0.5 text-[8px] font-bold bg-surface-elevated text-ink border border-hairline rounded">
                                                         10% BULK OFF
                                                       </span>
                                                     )}
@@ -972,7 +972,7 @@ export default function AdminDashboard() {
                                               <div className="text-right shrink-0">
                                                 <p className="font-bold text-ink text-sm">{formatCurrency(calculatedTotal)}</p>
                                                 {isItemBulk && (
-                                                  <p className="text-[9px] text-emerald-400 font-mono font-medium mt-0.5">
+                                                  <p className="text-[9px] text-ink font-mono font-semibold mt-0.5">
                                                     Saved {formatCurrency(discountAmt)}
                                                   </p>
                                                 )}
@@ -1008,7 +1008,7 @@ export default function AdminDashboard() {
             {/* The existing form logic */}
             <div className="flex items-center justify-between mb-8">
               <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-primary/10 text-primary rounded-xl flex items-center justify-center">
+                <div className="w-12 h-12 bg-surface-elevated text-ink rounded-xl flex items-center justify-center border border-hairline shadow-sm">
                   {editingProduct ? <Edit size={24} /> : <PlusCircle size={24} />}
                 </div>
                 <div>
@@ -1036,19 +1036,19 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Product Name</label>
-                  <input name="name" type="text" required defaultValue={editingProduct?.name || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. Classic Boys Polo" />
+                  <input name="name" type="text" required defaultValue={editingProduct?.name || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors" placeholder="e.g. Classic Boys Polo" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Slug (URL friendly)</label>
-                  <input name="slug" type="text" required defaultValue={editingProduct?.slug || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="e.g. classic-boys-polo" />
+                  <input name="slug" type="text" required defaultValue={editingProduct?.slug || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors" placeholder="e.g. classic-boys-polo" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Price (INR)</label>
-                  <input name="price" type="number" required defaultValue={editingProduct?.price || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors" placeholder="650" />
+                  <input name="price" type="number" required defaultValue={editingProduct?.price || ''} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors" placeholder="650" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Category</label>
-                  <select name="category" required defaultValue={editingProduct?.category || 'School'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
+                  <select name="category" required defaultValue={editingProduct?.category || 'School'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors">
                     {CATEGORIES.map(cat => (
                       <option key={cat} value={cat}>{cat}</option>
                     ))}
@@ -1067,7 +1067,7 @@ export default function AdminDashboard() {
                   rows={8}
                   defaultValue={editingProduct?.description || ''}
                   data-lenis-prevent
-                  className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors resize-y min-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline scrollbar-track-transparent"
+                  className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors resize-y min-h-[200px] overflow-y-auto scrollbar-thin scrollbar-thumb-hairline scrollbar-track-transparent"
                   placeholder="Detailed product description including material, fit, and care instructions..."
                 ></textarea>
               </div>
@@ -1080,28 +1080,28 @@ export default function AdminDashboard() {
                     type="text"
                     value={sizesInput}
                     onChange={(e) => setSizesInput(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors"
                     placeholder="S, M, L, XL"
                   />
                   <div className="flex flex-wrap gap-1.5 mt-2">
                     <button
                       type="button"
                       onClick={() => setSizesInput('S, M, L, XL, 2XL, 3XL, 4XL, 5XL')}
-                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                      className="px-2.5 py-1 text-[10px] font-bold bg-surface-elevated text-ink border border-hairline rounded-lg hover:bg-hairline transition-all"
                     >
                       Adult (S-5XL)
                     </button>
                     <button
                       type="button"
                       onClick={() => setSizesInput('24, 26, 28, 30, 32, 34')}
-                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                      className="px-2.5 py-1 text-[10px] font-bold bg-surface-elevated text-ink border border-hairline rounded-lg hover:bg-hairline transition-all"
                     >
                       Junior (24-34)
                     </button>
                     <button
                       type="button"
                       onClick={() => setSizesInput('S, M, L, XL')}
-                      className="px-2.5 py-1 text-[10px] font-bold bg-primary/10 text-primary rounded-lg hover:bg-primary/20 transition-all"
+                      className="px-2.5 py-1 text-[10px] font-bold bg-surface-elevated text-ink border border-hairline rounded-lg hover:bg-hairline transition-all"
                     >
                       Adult (S-XL)
                     </button>
@@ -1118,13 +1118,13 @@ export default function AdminDashboard() {
                       const parsed = e.target.value.split(',').map(s => s.trim()).filter(Boolean);
                       setColors(parsed);
                     }}
-                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors"
+                    className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors"
                     placeholder="Navy Blue, Royal Blue, White"
                   />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-ink mb-2">Gender</label>
-                  <select name="gender" defaultValue={editingProduct?.gender || 'unisex'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-primary outline-none transition-colors">
+                  <select name="gender" defaultValue={editingProduct?.gender || 'unisex'} className="w-full px-4 py-3 rounded-xl bg-canvas border border-hairline focus:border-ink outline-none transition-colors">
                     <option value="unisex">Unisex</option>
                     <option value="boys">Boys</option>
                     <option value="girls">Girls</option>
@@ -1143,7 +1143,7 @@ export default function AdminDashboard() {
                       onClick={() => setActiveColorTab('default')}
                       className={cn(
                         "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap",
-                        activeColorTab === 'default' ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                        activeColorTab === 'default' ? "bg-ink text-white shadow-sm" : "text-muted hover:text-ink"
                       )}
                     >
                       Default Images
@@ -1155,7 +1155,7 @@ export default function AdminDashboard() {
                         onClick={() => setActiveColorTab(color)}
                         className={cn(
                           "px-5 py-2.5 rounded-xl text-xs md:text-sm font-bold transition-all whitespace-nowrap flex items-center gap-2",
-                          activeColorTab === color ? "bg-primary text-on-primary shadow-sm" : "text-muted hover:text-ink"
+                          activeColorTab === color ? "bg-ink text-white shadow-sm" : "text-muted hover:text-ink"
                         )}
                       >
                         <span className="w-2.5 h-2.5 rounded-full border border-black/10 shrink-0" style={{ backgroundColor: color.toLowerCase().replace(/\s+/g, '') }} />
@@ -1206,7 +1206,7 @@ export default function AdminDashboard() {
                               <Trash2 size={16} />
                             </button>
                           </div>
-                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-ink text-white rounded">
                             New {index + 1}
                           </span>
                         </div>
@@ -1214,7 +1214,7 @@ export default function AdminDashboard() {
 
                       {/* Default Add Slot */}
                       {existingImages.length + newFiles.length < 5 && (
-                        <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
+                        <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-ink transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-ink">
                           <input
                             type="file"
                             multiple
@@ -1289,7 +1289,7 @@ export default function AdminDashboard() {
                                   <Trash2 size={16} />
                                 </button>
                               </div>
-                              <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-emerald-500 text-white rounded">
+                              <span className="absolute bottom-2 left-2 px-2 py-0.5 text-[8px] font-bold uppercase tracking-wider bg-ink text-white rounded">
                                 New {index + 1}
                               </span>
                             </div>
@@ -1297,7 +1297,7 @@ export default function AdminDashboard() {
 
                           {/* Color Add Slot */}
                           {(colorExistingList.length + colorNewList.length) < 5 && (
-                            <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-primary transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-primary">
+                            <div className="relative aspect-[4/5] rounded-xl border-2 border-dashed border-hairline hover:border-ink transition-colors bg-canvas flex flex-col items-center justify-center group cursor-pointer text-muted hover:text-ink">
                               <input
                                 type="file"
                                 multiple
@@ -1320,7 +1320,7 @@ export default function AdminDashboard() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:bg-m-red transition-all flex items-center justify-center gap-2 disabled:opacity-70"
+                className="w-full bg-primary text-on-primary font-bold py-4 rounded-xl hover:brightness-110 active:scale-95 transition-all flex items-center justify-center gap-2 disabled:opacity-70 shadow-md shadow-primary/20"
               >
                 {isSubmitting ? (
                   <>

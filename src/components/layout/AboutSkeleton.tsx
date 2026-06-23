@@ -17,8 +17,8 @@ export default function AboutSkeleton() {
         {/* Mission & Vision Skeleton */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-24">
           {[...Array(2)].map((_, i) => (
-            <div key={i} className="bg-surface-card p-10 rounded-3xl border border-hairline space-y-6">
-              <Skeleton className="w-16 h-16 rounded-full" />
+            <div key={i} className="bg-surface-card p-10 rounded-none border border-hairline space-y-6">
+              <Skeleton className="w-16 h-16 rounded-none border border-hairline" />
               <Skeleton className="w-48 h-8" />
               <div className="space-y-2">
                 <Skeleton className="w-full h-4" />

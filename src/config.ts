@@ -8,7 +8,7 @@ export const getApiUrl = () => {
                   window.location.hostname.startsWith('192.168.');
 
   if (isLocal) {
-    return 'http://localhost:5000';
+    return 'http://localhost:3000';
   }
 
   // 3. Production Fallback

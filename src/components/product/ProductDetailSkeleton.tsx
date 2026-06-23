@@ -7,16 +7,16 @@ export default function ProductDetailSkeleton() {
         {/* Breadcrumbs Skeleton */}
         <div className="flex items-center gap-2 mb-12">
           <Skeleton className="w-12 h-4" />
-          <div className="w-4 h-4 bg-muted/10 rounded" />
+          <div className="w-4 h-4 bg-muted/10 rounded-none" />
           <Skeleton className="w-12 h-4" />
-          <div className="w-4 h-4 bg-muted/10 rounded" />
+          <div className="w-4 h-4 bg-muted/10 rounded-none" />
           <Skeleton className="w-24 h-4" />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 xl:gap-20">
           {/* Gallery Skeleton */}
           <div className="space-y-4">
-            <Skeleton className="aspect-[4/5] w-full rounded-2xl" />
+            <Skeleton className="aspect-[4/5] w-full rounded-none" />
             <div className="flex gap-4 overflow-hidden">
               {[...Array(4)].map((_, i) => (
                 <Skeleton key={i} className="w-20 h-20 shrink-0" />
@@ -35,8 +35,8 @@ export default function ProductDetailSkeleton() {
             <Skeleton className="w-2/3 h-12 md:h-16" />
 
             <div className="flex gap-3">
-              <Skeleton className="w-32 h-10 rounded-full" />
-              <Skeleton className="w-32 h-10 rounded-full" />
+              <Skeleton className="w-32 h-10 rounded-none" />
+              <Skeleton className="w-32 h-10 rounded-none" />
             </div>
 
             <div className="flex gap-4 items-baseline">

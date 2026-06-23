@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import "tailwindcss";
 
 /* 
@@ -37,31 +37,34 @@
 
 
 @theme {
+  /* ─── Premium Light Palette ─── */
   --color-primary: #2ecc71;
-  --color-ink: #f8f9fa;
-  --color-body-text: #a0aab2;
-  /* Cooler gray for a sleek, modern feel */
-  --color-body-strong: #e1e4e8;
-  --color-muted: #6a737d;
-  --color-hairline: #2d333b;
-  --color-hairline-strong: #444c56;
-  --color-canvas: #090a0c;
-  /* Deep, moody black instead of flat #000 */
-  --color-surface-card: #121519;
-  --color-surface-elevated: #1e2228;
-  --color-surface-soft: #161a1f;
-  --color-on-primary: #000000;
+  --color-primary-hover: #27ae60;
+  --color-secondary: #0f172a;
+  --color-secondary-hover: #1e293b;
+  --color-ink: #0f172a;
+  --color-body-text: #475569;
+  --color-body-strong: #1f2937;
+  --color-muted: #9ca3af;
+  --color-hairline: #e5e7eb;
+  --color-hairline-strong: #d1d5db;
+  --color-canvas: #ffffff;
+  --color-surface-card: #ffffff;
+  --color-surface-elevated: #f3f4f6;
+  --color-surface-soft: #f9fafb;
+  --color-on-primary: #ffffff;
   --color-on-dark: #ffffff;
   --color-m-green-light: #2ecc71;
-  /* Sophisticated logo green */
-  --color-m-green-dark: #1b4332;
-  --color-m-red: #ff4d4d;
+  --color-m-green-dark: #166534;
+  --color-m-red: #ef4444;
   --color-brand-green: #2ecc71;
-  --color-electric-green: #00ff88;
-  --color-carbon-gray: #1b1e23;
-  /* Richer carbon tone */
-  --color-warning: #ff4d4d;
+  --color-electric-green: #10b981;
+  --color-carbon-gray: #f3f4f6;
+  --color-warning: #c5a880;
   --color-success: #22c55e;
+  --color-gold: #c5a880;
+  --color-sand: #faf8f5;
+  --color-sand-dark: #f0ece3;
 
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
 
@@ -144,18 +147,16 @@
 
 @layer components {
 
-  /* Step 2 & 5: Flexible Main Container with responsive padding handled globally above */
-
   .btn-primary {
-    @apply h-12 px-8 rounded-full bg-primary text-on-primary font-medium flex items-center justify-center transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,255,255,0.1)];
+    @apply h-12 px-8 rounded-none bg-primary text-on-primary font-semibold flex items-center justify-center transition-all hover:brightness-110 hover:scale-[1.02] active:scale-[0.98] border border-primary;
   }
 
   .btn-secondary {
-    @apply h-12 px-8 rounded-full bg-m-green-dark text-white font-medium flex items-center justify-center transition-all hover:bg-m-green-light hover:text-canvas hover:scale-105 active:scale-95 shadow-lg shadow-m-green-dark/20;
+    @apply h-12 px-8 rounded-none bg-ink text-white font-semibold flex items-center justify-center transition-all hover:bg-gray-800 hover:scale-[1.02] active:scale-[0.98];
   }
 
   .btn-outline {
-    @apply h-12 px-8 rounded-full bg-transparent border border-hairline text-ink font-medium flex items-center justify-center transition-all hover:border-body-text hover:bg-surface-card active:scale-95;
+    @apply h-12 px-8 rounded-none bg-transparent border border-ink text-ink font-semibold flex items-center justify-center transition-all hover:bg-ink hover:text-white active:scale-[0.98];
   }
 
   .scrollbar-hide {
@@ -218,7 +219,7 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--color-hairline);
+  background: var(--color-hairline-strong);
   border-radius: 4px;
 }
 

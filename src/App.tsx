@@ -1,7 +1,8 @@
-import { Routes, Route, Link, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, useLocation, Navigate } from 'react-router-dom';
 import { ShoppingBag } from 'lucide-react';
 import { HelmetProvider } from 'react-helmet-async';
 import { useEffect, useState } from 'react';
+import { useAuth } from './lib/supabase';
 import Lenis from 'lenis';
 import Header from './components/layout/Header';
 import Footer from './components/layout/Footer';
@@ -20,7 +21,7 @@ import Success from './pages/Success';
 import Collections from './pages/Collections';
 import AdminDashboard from './pages/AdminDashboard';
 import SizeGuide from './pages/SizeGuide';
-import TrackOrder from './pages/TrackOrder';
+import Wishlist from './pages/Wishlist';
 import ReturnPolicy from './pages/ReturnPolicy';
 import TermsConditions from './pages/TermsConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -41,6 +42,7 @@ export default function App() {
   const { pathname, search } = useLocation();
   const [lenis, setLenis] = useState<Lenis | null>(null);
   const setDrawerOpen = useCartStore((state) => state.setDrawerOpen);
+  const { isLoggedIn } = useAuth();
 
   useEffect(() => {
     const lenisInstance = new Lenis({
@@ -89,7 +91,7 @@ export default function App() {
             <Route path="/blog" element={<Blog />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/size-guide" element={<SizeGuide />} />
-            <Route path="/track-order" element={<TrackOrder />} />
+            <Route path="/track-order" element={<Navigate to="/account?tab=orders" replace />} />
             <Route path="/return-policy" element={<ReturnPolicy />} />
             <Route path="/terms" element={<TermsConditions />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
@@ -97,7 +99,7 @@ export default function App() {
             <Route path="/admin-8822" element={<AdminDashboard />} />
             <Route path="/schools" element={<Placeholder name="Our Schools" />} />
             <Route path="/schools/:slug" element={<Placeholder name="School Details" />} />
-            <Route path="/wishlist" element={<Placeholder name="My Wishlist" />} />
+            <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/account" element={<Account />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/success" element={<Success />} />
@@ -121,7 +123,7 @@ export default function App() {
         </a>
 
         {/* Mobile Bottom Navigation */}
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-surface-card border-t border-hairline flex items-center justify-around py-2 px-6 z-50">
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-hairline flex items-center justify-around py-2 px-6 z-50 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
           <Link to="/" className="flex flex-col items-center gap-1 group">
             <div className="text-muted group-hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a11 11 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
@@ -135,16 +137,18 @@ export default function App() {
             <span className="text-[10px] font-medium text-muted group-hover:text-ink transition-colors">Shop</span>
           </Link>
           <button onClick={() => setDrawerOpen(true)} className="flex flex-col items-center gap-1 -mt-6">
-            <div className="w-12 h-12 bg-primary text-on-primary rounded-full flex items-center justify-center shadow-[0_8px_30px_rgba(255,255,255,0.1)] group hover:bg-m-red hover:text-white transition-colors">
+            <div className="w-12 h-12 bg-primary text-on-primary rounded-none flex items-center justify-center shadow-lg shadow-primary/30 group hover:brightness-110 transition-all">
               <ShoppingBag size={20} />
             </div>
           </button>
-          <Link to="/wishlist" className="flex flex-col items-center gap-1 group">
-            <div className="text-muted group-hover:text-ink transition-colors">
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            </div>
-            <span className="text-[10px] font-medium text-muted group-hover:text-ink transition-colors">Wishlist</span>
-          </Link>
+          {isLoggedIn && (
+            <Link to="/wishlist" className="flex flex-col items-center gap-1 group">
+              <div className="text-muted group-hover:text-ink transition-colors">
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+              </div>
+              <span className="text-[10px] font-medium text-muted group-hover:text-ink transition-colors">Wishlist</span>
+            </Link>
+          )}
           <Link to="/account" className="flex flex-col items-center gap-1 group">
             <div className="text-muted group-hover:text-ink transition-colors">
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>

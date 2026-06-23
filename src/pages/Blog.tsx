@@ -85,7 +85,7 @@ export default function Blog() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="bg-surface-card rounded-3xl overflow-hidden border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)] group hover:shadow-[0_8px_30px_rgba(0,0,0,0.05)] transition-all"
+                className="bg-white rounded-none overflow-hidden border border-hairline hover:border-[#0f172a] shadow-none group transition-all"
               >
                 <div className="aspect-[16/10] overflow-hidden">
                   <img 
@@ -96,10 +96,10 @@ export default function Blog() {
                   />
                 </div>
                 <div className="p-8">
-                  <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-primary mb-4">
+                  <div className="flex items-center gap-4 text-xs font-semibold uppercase tracking-wider text-ink/70 mb-4">
                     <span>{post.category}</span>
                   </div>
-                  <h2 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-primary transition-colors">
+                  <h2 className="text-xl font-bold text-ink mb-3 line-clamp-2 leading-tight group-hover:text-ink/75 transition-colors">
                     {post.title}
                   </h2>
                   <p className="text-muted font-light mb-6 line-clamp-2">
@@ -112,7 +112,7 @@ export default function Blog() {
                         {post.date}
                       </div>
                     </div>
-                    <button className="text-ink group-hover:text-primary transition-colors">
+                    <button className="text-ink group-hover:text-ink/75 group-hover:translate-x-1 transition-all duration-300">
                       <ArrowRight size={20} />
                     </button>
                   </div>

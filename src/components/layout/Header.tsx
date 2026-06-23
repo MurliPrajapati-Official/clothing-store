@@ -6,6 +6,7 @@ import { useCartStore } from '../../store/cartStore';
 import { cn } from '../../lib/utils';
 import Skeleton from '../ui/Skeleton';
 import { CATEGORIES } from '../../constants';
+import { useAuth } from '../../lib/supabase';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -19,6 +20,7 @@ export default function Header() {
   const [isShopDropdownOpen, setIsShopDropdownOpen] = useState(false);
   const [isMobileShopOpen, setIsMobileShopOpen] = useState(false);
   const navigate = useNavigate();
+  const { isLoggedIn } = useAuth();
 
   const categories = CATEGORIES;
 
@@ -43,14 +45,14 @@ export default function Header() {
         transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
-          scrolled || isLoading ? "bg-surface-card/90 backdrop-blur-md border-b border-hairline py-3 shadow-[0_2px_10px_rgba(0,0,0,0.5)]" : "bg-transparent border-transparent py-6"
+          scrolled || isLoading ? "bg-white/95 backdrop-blur-md border-b border-hairline py-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)]" : "bg-transparent border-transparent py-6"
         )}
       >
         <div className="container mx-auto px-4 flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             {/* Mobile Menu Toggle */}
             <button
-              className="lg:hidden p-2 -ml-2 text-ink hover:bg-surface-elevated rounded-full transition-colors"
+              className="lg:hidden p-2 -ml-2 text-ink hover:bg-surface-elevated rounded-none transition-colors border border-hairline bg-white"
               onClick={() => setIsMenuOpen(true)}
             >
               <Menu size={24} />
@@ -59,8 +61,8 @@ export default function Header() {
             {/* Logo */}
             {isLoading ? (
               <div className="flex items-center gap-3">
-                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-xl" />
-                <Skeleton className="h-8 w-32 sm:w-48 rounded-md hidden sm:block" />
+                <Skeleton className="h-12 w-12 sm:h-16 sm:w-16 rounded-none" />
+                <Skeleton className="h-8 w-32 sm:w-48 rounded-none hidden sm:block" />
               </div>
             ) : (
               <Link to="/" className="flex items-center gap-3 group">
@@ -89,13 +91,13 @@ export default function Header() {
                 <Link
                   to="/"
                   className={cn(
-                    "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
-                    location.pathname === '/' ? "text-m-red" : "text-body-text"
+                    "text-[15px] font-medium transition-colors hover:text-ink relative group whitespace-nowrap flex items-center h-10",
+                    location.pathname === '/' ? "text-ink font-semibold" : "text-body-text"
                   )}
                 >
                   Home
                   <span className={cn(
-                    "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                    "absolute bottom-0 left-0 w-0 h-0.5 bg-ink transition-all duration-300 group-hover:w-full",
                     location.pathname === '/' && "w-full"
                   )} />
                 </Link>
@@ -108,14 +110,14 @@ export default function Header() {
                   <Link
                     to="/shop"
                     className={cn(
-                      "text-[15px] font-medium transition-colors hover:text-m-red flex items-center gap-1 group whitespace-nowrap h-10",
-                      location.pathname === '/shop' ? "text-m-red" : "text-body-text"
+                      "text-[15px] font-medium transition-colors hover:text-ink flex items-center gap-1 group whitespace-nowrap h-10",
+                      location.pathname === '/shop' ? "text-ink font-semibold" : "text-body-text"
                     )}
                   >
                     Shop
                     <ChevronDown size={14} className={cn("transition-transform duration-300", isShopDropdownOpen && "rotate-180")} />
                     <span className={cn(
-                      "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                      "absolute bottom-0 left-0 w-0 h-0.5 bg-ink transition-all duration-300 group-hover:w-full",
                       location.pathname === '/shop' && "w-full"
                     )} />
                   </Link>
@@ -127,16 +129,16 @@ export default function Header() {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 10, scale: 0.95 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        className="absolute top-full left-0 mt-2 w-[580px] bg-surface-card border border-hairline rounded-3xl shadow-[0_25px_60px_rgba(0,0,0,0.5)] overflow-hidden p-8 z-50"
+                        className="absolute top-full left-0 mt-2 w-[580px] bg-white border border-hairline rounded-none shadow-2xl overflow-hidden p-8 z-50"
                       >
                         <div className="flex justify-between items-start mb-8">
                           <div>
-                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-primary mb-1">Our Collections</h4>
+                            <h4 className="text-[11px] font-bold uppercase tracking-widest text-muted mb-1">Our Collections</h4>
                             <h2 className="text-xl font-bold text-ink tracking-tight">Explore Categories</h2>
                           </div>
                           <Link 
                             to="/shop" 
-                            className="text-xs font-bold text-muted hover:text-primary transition-colors flex items-center gap-1"
+                            className="text-xs font-bold text-muted hover:text-ink transition-colors flex items-center gap-1"
                             onClick={() => setIsShopDropdownOpen(false)}
                           >
                             View All <ArrowRight size={14} />
@@ -152,13 +154,13 @@ export default function Header() {
                               key={cat}
                               to={`/shop?category=${encodeURIComponent(cat)}`}
                               onClick={() => setIsShopDropdownOpen(false)}
-                              className="group/item py-3 flex items-center justify-between border-b border-hairline/30 hover:border-primary/30 transition-all"
+                              className="group/item py-3 flex items-center justify-between border-b border-hairline/30 hover:border-ink/30 transition-all"
                             >
                               <div className="flex flex-col">
-                                <span className="text-[14px] font-bold text-body-text group-hover/item:text-primary transition-colors">{cat}</span>
+                                <span className="text-[14px] font-bold text-body-text group-hover/item:text-ink transition-colors">{cat}</span>
                                 <span className="text-[10px] text-muted font-medium opacity-0 -translate-y-1 group-hover/item:opacity-100 group-hover/item:translate-y-0 transition-all">View Products</span>
                               </div>
-                              <ChevronRight size={14} className="text-muted opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 group-hover/item:text-primary transition-all" />
+                              <ChevronRight size={14} className="text-muted opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 group-hover/item:text-ink transition-all" />
                             </Link>
                           ))}
                         </div>
@@ -177,15 +179,15 @@ export default function Header() {
                     key={item.name}
                     to={item.path}
                     className={cn(
-                      "text-[15px] font-medium transition-colors hover:text-m-red relative group whitespace-nowrap flex items-center h-10",
+                      "text-[15px] font-medium transition-colors hover:text-ink relative group whitespace-nowrap flex items-center h-10",
                       location.pathname === item.path
-                        ? "text-m-red"
+                        ? "text-ink font-semibold"
                         : "text-body-text"
                     )}
                   >
                     {item.name}
                     <span className={cn(
-                      "absolute bottom-0 left-0 w-0 h-0.5 bg-m-red transition-all duration-300 group-hover:w-full",
+                      "absolute bottom-0 left-0 w-0 h-0.5 bg-ink transition-all duration-300 group-hover:w-full",
                       location.pathname === item.path && "w-full"
                     )} />
                   </Link>
@@ -205,17 +207,19 @@ export default function Header() {
             ) : (
               <>
                 <button
-                  className="p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95"
+                  className="p-2 hover:text-ink transition-colors hover:scale-110 active:scale-95"
                   onClick={() => setIsSearchOpen(!isSearchOpen)}
                 >
                   <Search size={22} />
                 </button>
 
-                <Link to="/wishlist" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
-                  <Heart size={22} />
-                </Link>
+                {isLoggedIn && (
+                  <Link to="/wishlist" className="hidden sm:block p-2 hover:text-ink transition-colors hover:scale-110 active:scale-95">
+                    <Heart size={22} />
+                  </Link>
+                )}
 
-                <Link to="/account" className="hidden sm:block p-2 hover:text-m-red transition-colors hover:scale-110 active:scale-95">
+                <Link to="/account" className="hidden sm:block p-2 hover:text-ink transition-colors hover:scale-110 active:scale-95">
                   <User size={22} />
                 </Link>
 
@@ -230,7 +234,7 @@ export default function Header() {
                         initial={{ scale: 0 }}
                         animate={{ scale: 1 }}
                         exit={{ scale: 0 }}
-                        className="absolute top-0 right-0 bg-m-red text-white text-[10px] font-bold w-[18px] h-[18px] flex items-center justify-center rounded-full shadow-[0_2px_10px_rgba(0,0,0,0.5)] ring-2 ring-white"
+                        className="absolute top-0 right-0 bg-primary text-on-primary text-[9px] font-black w-[16px] h-[16px] flex items-center justify-center rounded-none shadow-sm ring-1 ring-white"
                       >
                         {totalItems}
                       </motion.span>
@@ -266,7 +270,7 @@ export default function Header() {
                     autoFocus
                     type="text"
                     placeholder="Search for uniforms, schools, accessories..."
-                    className="w-full bg-transparent border-2 border-hairline rounded-full px-14 py-4 focus:border-ink text-ink outline-none font-medium transition-all shadow-lg backdrop-blur-md"
+                    className="w-full bg-white border border-hairline-strong rounded-none px-14 py-4 focus:border-primary text-ink outline-none font-medium transition-all shadow-xl"
                     onKeyDown={(e) => {
                       if (e.key === 'Enter') {
                         setIsSearchOpen(false);
@@ -277,7 +281,7 @@ export default function Header() {
                   <Search className="absolute left-6 top-1/2 -translate-y-1/2 text-muted" size={20} />
                   <button
                     onClick={() => setIsSearchOpen(false)}
-                    className="absolute right-6 top-1/2 -translate-y-1/2 text-muted hover:text-m-red transition-colors p-1"
+                    className="absolute right-6 top-1/2 -translate-y-1/2 text-muted hover:text-ink transition-colors p-1"
                   >
                     <X size={20} />
                   </button>
@@ -305,7 +309,7 @@ export default function Header() {
               exit={{ x: '-100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
                       data-lenis-prevent
-              className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-surface-card border-r border-hairline z-[70] shadow-2xl flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-hairline"
+              className="fixed inset-y-0 left-0 w-[85%] max-w-sm bg-white border-r border-hairline z-[70] shadow-2xl flex flex-col overflow-y-auto scrollbar-thin scrollbar-thumb-hairline rounded-none"
             >
               <div className="flex items-center justify-between p-8 mb-4">
                 <Link to="/" className="flex items-center gap-3 mb-6">
@@ -320,7 +324,7 @@ export default function Header() {
                 </Link>
                 <button 
                   onClick={() => setIsMenuOpen(false)} 
-                  className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors"
+                  className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-none transition-colors border border-hairline"
                 >
                   <X size={24} />
                 </button>
@@ -331,8 +335,8 @@ export default function Header() {
                 <Link
                   to="/"
                   className={cn(
-                    "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all",
-                    location.pathname === '/' ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
+                    "flex items-center justify-between px-4 py-4 rounded-none text-lg font-bold transition-all border-b border-hairline/30",
+                    location.pathname === '/' ? "bg-sand text-ink" : "text-ink hover:bg-sand"
                   )}
                 >
                   Home
@@ -340,12 +344,12 @@ export default function Header() {
                 </Link>
 
                 {/* Mobile Shop with Accordion */}
-                <div className="flex flex-col">
+                <div className="flex flex-col border-b border-hairline/30">
                   <button
                     onClick={() => setIsMobileShopOpen(!isMobileShopOpen)}
                     className={cn(
-                      "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all w-full text-left",
-                      location.pathname.startsWith('/shop') ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
+                      "flex items-center justify-between px-4 py-4 rounded-none text-lg font-bold transition-all w-full text-left",
+                      location.pathname.startsWith('/shop') ? "bg-sand text-ink" : "text-ink hover:bg-sand"
                     )}
                   >
                     Shop
@@ -357,7 +361,7 @@ export default function Header() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: 'auto', opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        className="overflow-hidden bg-surface-elevated/30 rounded-2xl mx-2 mb-2"
+                        className="overflow-hidden bg-sand border-y border-hairline/30"
                       >
                         {categories.map((cat) => (
                           <Link
@@ -379,7 +383,7 @@ export default function Header() {
                             setIsMenuOpen(false);
                             setIsMobileShopOpen(false);
                           }}
-                          className="flex items-center justify-between px-6 py-3 text-base font-bold text-primary hover:text-ink transition-colors border-t border-hairline/50 mt-2"
+                          className="flex items-center justify-between px-6 py-3 text-base font-bold text-ink hover:text-muted transition-colors border-t border-hairline/50 mt-2 hover:underline"
                         >
                           View All Shop
                           <ArrowRight size={16} />
@@ -399,12 +403,13 @@ export default function Header() {
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + idx * 0.05 }}
+                    className="border-b border-hairline/30"
                   >
                     <Link
                       to={item.path}
                       className={cn(
-                        "flex items-center justify-between px-4 py-4 rounded-2xl text-lg font-bold transition-all",
-                        location.pathname === item.path ? "bg-primary/10 text-primary" : "text-ink hover:bg-surface-elevated"
+                        "flex items-center justify-between px-4 py-4 rounded-none text-lg font-bold transition-all",
+                        location.pathname === item.path ? "bg-sand text-ink" : "text-ink hover:bg-sand"
                       )}
                     >
                       {item.name}
@@ -414,13 +419,15 @@ export default function Header() {
                 ))}
               </nav>
 
-              <div className="mt-auto p-8 bg-surface-elevated/50 border-t border-hairline">
-                <div className="grid grid-cols-2 gap-4">
-                  <Link to="/wishlist" className="flex flex-col items-center justify-center gap-2 p-4 bg-surface-card rounded-2xl border border-hairline hover:border-ink transition-all">
-                    <Heart size={20} className="text-muted" />
-                    <span className="text-[11px] font-bold uppercase tracking-widest text-muted">Wishlist</span>
-                  </Link>
-                  <Link to="/account" className="flex flex-col items-center justify-center gap-2 p-4 bg-surface-card rounded-2xl border border-hairline hover:border-ink transition-all">
+              <div className="mt-auto p-8 bg-sand border-t border-hairline">
+                <div className={cn("grid gap-4", isLoggedIn ? "grid-cols-2" : "grid-cols-1")}>
+                  {isLoggedIn && (
+                    <Link to="/wishlist" className="flex flex-col items-center justify-center gap-2 p-4 bg-white rounded-none border border-hairline hover:border-ink transition-all">
+                      <Heart size={20} className="text-muted" />
+                      <span className="text-[11px] font-bold uppercase tracking-widest text-muted">Wishlist</span>
+                    </Link>
+                  )}
+                  <Link to="/account" className="flex flex-col items-center justify-center gap-2 p-4 bg-white rounded-none border border-hairline hover:border-ink transition-all">
                     <User size={20} className="text-muted" />
                     <span className="text-[11px] font-bold uppercase tracking-widest text-muted">Account</span>
                   </Link>

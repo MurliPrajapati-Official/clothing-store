@@ -27,7 +27,7 @@ export default function Footer() {
   }, [location.pathname]);
 
   return (
-    <footer className="bg-canvas border-t border-hairline pt-20 pb-12 overflow-hidden">
+    <footer className="bg-surface-soft border-t border-hairline pt-20 pb-12 overflow-hidden">
       <div className="container mx-auto px-4">
         <motion.div
           variants={staggerContainer}
@@ -70,10 +70,10 @@ export default function Footer() {
                   Uniform Trends is a premium uniform manufacturer and supplier in India, trusted for quality school, corporate, and hospital attire. We manufacture uniforms that combine all-day comfort with long-lasting durability.
                 </p>
                 <div className="flex gap-4">
-                  <a href="#" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                  <a href="#" className="w-9 h-9 bg-white rounded-none flex items-center justify-center border border-hairline hover:bg-ink hover:text-white hover:border-ink transition-all duration-300 hover:scale-[1.1] active:scale-95">
                     <Facebook size={18} />
                   </a>
-                  <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-surface-card rounded-full flex items-center justify-center hover:bg-warning hover:text-canvas transition-all duration-300 hover:scale-110 active:scale-95">
+                  <a href="https://www.instagram.com/" target="_blank" rel="noopener noreferrer" className="w-9 h-9 bg-white rounded-none flex items-center justify-center border border-hairline hover:bg-ink hover:text-white hover:border-ink transition-all duration-300 hover:scale-[1.1] active:scale-95">
                     <Instagram size={18} />
                   </a>
                 </div>
@@ -98,11 +98,11 @@ export default function Footer() {
                 <ul className="grid grid-cols-2 gap-x-4 gap-y-4 text-body-text font-light">
                   {CATEGORIES.map((item) => (
                     <li key={item}>
-                      <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-warning transition-colors block truncate">{item}</Link>
+                      <Link to={`/shop?category=${encodeURIComponent(item)}`} className="hover:text-ink transition-colors block truncate">{item}</Link>
                     </li>
                   ))}
                   <li className="col-span-2">
-                    <Link to={`/contact`} className="hover:text-warning transition-colors block">Custom Bulk Orders</Link>
+                    <Link to={`/contact`} className="hover:text-ink transition-colors block">Custom Bulk Orders</Link>
                   </li>
                 </ul>
               </>
@@ -128,14 +128,13 @@ export default function Footer() {
                     { name: 'About Us', path: '/about' },
                     { name: 'Our Collections', path: '/collections' },
                     { name: 'Size Guide', path: '/size-guide' },
-                    { name: 'Track Order', path: '/track-order' },
                     { name: 'Return Policy', path: '/return-policy' },
                     { name: 'Terms & Conditions', path: '/terms' },
                     { name: 'Privacy Policy', path: '/privacy' },
                     { name: 'Cookies Policy', path: '/cookies' }
                   ].map((item) => (
                     <li key={item.name}>
-                      <Link to={item.path} className="hover:text-warning transition-colors block">{item.name}</Link>
+                      <Link to={item.path} className="hover:text-ink transition-colors block">{item.name}</Link>
                     </li>
                   ))}
                 </ul>
@@ -172,19 +171,19 @@ export default function Footer() {
                 <h4 className="text-[15px] font-bold mb-6 text-ink tracking-wide">Contact Us</h4>
                 <ul className="space-y-6 font-light text-body-text mb-8">
                   <li className="flex gap-4 items-start">
-                    <MapPin className="text-warning shrink-0 mt-1" size={20} />
+                    <MapPin className="text-ink shrink-0 mt-1" size={20} />
                     <span>Uniform Trends<br />India</span>
                   </li>
                   <li className="flex gap-4 items-center">
-                    <Phone className="text-warning shrink-0" size={20} />
+                    <Phone className="text-ink shrink-0" size={20} />
                     <span>07004301436</span>
                   </li>
                   <li className="flex gap-4 items-center overflow-hidden">
-                    <Mail className="text-warning shrink-0" size={20} />
+                    <Mail className="text-ink shrink-0" size={20} />
                     <span className="break-all sm:break-normal">uniformtrends01@gmail.com</span>
                   </li>
                 </ul>
-                <div className="w-full h-48 rounded-xl overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
+                <div className="w-full h-48 rounded-none overflow-hidden border border-hairline shadow-sm bg-surface-elevated">
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14902268.423984257!2d72.74109865611082!3d26.270222045558913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30635ff06b92b791%3A0xd78c4fa1854213a6!2sIndia!5e0!3m2!1sen!2sin!4v1714123456789!5m2!1sen!2sin"
                     width="100%"
@@ -269,9 +268,9 @@ export default function Footer() {
               ))
             ) : (
               <>
-                <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">VISA</div>
-                <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">MASTER</div>
-                <div className="h-8 w-14 bg-surface-card border border-hairline rounded flex items-center justify-center text-ink font-bold text-[10px]">UPI</div>
+                <div className="h-8 w-14 bg-white border border-hairline rounded-none flex items-center justify-center text-ink font-bold text-[10px]">VISA</div>
+                <div className="h-8 w-14 bg-white border border-hairline rounded-none flex items-center justify-center text-ink font-bold text-[10px]">MASTER</div>
+                <div className="h-8 w-14 bg-white border border-hairline rounded-none flex items-center justify-center text-ink font-bold text-[10px]">UPI</div>
               </>
             )}
           </div>

@@ -18,8 +18,6 @@ app.use('*', async (c, next) => {
   const allowedOrigins = [
     c.env.FRONTEND_URL, 
     'http://localhost:3000', 
-    'http://localhost:5173',
-    'http://localhost:5174',
     'https://uniformtrends.in',
     'https://www.uniformtrends.in'
   ].filter(Boolean) as string[];
@@ -70,6 +68,84 @@ app.get('/', (c) => {
   return c.html('<h1>Uniform Trends API is Running</h1><p>The server is connected and ready for requests.</p>');
 });
 
+// Dynamic sitemap.xml endpoint (Real-time SEO)
+app.get('/sitemap.xml', async (c) => {
+  try {
+    const supabase = getSupabase(c.env);
+    
+    // Fetch products
+    const { data: products, error } = await supabase
+      .from('products')
+      .select('slug, category, created_at')
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+
+    const baseUrl = 'https://uniformtrends.in';
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Core Static Pages
+    const staticPages = [
+      { loc: '', changefreq: 'weekly', priority: '1.0' },
+      { loc: 'shop', changefreq: 'weekly', priority: '0.9' },
+      { loc: 'about', changefreq: 'monthly', priority: '0.6' },
+      { loc: 'blog', changefreq: 'weekly', priority: '0.7' },
+      { loc: 'contact', changefreq: 'monthly', priority: '0.6' },
+      { loc: 'collections', changefreq: 'monthly', priority: '0.5' },
+      { loc: 'size-guide', changefreq: 'monthly', priority: '0.5' },
+      { loc: 'return-policy', changefreq: 'monthly', priority: '0.4' },
+      { loc: 'terms', changefreq: 'monthly', priority: '0.4' },
+      { loc: 'privacy', changefreq: 'monthly', priority: '0.4' },
+      { loc: 'cookies', changefreq: 'monthly', priority: '0.4' }
+    ];
+
+    // Extract unique categories dynamically from products
+    const categoriesSet = new Set(['School', 'Corporate', 'Hospital']);
+    products.forEach((prod: any) => {
+      if (prod.category) {
+        categoriesSet.add(prod.category);
+      }
+    });
+
+    const categoryPages = Array.from(categoriesSet).map(cat => ({
+      loc: `shop?category=${encodeURIComponent(cat)}`,
+      changefreq: 'weekly',
+      priority: '0.8'
+    }));
+
+    const productPages = products.map((prod: any) => ({
+      loc: `product/${prod.slug}`,
+      changefreq: 'weekly',
+      priority: '0.7',
+      lastmod: prod.created_at ? prod.created_at.split('T')[0] : currentDate
+    }));
+
+    const allPages = [...staticPages, ...categoryPages, ...productPages];
+
+    let xml = '<?xml version="1.0" encoding="UTF-8"?>\n';
+    xml += '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n';
+
+    allPages.forEach(page => {
+      xml += '  <url>\n';
+      xml += `    <loc>${baseUrl}/${page.loc}</loc>\n`;
+      xml += `    <lastmod>${page.lastmod || currentDate}</lastmod>\n`;
+      xml += `    <changefreq>${page.changefreq}</changefreq>\n`;
+      xml += `    <priority>${page.priority}</priority>\n`;
+      xml += '  </url>\n';
+    });
+
+    xml += '</urlset>\n';
+
+    c.header('Content-Type', 'application/xml');
+    c.header('Cache-Control', 'public, max-age=3600'); // Cache on Edge for 1 hour to prevent DB spam
+    return c.text(xml);
+  } catch (error: any) {
+    console.error("Sitemap generation error:", error);
+    c.header('Content-Type', 'application/xml');
+    return c.text('<?xml version="1.0" encoding="UTF-8"?><error>Failed to generate sitemap</error>', 500);
+  }
+});
+
 // Basic health check route
 app.get('/api/health', (c) => {
   return c.json({ status: 'ok', message: 'Uniform Trends Backend is running!' });
@@ -103,7 +179,8 @@ app.get('/api/stats', verifyAdmin, async (c) => {
       totalOrders: orderCount || 0
     });
   } catch (error: any) {
-    return c.json({ error: error.message }, 500);
+    console.error("Stats fetch error:", error);
+    return c.json({ error: 'Failed to retrieve stats' }, 500);
   }
 });
 

@@ -57,12 +57,12 @@ export default function CookieConsent() {
           {/* Header */}
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center text-primary shrink-0">
+              <div className="w-10 h-10 bg-ink/5 rounded-full flex items-center justify-center text-ink shrink-0">
                 <Cookie size={20} />
               </div>
               <div>
                 <h3 className="font-extrabold text-base text-ink tracking-tight">Cookie Settings</h3>
-                <p className="text-[10px] text-primary uppercase font-bold tracking-widest mt-0.5">Customized Experience</p>
+                <p className="text-[10px] text-ink/80 uppercase font-bold tracking-widest mt-0.5">Customized Experience</p>
               </div>
             </div>
             <button
@@ -87,7 +87,7 @@ export default function CookieConsent() {
                   <span className="text-xs font-bold text-ink">Essential Cookies</span>
                   <span className="text-[10px] text-muted leading-snug">Required for system security, cart operations and account logins.</span>
                 </div>
-                <div className="relative flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-primary/10 text-primary">
+                <div className="relative flex items-center justify-center shrink-0 w-8 h-8 rounded-full bg-ink/5 text-ink">
                   <Check size={14} />
                 </div>
               </div>
@@ -103,7 +103,7 @@ export default function CookieConsent() {
                   onClick={() => setPreferences(prev => ({ ...prev, analytics: !prev.analytics }))}
                   className={cn(
                     "w-9 h-5 rounded-full p-0.5 transition-colors shrink-0 flex items-center",
-                    preferences.analytics ? "bg-primary" : "bg-hairline"
+                    preferences.analytics ? "bg-ink" : "bg-hairline"
                   )}
                 >
                   <div className={cn(
@@ -124,7 +124,7 @@ export default function CookieConsent() {
                   onClick={() => setPreferences(prev => ({ ...prev, marketing: !prev.marketing }))}
                   className={cn(
                     "w-9 h-5 rounded-full p-0.5 transition-colors shrink-0 flex items-center",
-                    preferences.marketing ? "bg-primary" : "bg-hairline"
+                    preferences.marketing ? "bg-ink" : "bg-hairline"
                   )}
                 >
                   <div className={cn(

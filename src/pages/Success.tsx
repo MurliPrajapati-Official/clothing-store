@@ -26,7 +26,7 @@ export default function Success() {
             damping: 20,
             delay: 0.1 
           }}
-          className="w-24 h-24 bg-success/10 text-success rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner"
+          className="w-24 h-24 bg-ink text-white rounded-none flex items-center justify-center mx-auto mb-8 shadow-sm border border-hairline"
         >
           <CheckCircle2 size={56} strokeWidth={1.5} />
         </motion.div>
@@ -42,7 +42,7 @@ export default function Success() {
           </h1>
           <p className="text-xl text-muted font-light leading-relaxed mb-10">
             Thank you for choosing <span className="text-ink font-semibold">Uniform Trends</span>. 
-            Your order <span className="text-primary font-bold">#{orderId}</span> has been successfully placed 
+            Your order <span className="text-ink font-bold">#{orderId}</span> has been successfully placed 
             and is now being processed for a fresh start.
           </p>
         </motion.div>
@@ -54,17 +54,17 @@ export default function Success() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1], delay: 0.5 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12"
         >
-          <div className="p-6 bg-surface-card rounded-2xl border border-hairline shadow-sm">
-            <Package className="text-primary mx-auto mb-3" size={24} />
+          <div className="p-6 bg-surface-card rounded-none border border-hairline shadow-sm">
+            <Package className="text-ink mx-auto mb-3" size={24} />
             <h4 className="font-bold text-ink text-sm uppercase tracking-widest mb-1">Processing</h4>
             <p className="text-xs text-muted">Preparing your premium fabrics.</p>
           </div>
-          <div className="p-6 bg-surface-card rounded-2xl border border-hairline shadow-sm opacity-50">
+          <div className="p-6 bg-surface-card rounded-none border border-hairline shadow-sm opacity-50">
             <div className="w-6 h-6 border-2 border-muted border-t-transparent rounded-full animate-spin mx-auto mb-3" />
             <h4 className="font-bold text-ink text-sm uppercase tracking-widest mb-1">Tailoring</h4>
             <p className="text-xs text-muted">Quality check & finishing.</p>
           </div>
-          <div className="p-6 bg-surface-card rounded-2xl border border-hairline shadow-sm opacity-30">
+          <div className="p-6 bg-surface-card rounded-none border border-hairline shadow-sm opacity-30">
             <ArrowRight className="text-muted mx-auto mb-3" size={24} />
             <h4 className="font-bold text-ink text-sm uppercase tracking-widest mb-1">Shipping</h4>
             <p className="text-xs text-muted">On the way to your door.</p>
@@ -96,7 +96,7 @@ export default function Success() {
           className="mt-16 text-sm text-muted font-light"
         >
           A confirmation email with your order details has been sent to your registered address. 
-          For any queries, please reach out to our <Link to="/contact" className="text-primary hover:underline">support team</Link>.
+          For any queries, please reach out to our <Link to="/contact" className="text-ink hover:underline font-semibold">support team</Link>.
         </motion.p>
       </div>
     </div>

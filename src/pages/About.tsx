@@ -64,7 +64,7 @@ export default function About() {
             viewport={{ once: true }}
             className="bg-surface-card p-10 rounded-3xl border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
           >
-            <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary">
+            <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-ink">
               <Heart size={28} />
             </div>
             <h3 className="text-2xl font-bold text-ink mb-4">Our Mission</h3>
@@ -79,7 +79,7 @@ export default function About() {
             viewport={{ once: true }}
             className="bg-surface-card p-10 rounded-3xl border border-hairline shadow-[0_4px_20px_rgba(0,0,0,0.02)]"
           >
-            <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-primary">
+            <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mb-6 text-ink">
               <ShieldCheck size={28} />
             </div>
             <h3 className="text-2xl font-bold text-ink mb-4">Our Vision</h3>

@@ -11,11 +11,22 @@ import { getApiUrl } from '../config';
 export default function Account() {
   const [session, setSession] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'settings'>('profile');
+  const [searchParams] = useSearchParams();
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'settings'>(
+    (tabParam && ['profile', 'orders', 'address', 'settings'].includes(tabParam)
+      ? tabParam
+      : 'profile') as any
+  );
   const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get('redirect');
+
+  useEffect(() => {
+    if (tabParam && ['profile', 'orders', 'address', 'settings'].includes(tabParam)) {
+      setActiveTab(tabParam as any);
+    }
+  }, [tabParam]);
 
   // Form fields
   const [email, setEmail] = useState('');
@@ -222,27 +233,27 @@ export default function Account() {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-surface-card p-8 sm:p-12 rounded-3xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline w-full max-w-md"
+          className="bg-surface-card p-8 sm:p-12 rounded-none shadow-[0_2px_10px_rgba(0,0,0,0.05)] border border-hairline w-full max-w-md"
         >
           <h1 className="text-3xl font-bold text-ink mb-2 text-center">
             {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
           </h1>
           <form className="space-y-5 mt-8" onSubmit={handleAuth}>
             {redirectTo === 'checkout' && (
-              <div className="p-4 mb-6 bg-primary/10 border border-primary/20 text-ink rounded-xl text-sm font-bold flex items-center gap-3">
-                <ShieldCheck className="text-primary shrink-0" size={18} />
+              <div className="p-4 mb-6 bg-surface-elevated border border-hairline-strong text-ink rounded-none text-sm font-bold flex items-center gap-3">
+                <ShieldCheck className="text-ink shrink-0" size={18} />
                 <span>Please login or signup to complete your purchase.</span>
               </div>
             )}
-            {authError && <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-xl text-xs">{authError}</div>}
-            {successMsg && <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 rounded-xl text-xs">{successMsg}</div>}
+            {authError && <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-none text-xs">{authError}</div>}
+            {successMsg && <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 rounded-none text-xs">{successMsg}</div>}
 
             {authMode === 'register' && (
               <div>
                 <label className="block text-sm font-semibold text-ink mb-2">Full Name</label>
                 <div className="relative">
                   <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                  <input required value={fullName} onChange={e => setFullName(e.target.value)} type="text" placeholder="John Doe" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                  <input required value={fullName} onChange={e => setFullName(e.target.value)} type="text" placeholder="John Doe" className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
                 </div>
               </div>
             )}
@@ -250,14 +261,14 @@ export default function Account() {
               <label className="block text-sm font-semibold text-ink mb-2">Email Address</label>
               <div className="relative">
                 <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                <input required value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                <input required value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
               </div>
             </div>
             <div>
               <label className="block text-sm font-semibold text-ink mb-2">Password</label>
               <div className="relative">
                 <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                <input required value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="••••••••" minLength={6} className="w-full bg-canvas border border-hairline-strong rounded-xl py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
+                <input required value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="••••••••" minLength={6} className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
               </div>
             </div>
 
@@ -284,15 +295,15 @@ export default function Account() {
       />
       <div className="container mx-auto px-4 max-w-[1600px]">
         {successMsg && (
-          <div className="mb-6 p-4 bg-success/10 border border-success/20 text-success rounded-xl text-sm font-bold text-center">
+          <div className="mb-6 p-4 bg-success/10 border border-success/20 text-success rounded-none text-sm font-bold text-center">
             {successMsg}
           </div>
         )}
         <div className="flex flex-col lg:grid lg:grid-cols-4 gap-8">
           <aside className="lg:col-span-1">
-            <div className="bg-surface-card rounded-2xl shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline p-4 md:p-6 sticky top-28">
+            <div className="bg-surface-card rounded-none shadow-sm border border-hairline p-4 md:p-6 sticky top-28">
               <div className="flex items-center gap-4 mb-4 md:mb-8 md:pb-6 md:border-b border-hairline">
-                <div className="w-14 h-14 bg-primary text-on-primary rounded-full flex items-center justify-center text-xl font-bold uppercase">
+                <div className="w-14 h-14 bg-ink text-white rounded-none flex items-center justify-center text-xl font-bold uppercase">
                   {session.user.user_metadata?.full_name?.substring(0, 2) || session.user.email?.substring(0, 2)}
                 </div>
                 <div>
@@ -304,7 +315,7 @@ export default function Account() {
               {isAdmin && (
                 <Link 
                   to="/admin-8822"
-                  className="flex items-center gap-3 w-full p-3 mb-6 bg-primary/10 text-primary rounded-xl font-bold hover:bg-primary hover:text-white transition-all shadow-sm border border-primary/20"
+                  className="flex items-center gap-3 w-full p-3 mb-6 bg-ink text-white rounded-none font-bold hover:bg-black/90 transition-all shadow-sm border border-ink"
                 >
                   <ShieldCheck size={18} /> Admin Dashboard
                 </Link>
@@ -322,7 +333,7 @@ export default function Account() {
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
                     className={cn(
-                      "flex flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-xl transition-all min-w-0 flex-1 lg:flex-none lg:w-full",
+                      "flex flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-none transition-all min-w-0 flex-1 lg:flex-none lg:w-full",
                       activeTab === tab.id ? "bg-canvas text-ink font-bold shadow-sm" : "text-muted hover:bg-canvas hover:text-ink font-medium"
                     )}
                   >
@@ -331,12 +342,12 @@ export default function Account() {
                   </button>
                 ))}
                 <div className="hidden lg:block h-px bg-hairline my-2" />
-                <button onClick={handleLogout} className="flex lg:hidden flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-xl text-m-red hover:bg-m-red/10 font-medium transition-colors min-w-0 flex-1">
+                <button onClick={handleLogout} className="flex lg:hidden flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-none text-m-red hover:bg-m-red/10 font-medium transition-colors min-w-0 flex-1">
                    <Lock size={20} className="sm:w-[18px]" />
                    <span className="text-[10px] sm:text-sm whitespace-nowrap">Logout</span>
                 </button>
               </nav>
-              <button onClick={handleLogout} className="hidden lg:flex items-center gap-3 w-full p-3 rounded-xl text-m-red hover:bg-m-red/10 font-medium transition-colors">
+              <button onClick={handleLogout} className="hidden lg:flex items-center gap-3 w-full p-3 rounded-none text-m-red hover:bg-m-red/10 font-medium transition-colors">
                 <Lock size={18} /> Logout
               </button>
             </div>
@@ -345,18 +356,18 @@ export default function Account() {
           <div className="lg:col-span-3">
             <AnimatePresence mode="wait">
               {activeTab === 'profile' && (
-                <motion.div key="profile" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-2xl border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><User className="text-primary" /> Profile Details</h2>
+                <motion.div key="profile" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><User className="text-ink" /> Profile Details</h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-4 bg-canvas rounded-xl border border-hairline">
+                    <div className="p-4 bg-canvas rounded-none border border-hairline">
                       <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Full Name</p>
                       <p className="font-bold text-ink">{session.user.user_metadata?.full_name || 'N/A'}</p>
                     </div>
-                    <div className="p-4 bg-canvas rounded-xl border border-hairline">
+                    <div className="p-4 bg-canvas rounded-none border border-hairline">
                       <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Email</p>
                       <p className="font-bold text-ink">{session.user.email}</p>
                     </div>
-                    <div className="p-4 bg-canvas rounded-xl border border-hairline">
+                    <div className="p-4 bg-canvas rounded-none border border-hairline">
                       <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Account Created</p>
                       <p className="font-bold text-ink">{new Date(session.user.created_at).toLocaleDateString()}</p>
                     </div>
@@ -365,8 +376,8 @@ export default function Account() {
               )}
 
               {activeTab === 'address' && (
-                <motion.div key="address" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-2xl border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-2 flex items-center gap-2"><MapPin className="text-primary" /> Saved Address</h2>
+                <motion.div key="address" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-ink mb-2 flex items-center gap-2"><MapPin className="text-ink" /> Saved Address</h2>
                   <p className="text-muted text-sm mb-6">Manage your primary shipping address for a faster checkout experience.</p>
 
                   <form onSubmit={(e) => {
@@ -378,29 +389,29 @@ export default function Account() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">First Name</label>
-                        <input type="text" required value={addressData.firstName} onChange={(e) => setAddressData({ ...addressData, firstName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                        <input type="text" required value={addressData.firstName} onChange={(e) => setAddressData({ ...addressData, firstName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">Last Name</label>
-                        <input type="text" required value={addressData.lastName} onChange={(e) => setAddressData({ ...addressData, lastName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                        <input type="text" required value={addressData.lastName} onChange={(e) => setAddressData({ ...addressData, lastName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                       </div>
                     </div>
                     <div>
                       <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">Street Address</label>
-                      <input type="text" required value={addressData.street} onChange={(e) => setAddressData({ ...addressData, street: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                      <input type="text" required value={addressData.street} onChange={(e) => setAddressData({ ...addressData, street: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                       <div>
                         <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">City</label>
-                        <input type="text" required value={addressData.city} onChange={(e) => setAddressData({ ...addressData, city: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                        <input type="text" required value={addressData.city} onChange={(e) => setAddressData({ ...addressData, city: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">State</label>
-                        <input type="text" required value={addressData.state} onChange={(e) => setAddressData({ ...addressData, state: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                        <input type="text" required value={addressData.state} onChange={(e) => setAddressData({ ...addressData, state: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                       </div>
                       <div>
                         <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">PIN Code</label>
-                        <input type="text" required value={addressData.pin} onChange={(e) => setAddressData({ ...addressData, pin: e.target.value })} className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 text-ink outline-none focus:border-primary transition-colors" />
+                        <input type="text" required value={addressData.pin} onChange={(e) => setAddressData({ ...addressData, pin: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
                       </div>
                     </div>
                     <div className="pt-4">
@@ -411,14 +422,14 @@ export default function Account() {
               )}
 
               {activeTab === 'orders' && (
-                <motion.div key="orders" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-2xl border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Package className="text-primary" /> Order History</h2>
+                <motion.div key="orders" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Package className="text-ink" /> Order History</h2>
                   {ordersLoading ? (
                     <div className="space-y-4">
-                      {[...Array(3)].map((_, i) => <div key={i} className="h-24 bg-canvas animate-pulse rounded-xl" />)}
+                      {[...Array(3)].map((_, i) => <div key={i} className="h-24 bg-canvas animate-pulse rounded-none" />)}
                     </div>
                   ) : orders.length === 0 ? (
-                    <div className="text-center py-20 bg-canvas rounded-2xl border border-hairline">
+                    <div className="text-center py-20 bg-canvas rounded-none border border-hairline">
                       <Package size={64} className="mx-auto text-muted mb-4 opacity-10" />
                       <p className="text-muted text-lg mb-6">No orders found in your account.</p>
                       <Link to="/shop" className="btn-primary inline-flex px-12">Start Shopping</Link>
@@ -426,14 +437,14 @@ export default function Account() {
                   ) : (
                     <div className="space-y-4">
                       {orders.map(order => (
-                        <div key={order.id} className="border border-hairline rounded-2xl overflow-hidden bg-canvas/30 transition-all hover:border-primary/30">
+                        <div key={order.id} className="border border-hairline rounded-none overflow-hidden bg-canvas/30 transition-all hover:border-ink/30">
                           <div className="bg-canvas p-4 flex justify-between items-center border-b border-hairline">
                             <div>
                               <p className="text-[10px] uppercase tracking-widest text-muted font-bold mb-1">UK-{order.id.substring(0, 8)}</p>
                               <p className="text-sm font-bold text-ink">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
                             </div>
                             <div className={cn(
-                              "px-4 py-1 rounded-full text-[10px] font-black uppercase tracking-widest border shadow-sm",
+                              "px-4 py-1 rounded-none text-[10px] font-black uppercase tracking-widest border shadow-sm",
                               order.status === 'pending' ? "bg-warning/10 text-warning border-warning/20" :
                                 order.status === 'completed' ? "bg-success/10 text-success border-success/20" :
                                   "bg-m-red/10 text-m-red border-m-red/20"
@@ -449,12 +460,12 @@ export default function Account() {
                             <div className="flex items-center gap-2">
                               <button
                                 onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
-                                className="text-[10px] bg-canvas text-ink px-3 py-1.5 rounded-lg border border-hairline font-bold uppercase hover:border-primary transition-all"
+                                className="text-[10px] bg-canvas text-ink px-3 py-1.5 rounded-none border border-hairline font-bold uppercase hover:border-ink transition-all"
                               >
                                 {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
                               </button>
                               {order.status === 'pending' && (
-                                <button onClick={() => handleCancelOrder(order.id)} className="text-[10px] bg-m-red/10 text-m-red px-3 py-1.5 rounded-lg border border-m-red/20 font-bold uppercase hover:bg-m-red hover:text-white transition-all">
+                                <button onClick={() => handleCancelOrder(order.id)} className="text-[10px] bg-m-red/10 text-m-red px-3 py-1.5 rounded-none border border-m-red/20 font-bold uppercase hover:bg-m-red hover:text-white transition-all">
                                   Cancel Order
                                 </button>
                               )}
@@ -465,17 +476,17 @@ export default function Account() {
                               <div>
                                 <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Delivery Details</h4>
                                 <div className="space-y-4">
-                                  <div className="bg-surface-card p-4 rounded-lg border border-hairline shadow-sm">
+                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
                                     <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Contact Name</p>
                                     <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'N/A'}</p>
                                   </div>
-                                  <div className="bg-surface-card p-4 rounded-lg border border-hairline shadow-sm">
+                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
                                     <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Shipping Address</p>
                                     <p className="text-sm text-ink leading-relaxed">
                                       {order.shipping_address.replace(/\((.*?)\)/g, '').split('\n\n---')[0].split(',').slice(1).join(', ').trim()}
                                     </p>
                                   </div>
-                                  <div className="bg-surface-card p-4 rounded-lg border border-hairline shadow-sm">
+                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
                                     <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
                                     <p className="text-sm font-bold text-ink">Online Payment / Bulk Invoice</p>
                                   </div>
@@ -486,9 +497,9 @@ export default function Account() {
                                 {order.order_items && order.order_items.length > 0 ? (
                                   <div className="space-y-3">
                                     {order.order_items.map((item: any) => (
-                                      <div key={item.id} className="flex justify-between items-center bg-surface-card p-3 rounded-lg border border-hairline shadow-sm">
+                                      <div key={item.id} className="flex justify-between items-center bg-surface-card p-3 rounded-none border border-hairline shadow-sm">
                                         <div className="flex items-center gap-3">
-                                          <div className="w-10 h-10 bg-canvas rounded-md flex items-center justify-center overflow-hidden border border-hairline">
+                                          <div className="w-10 h-10 bg-canvas rounded-none flex items-center justify-center overflow-hidden border border-hairline">
                                             {item.products?.images?.[0] ? (
                                               <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
                                             ) : (
@@ -518,12 +529,12 @@ export default function Account() {
               )}
 
               {activeTab === 'settings' && (
-                <motion.div key="settings" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-2xl border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Settings className="text-primary" /> Settings</h2>
+                <motion.div key="settings" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
+                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Settings className="text-ink" /> Settings</h2>
                   <div className="space-y-6">
-                    <div className="p-6 bg-canvas rounded-2xl border border-hairline group hover:border-primary transition-all">
+                    <div className="p-6 bg-canvas rounded-none border border-hairline group hover:border-ink transition-all">
                       <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary"><ShieldCheck /></div>
+                        <div className="w-10 h-10 rounded-none bg-surface-elevated flex items-center justify-center text-ink"><ShieldCheck /></div>
                         <h3 className="font-bold text-ink">Security</h3>
                       </div>
                       <p className="text-sm text-muted mb-6">Manage your account security and password settings.</p>
@@ -539,7 +550,7 @@ export default function Account() {
                             alert(`Error: ${err.message}`);
                           }
                         }}
-                        className="text-xs font-bold uppercase tracking-widest text-primary hover:underline"
+                        className="text-xs font-bold uppercase tracking-widest text-ink hover:underline"
                       >
                         Send Password Reset Email →
                       </button>

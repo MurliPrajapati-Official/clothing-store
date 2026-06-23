@@ -12,9 +12,9 @@ export default function Skeleton({ className, variant = 'rect', ...props }: Skel
     <div
       className={cn(
         "animate-pulse bg-muted/20",
-        variant === 'circle' && "rounded-full",
-        variant === 'rect' && "rounded-xl",
-        variant === 'text' && "h-4 rounded",
+        variant === 'circle' && "rounded-none",
+        variant === 'rect' && "rounded-none",
+        variant === 'text' && "h-4 rounded-none",
         className
       )}
       {...props}

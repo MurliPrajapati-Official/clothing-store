@@ -2,7 +2,7 @@ import Skeleton from '../ui/Skeleton';
 
 export default function ProductSkeleton() {
   return (
-    <div className="bg-surface-card rounded-2xl overflow-hidden shadow-[0_2px_10px_rgba(0,0,0,0.5)] border border-hairline h-full flex flex-col">
+    <div className="bg-surface-card rounded-none overflow-hidden shadow-sm border border-hairline h-full flex flex-col">
       <div className="relative aspect-[4/5] overflow-hidden">
         <Skeleton className="h-full w-full" />
       </div>
@@ -31,7 +31,7 @@ export default function ProductSkeleton() {
         </div>
         
         {/* CTA placeholder */}
-        <Skeleton className="w-full h-10 rounded-xl mt-2" />
+        <Skeleton className="w-full h-10 rounded-none mt-2" />
       </div>
     </div>
   );

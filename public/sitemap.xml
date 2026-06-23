@@ -1,106 +1,219 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Core Pages -->
   <url>
     <loc>https://uniformtrends.in/</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/shop</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/about</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/blog</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/contact</loc>
-    <lastmod>2026-05-05</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
-
-  <!-- Product Categories -->
-  <url>
-    <loc>https://uniformtrends.in/shop?category=School</loc>
-    <lastmod>2026-05-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://uniformtrends.in/shop?category=Corporate</loc>
-    <lastmod>2026-05-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://uniformtrends.in/shop?category=Hospital</loc>
-    <lastmod>2026-05-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-
-  <!-- Featured Products -->
-  <url>
-    <loc>https://uniformtrends.in/product/classic-boys-school-polo</loc>
-    <lastmod>2026-05-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://uniformtrends.in/product/girls-plaid-school-pinafore</loc>
-    <lastmod>2026-05-05</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.7</priority>
-  </url>
-
-  <!-- Policy & Informational Pages -->
   <url>
     <loc>https://uniformtrends.in/collections</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/size-guide</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/return-policy</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/terms</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/privacy</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
   </url>
   <url>
     <loc>https://uniformtrends.in/cookies</loc>
-    <lastmod>2026-05-24</lastmod>
+    <lastmod>2026-06-23</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.4</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/shop?category=School</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/shop?category=Corporate</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/shop?category=Hospital</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/shop?category=Hospitality</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/shop?category=CCL%2FCIL</loc>
+    <lastmod>2026-06-23</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/pv-trovine-green-nursing-uniform-female</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/pv-trovine-green-nursing-uniform-male</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/lavender-nursing-uniform-female</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/pink-nursing-uniform-female</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/dark-blue-nursing-uniform-male</loc>
+    <lastmod>2026-05-29</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-vnotch-kurta-embroidered-cuffs-black-salwar-garden</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-formal-shirt-black-trouser-full-body-studio</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-satin-formal-shirt-angled-flat-lay</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-satin-saree-wide-grey-border-minimal-white-portrait</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-satin-saree-grey-border-architectural-heritage-portrait</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/silver-grey-satin-saree-thin-maroon-border-studio-portrait</loc>
+    <lastmod>2026-05-15</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/magenta-maroon-silk-saree-wide-grey-border-striped-pallu-festive</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/grey-cotton-saree-maroon-vneck-blouse-outdoor-portrait</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-satin-saree-grey-border-zari-woven-pallu-indoor</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/grey-formal-shirt-black-trouser-uniform-set-flat-lay</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/grey-full-sleeve-formal-shirt-black-contrast-buttons</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-full-sleeve-aline-dress-black-formal-vest-city</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-embroidered-anarkali-kurta-black-waistcoat-set</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/maroon-band-collar-kurta-scalloped-hem-black-dupatta</loc>
+    <lastmod>2026-05-14</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://uniformtrends.in/product/Premium-uniform-saree</loc>
+    <lastmod>2026-05-06</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
   </url>
 </urlset>

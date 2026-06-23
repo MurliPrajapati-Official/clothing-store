@@ -217,7 +217,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
                     type="text" 
                     value={userName}
                     onChange={(e) => setUserName(e.target.value)}
-                    className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors text-ink"
+                    className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-ink transition-colors text-ink"
                     placeholder="e.g. John Doe"
                   />
                 </div>
@@ -228,7 +228,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
                 <textarea 
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-primary transition-colors text-ink min-h-[120px] resize-y"
+                  className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-ink transition-colors text-ink min-h-[120px] resize-y"
                   placeholder="What did you like or dislike about this product?"
                 ></textarea>
               </div>
@@ -239,7 +239,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
                 <button 
                   type="submit" 
                   disabled={isSubmitting}
-                  className="bg-primary text-on-primary font-bold px-8 py-4 rounded-xl flex items-center gap-2 hover:bg-m-green-light transition-colors disabled:opacity-50"
+                  className="bg-primary text-on-primary font-bold px-8 py-4 rounded-xl flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 shadow-md shadow-primary/20"
                 >
                   {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
                   Submit Review
@@ -260,9 +260,9 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
           <motion.div 
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-green-500/10 border border-green-500/20 p-8 rounded-3xl mb-12 flex flex-col items-center text-center"
+            className="bg-surface-elevated border border-hairline p-8 rounded-3xl mb-12 flex flex-col items-center text-center shadow-sm"
           >
-            <div className="w-16 h-16 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-4">
+            <div className="w-16 h-16 bg-ink text-white rounded-full flex items-center justify-center mb-4 shadow-md shadow-ink/10">
               <CheckCircle2 size={32} />
             </div>
             <h3 className="text-xl font-bold text-ink mb-2">Review Submitted!</h3>
@@ -296,7 +296,7 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
             >
               <div className="flex justify-between items-start mb-4">
                 <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-surface-elevated rounded-full flex items-center justify-center text-primary border border-hairline">
+                  <div className="w-10 h-10 bg-surface-elevated rounded-full flex items-center justify-center text-ink border border-hairline">
                     <User size={20} />
                   </div>
                   <div>

@@ -24,7 +24,7 @@ export const useWishlistStore = create<WishlistState>()(
       isInWishlist: (productId) => get().items.some((item) => item.id === productId),
     }),
     {
-      name: 'uniform-kart-wishlist',
+      name: 'uniform-trends-wishlist',
     }
   )
 );

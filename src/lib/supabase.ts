@@ -1,4 +1,5 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, Session } from '@supabase/supabase-js';
+import { useState, useEffect } from 'react';
 
 // Safe localStorage detection to prevent crash on Safari/macOS strict cookie settings
 const getSafeStorage = () => {
@@ -50,4 +51,37 @@ try {
 }
 
 export const supabase = supabaseClient;
+
+export function useAuth() {
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    // Get current session
+    supabase.auth.getSession().then(({ data: { session: s } }) => {
+      if (isMounted) {
+        setSession(s);
+        setLoading(false);
+      }
+    });
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, s) => {
+      if (isMounted) {
+        setSession(s);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  return { session, isLoggedIn: !!session, loading };
+}
+
 

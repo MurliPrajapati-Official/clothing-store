@@ -36,7 +36,7 @@ export default function CartDrawer() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={() => setDrawerOpen(false)}
-            className="fixed inset-0 bg-canvas/60 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/20 backdrop-blur-sm z-[100]"
           />
 
           {/* Drawer */}
@@ -45,20 +45,20 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-y-0 right-0 w-full max-w-[450px] bg-surface-card border-l border-hairline shadow-2xl z-[110] flex flex-col"
+            className="fixed inset-y-0 right-0 w-full max-w-[450px] bg-white border-l border-hairline shadow-2xl z-[110] flex flex-col"
           >
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-hairline">
               <div className="flex items-center gap-3">
                 <ShoppingBag size={22} className="text-ink" />
                 <h2 className="text-xl font-bold text-ink tracking-tight">Your Cart</h2>
-                <span className="bg-surface-elevated text-ink text-[12px] font-bold px-2 py-0.5 rounded-full border border-hairline">
+                <span className="bg-surface-elevated text-ink text-[11px] font-bold px-2 py-0.5 rounded-none border border-hairline">
                   {getTotalItems()}
                 </span>
               </div>
               <button
                 onClick={() => setDrawerOpen(false)}
-                className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-full transition-colors"
+                className="p-2 text-muted hover:text-ink hover:bg-surface-elevated rounded-none transition-colors border border-hairline"
               >
                 <X size={24} />
               </button>
@@ -68,7 +68,7 @@ export default function CartDrawer() {
             <div className="flex-1 overflow-y-auto p-6 space-y-6" data-lenis-prevent>
               {items.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-20 h-20 bg-surface-elevated rounded-full flex items-center justify-center text-muted mb-6">
+                  <div className="w-20 h-20 bg-surface-elevated rounded-none flex items-center justify-center text-muted mb-6 border border-hairline">
                     <ShoppingBag size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-ink mb-2">Cart is empty</h3>
@@ -83,7 +83,7 @@ export default function CartDrawer() {
               ) : (
                 items.map((item) => (
                   <div key={`${item.id}-${item.selectedSize}-${item.selectedColor || 'none'}`} className="flex gap-4 group">
-                    <div className="w-24 h-32 bg-canvas rounded-xl overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
+                    <div className="w-24 h-32 bg-canvas rounded-none overflow-hidden shrink-0 border border-hairline flex items-center justify-center">
                       {item.images && item.images.length > 0 ? (
                         <img src={item.images[0]} alt={item.name} className="w-full h-full object-cover" />
                       ) : (
@@ -111,7 +111,7 @@ export default function CartDrawer() {
                       </div>
                       
                       <div className="mt-auto flex items-center justify-between">
-                        <div className="flex items-center bg-canvas rounded-lg border border-hairline-strong p-1">
+                        <div className="flex items-center bg-canvas rounded-none border border-hairline-strong p-1">
                           <button
                             onClick={() => updateQuantity(item.id, item.selectedSize, item.quantity - 1, item.selectedColor)}
                             className="w-7 h-7 flex items-center justify-center text-muted hover:text-ink transition-colors"
@@ -136,7 +136,7 @@ export default function CartDrawer() {
 
             {/* Footer */}
             {items.length > 0 && (
-              <div className="p-6 border-t border-hairline bg-surface-card shadow-[0_-10px_40px_rgba(0,0,0,0.2)]">
+              <div className="p-6 border-t border-hairline bg-white shadow-xl">
                 <div className="flex items-center justify-between mb-6">
                   <span className="text-muted font-medium">Subtotal</span>
                   <span className="text-2xl font-bold text-ink">{formatCurrency(getTotalPrice())}</span>
@@ -144,9 +144,9 @@ export default function CartDrawer() {
                 <div className="space-y-3">
                   <button
                     onClick={handleCheckout}
-                    className="w-full btn-primary h-14 rounded-xl flex items-center justify-center gap-2 text-lg shadow-[0_8px_30px_rgba(255,255,255,0.05)]"
+                    className="w-full btn-primary h-14 rounded-none flex items-center justify-center gap-2 text-sm uppercase tracking-widest font-bold"
                   >
-                    Checkout <ArrowRight size={20} />
+                    Checkout <ArrowRight size={16} />
                   </button>
                   <button
                     onClick={() => {

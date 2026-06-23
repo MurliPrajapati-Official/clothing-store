@@ -16,7 +16,7 @@ export default function TermsConditions() {
           transition={{ duration: 0.6 }}
         >
           <div className="text-center mb-12">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full mb-6 font-bold text-sm uppercase tracking-widest">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated border border-hairline-strong text-ink rounded-none mb-6 font-bold text-sm uppercase tracking-widest shadow-sm">
               <FileText size={16} />
               Legal Framework
             </div>
@@ -27,10 +27,10 @@ export default function TermsConditions() {
             </p>
           </div>
           
-          <div className="bg-surface-card rounded-3xl p-8 md:p-12 border border-hairline shadow-sm space-y-10 text-muted font-light leading-relaxed text-[15px]">
+          <div className="bg-surface-card rounded-none p-8 md:p-12 border border-hairline shadow-sm space-y-10 text-muted font-light leading-relaxed text-[15px]">
             <section className="border-b border-hairline-strong pb-6">
               <h2 className="text-xl font-bold text-ink mb-4 flex items-center gap-3">
-                <Shield className="text-primary" size={20} />
+                <Shield className="text-ink" size={20} />
                 1. Acceptance of the Agreement
               </h2>
               <p className="mb-4">
@@ -142,7 +142,7 @@ export default function TermsConditions() {
               </p>
               <p>
                 For questions, clarifications, or to report violation of these terms, please contact our legal compliance team at 
-                <a href="mailto:uniformtrends01@gmail.com" className="text-primary hover:underline ml-1">uniformtrends01@gmail.com</a>.
+                <a href="mailto:uniformtrends01@gmail.com" className="text-ink hover:underline font-semibold ml-1">uniformtrends01@gmail.com</a>.
               </p>
             </section>
           </div>

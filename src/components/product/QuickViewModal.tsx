@@ -6,7 +6,7 @@ import { useState, useEffect } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { useWishlistStore } from '../../store/wishlistStore';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../lib/supabase';
+import { supabase, useAuth } from '../../lib/supabase';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -42,6 +42,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
   const [selectedSize, setSelectedSize] = useState<string>('');
   const [quantity, setQuantity] = useState(1);
   const addItem = useCartStore((state) => state.addItem);
+  const { isLoggedIn } = useAuth();
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isInWishlist } = useWishlistStore();
   const navigate = useNavigate();
 
@@ -82,18 +83,18 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-canvas/80 backdrop-blur-md z-[120]"
+            className="fixed inset-0 bg-black/30 backdrop-blur-md z-[120]"
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 20 }}
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-4xl bg-surface-card rounded-3xl shadow-2xl z-[130] overflow-hidden border border-hairline flex flex-col md:flex-row max-h-[90vh]"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[95%] max-w-4xl bg-white rounded-none shadow-2xl z-[130] overflow-hidden border border-hairline flex flex-col md:flex-row max-h-[90vh]"
           >
             <button
               onClick={onClose}
-              className="absolute top-4 right-4 p-2 bg-surface-elevated/80 backdrop-blur-md rounded-full text-ink hover:text-m-red transition-colors z-10 shadow-lg"
+              className="absolute top-4 right-4 p-2 bg-white rounded-none border border-hairline-strong text-ink hover:text-m-red transition-colors z-10 shadow-sm"
             >
               <X size={20} />
             </button>
@@ -116,7 +117,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
             <div className="w-full md:w-1/2 p-6 md:p-10 overflow-y-auto">
               <div className="flex items-center gap-1 mb-3">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} className={i < Math.floor(product.rating) ? "text-warning fill-gold" : "text-gray-300"} />
+                  <Star key={i} size={14} className={i < Math.floor(product.rating) ? "text-warning fill-warning" : "text-gray-200"} />
                 ))}
                 <span className="text-xs font-bold text-ink ml-1">{product.rating}</span>
               </div>
@@ -145,10 +146,10 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                       key={size}
                       onClick={() => setSelectedSize(size)}
                       className={cn(
-                        "h-10 px-4 rounded-lg font-bold text-xs transition-all border",
+                        "h-10 px-4 rounded-none font-bold text-xs transition-all border",
                         selectedSize === size
-                          ? "bg-primary border-primary text-on-primary shadow-lg"
-                          : "bg-canvas border-hairline text-ink hover:border-ink"
+                          ? "bg-ink border-ink text-white"
+                          : "bg-canvas border-hairline text-ink hover:border-[#0f172a]"
                       )}
                     >
                       {size}
@@ -160,7 +161,7 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
               {/* Quantity */}
               <div className="flex flex-col gap-4">
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center bg-canvas rounded-xl border border-hairline-strong p-1">
+                  <div className="flex items-center bg-canvas rounded-none border border-hairline-strong p-1">
                     <button
                       onClick={() => setQuantity(q => Math.max(1, q - 1))}
                       className="w-10 h-10 flex items-center justify-center text-muted hover:text-ink transition-colors"
@@ -175,20 +176,22 @@ export default function QuickViewModal({ product, onClose }: QuickViewModalProps
                       <Plus size={16} />
                     </button>
                   </div>
-                  <button
-                    onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
-                    className={cn(
-                      "p-3.5 rounded-xl border transition-all",
-                      exists ? "bg-m-red border-m-red text-white" : "border-hairline text-ink hover:text-m-red"
-                    )}
-                  >
-                    <Heart size={20} fill={exists ? "currentColor" : "none"} />
-                  </button>
+                  {isLoggedIn && (
+                    <button
+                      onClick={() => exists ? removeFromWishlist(product.id) : addToWishlist(product)}
+                      className={cn(
+                        "p-3.5 rounded-none border transition-all",
+                        exists ? "bg-m-red border-m-red text-white" : "border-hairline text-ink hover:bg-surface-elevated"
+                      )}
+                    >
+                      <Heart size={20} fill={exists ? "currentColor" : "none"} />
+                    </button>
+                  )}
                 </div>
 
                 <button
                   onClick={handleAddToCart}
-                  className="w-full btn-primary h-14 rounded-xl flex items-center justify-center gap-2 text-lg"
+                  className="w-full btn-primary h-14 rounded-none flex items-center justify-center gap-2 text-lg font-bold uppercase tracking-widest"
                 >
                   <ShoppingBag size={20} />
                   Add to Cart
