@@ -1,6 +1,6 @@
-# Uniform Trends
+#E-commerce store
 
-Premium manufacturer and supplier of specialized uniforms for Schools, Colleges, Hospitals, and Corporate Administration.
+CLothing brand
 
 ## Development
 
