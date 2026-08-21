@@ -1,18 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Star, MessageSquare, User, Loader2, Send, CheckCircle2, Trash2 } from 'lucide-react';
-import { formatCurrency, cn } from '../../lib/utils';
-import { supabase } from '../../lib/supabase';
-import { getApiUrl } from '../../config';
-
-interface Review {
-  id: string;
-  user_name: string;
-  user_id: string | null;
-  rating: number;
-  comment: string;
-  created_at: string;
-}
+import { Star, User, Send, CheckCircle2, Trash2 } from 'lucide-react';
+import { cn } from '../../lib/utils';
+import { useAuth } from '../../lib/mockAuth';
+import { mockReviewService } from '../../lib/mockService';
+import { Review } from '../../types';
 
 interface ProductReviewsProps {
   productId: string;
@@ -22,92 +14,58 @@ interface ProductReviewsProps {
 export default function ProductReviews({ productId, onReviewAdded }: ProductReviewsProps) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [totalReviews, setTotalReviews] = useState(0);
+  const [averageRating, setAverageRating] = useState(5.0);
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
-  const [isLoadingMore, setIsLoadingMore] = useState(false);
-  
+
   // Form State
   const [rating, setRating] = useState(5);
   const [userName, setUserName] = useState('');
   const [comment, setComment] = useState('');
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { session } = useAuth();
 
   const fetchReviews = async (pageNum = 1, append = false) => {
     try {
       if (pageNum === 1) setIsLoading(true);
-      else setIsLoadingMore(true);
-
-      let apiUrl = getApiUrl();
-      
-      const res = await fetch(`${apiUrl}/api/reviews/${productId}?page=${pageNum}&limit=5`);
-      const data = await res.json();
-      
+      const data = await mockReviewService.getReviews(productId, pageNum, 5);
       if (append) {
-        setReviews(prev => [...prev, ...(data.reviews || [])]);
+        setReviews((prev) => [...prev, ...data.reviews]);
       } else {
-        setReviews(data.reviews || []);
+        setReviews(data.reviews);
       }
-      
-      setTotalReviews(data.total || 0);
-      setHasMore(data.hasMore || false);
+      setTotalReviews(data.total);
+      setHasMore(data.hasMore);
+      setAverageRating(data.averageRating);
     } catch (err) {
-      console.error("Failed to fetch reviews", err);
+      console.error('Failed to fetch reviews', err);
     } finally {
       setIsLoading(false);
-      setIsLoadingMore(false);
     }
   };
 
   useEffect(() => {
     setPage(1);
     fetchReviews(1, false);
-    
-    // Auto-fill user name and check permissions
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const adminEmail = import.meta.env.VITE_ADMIN_EMAIL;
-      
-      if (session?.user) {
-        setCurrentUserId(session.user.id);
-        if (adminEmail && session.user.email === adminEmail) {
-          setIsAdmin(true);
-        }
-        
-        if (session.user.user_metadata?.full_name) {
-          setUserName(session.user.user_metadata.full_name);
-        } else if (session.user.email) {
-          setUserName(session.user.email.split('@')[0]);
-        }
+
+    if (session?.user) {
+      if (session.user.user_metadata?.full_name) {
+        setUserName(session.user.user_metadata.full_name);
+      } else if (session.user.email) {
+        setUserName(session.user.email.split('@')[0]);
       }
-    };
-    checkUser();
-  }, [productId]);
+    }
+  }, [productId, session]);
 
   const handleDeleteReview = async (reviewId: string) => {
     if (!window.confirm('Are you sure you want to delete your review?')) return;
-
-    try {
-      let apiUrl = getApiUrl();
-      
-      const response = await fetch(`${apiUrl}/api/reviews/${reviewId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) throw new Error('Failed to delete review');
-
-      setReviews(prev => prev.filter(r => r.id !== reviewId));
-      setTotalReviews(prev => prev - 1);
-      if (onReviewAdded) onReviewAdded();
-    } catch (err) {
-      console.error("Error deleting review", err);
-      alert('Unable to delete review at this time. Please try again later.');
-    }
+    await mockReviewService.deleteReview(productId, reviewId);
+    fetchReviews(1, false);
+    if (onReviewAdded) onReviewAdded();
   };
 
   const handleLoadMore = () => {
@@ -118,8 +76,8 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userName || !comment) {
-      setError('Please fill in all fields');
+    if (!userName.trim() || !comment.trim()) {
+      setError('Please provide your name and review comment.');
       return;
     }
 
@@ -127,215 +85,218 @@ export default function ProductReviews({ productId, onReviewAdded }: ProductRevi
     setError('');
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
-      let apiUrl = getApiUrl();
-      
-      const response = await fetch(`${apiUrl}/api/reviews`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          product_id: productId,
-          user_id: session?.user?.id || null,
-          user_name: userName,
-          rating,
-          comment
-        }),
+      await mockReviewService.addReview({
+        productId,
+        userName: userName.trim(),
+        userId: session?.user?.id || null,
+        rating,
+        comment: comment.trim()
       });
-
-      if (!response.ok) throw new Error('Failed to submit review');
 
       setSuccess(true);
       setComment('');
-      fetchReviews();
+      setShowForm(false);
+      fetchReviews(1, false);
       if (onReviewAdded) onReviewAdded();
-      
-      setTimeout(() => {
-        setSuccess(false);
-        setShowForm(false);
-      }, 3000);
+
+      setTimeout(() => setSuccess(false), 5000);
     } catch (err: any) {
-      setError('Unable to submit your review. Please check your connection and try again.');
+      setError('Failed to submit review. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
   return (
-    <div className="mt-20 pt-20 border-t border-hairline-strong">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-6">
-        <div>
-          <h2 className="text-3xl font-bold text-ink tracking-tight flex items-center gap-3">
-            Customer Reviews <span className="text-sm font-medium text-muted bg-surface-card px-3 py-1 rounded-full border border-hairline">{totalReviews}</span>
-          </h2>
-          <p className="text-muted mt-2">Hear what others are saying about this uniform.</p>
+    <div className="space-y-8">
+      {/* Review Summary Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 p-6 bg-surface-card border border-hairline">
+        <div className="flex items-center gap-6">
+          <div className="text-center sm:text-left">
+            <span className="text-4xl font-black text-ink">{averageRating.toFixed(1)}</span>
+            <div className="flex items-center gap-1 mt-1 text-ink">
+              {[1, 2, 3, 4, 5].map((s) => (
+                <Star
+                  key={s}
+                  size={16}
+                  className={cn(
+                    s <= Math.round(averageRating) ? "fill-ink text-ink" : "text-hairline-strong fill-transparent"
+                  )}
+                />
+              ))}
+            </div>
+            <p className="text-xs text-muted mt-1 font-medium">Based on {totalReviews} customer reviews</p>
+          </div>
         </div>
-        
-        {!showForm && !success && (
-          <button 
-            onClick={() => setShowForm(true)}
-            className="btn-primary px-8 py-4 rounded-xl flex items-center gap-2"
-          >
-            <MessageSquare size={18} /> Write a Review
-          </button>
-        )}
+
+        <button
+          onClick={() => setShowForm(!showForm)}
+          className="btn-primary py-3 px-6 text-xs"
+        >
+          {showForm ? 'Cancel Review' : 'Write a Review'}
+        </button>
       </div>
 
+      {/* Review Submission Form */}
       <AnimatePresence>
-        {showForm && !success && (
-          <motion.div 
+        {showForm && (
+          <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden mb-12"
+            className="overflow-hidden"
           >
-            <form onSubmit={handleSubmit} className="bg-surface-card p-8 rounded-3xl border border-hairline shadow-lg space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-bold text-ink mb-4">Your Rating</label>
-                  <div className="flex items-center gap-2">
-                    {[1, 2, 3, 4, 5].map((num) => (
-                      <button
-                        key={num}
-                        type="button"
-                        onClick={() => setRating(num)}
-                        className="transition-transform hover:scale-110 active:scale-95"
-                      >
-                        <Star 
-                          size={28} 
-                          className={cn(
-                            "transition-colors",
-                            num <= rating ? "text-warning fill-gold" : "text-hairline-strong"
-                          )} 
-                        />
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                <div>
-                  <label className="block text-sm font-bold text-ink mb-2">Display Name</label>
-                  <input 
-                    type="text" 
-                    value={userName}
-                    onChange={(e) => setUserName(e.target.value)}
-                    className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-ink transition-colors text-ink"
-                    placeholder="e.g. John Doe"
-                  />
+            <form onSubmit={handleSubmit} className="p-6 bg-surface-soft border border-hairline space-y-4">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-ink">Share Your Experience</h3>
+
+              {error && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 text-xs">{error}</div>
+              )}
+
+              {/* Rating Selector */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-ink mb-1.5">Rating</label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      type="button"
+                      key={star}
+                      onClick={() => setRating(star)}
+                      className="p-1 hover:scale-125 transition-transform"
+                    >
+                      <Star
+                        size={22}
+                        className={cn(
+                          star <= rating ? "fill-ink text-ink" : "text-hairline-strong fill-transparent"
+                        )}
+                      />
+                    </button>
+                  ))}
+                  <span className="text-xs font-bold text-ink ml-2">{rating} out of 5</span>
                 </div>
               </div>
-              
+
+              {/* Name */}
               <div>
-                <label className="block text-sm font-bold text-ink mb-2">Your Experience</label>
-                <textarea 
+                <label className="block text-xs font-bold uppercase tracking-widest text-ink mb-1.5">Your Name</label>
+                <input
+                  type="text"
+                  required
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  placeholder="e.g. Priya Sharma"
+                  className="w-full bg-white border border-hairline px-4 py-2.5 text-xs text-ink outline-none focus:border-ink"
+                />
+              </div>
+
+              {/* Comment */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-ink mb-1.5">Review</label>
+                <textarea
+                  required
+                  rows={4}
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
-                  className="w-full bg-canvas border border-hairline rounded-xl px-4 py-3 outline-none focus:border-ink transition-colors text-ink min-h-[120px] resize-y"
-                  placeholder="What did you like or dislike about this product?"
-                ></textarea>
+                  placeholder="How was the fabric quality, stitching, and sizing fit?"
+                  className="w-full bg-white border border-hairline px-4 py-2.5 text-xs text-ink outline-none focus:border-ink resize-none"
+                />
               </div>
 
-              {error && <p className="text-m-red text-sm font-medium">{error}</p>}
-
-              <div className="flex items-center gap-4 pt-2">
-                <button 
-                  type="submit" 
-                  disabled={isSubmitting}
-                  className="bg-primary text-on-primary font-bold px-8 py-4 rounded-xl flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all disabled:opacity-50 shadow-md shadow-primary/20"
-                >
-                  {isSubmitting ? <Loader2 className="animate-spin" size={18} /> : <Send size={18} />}
-                  Submit Review
-                </button>
-                <button 
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="text-muted font-bold hover:text-ink transition-colors px-4"
-                >
-                  Cancel
-                </button>
-              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="btn-primary py-3 px-8 text-xs flex items-center gap-2"
+              >
+                <Send size={14} />
+                <span>{isSubmitting ? 'Posting Review...' : 'Submit Review'}</span>
+              </button>
             </form>
-          </motion.div>
-        )}
-
-        {success && (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="bg-surface-elevated border border-hairline p-8 rounded-3xl mb-12 flex flex-col items-center text-center shadow-sm"
-          >
-            <div className="w-16 h-16 bg-ink text-white rounded-full flex items-center justify-center mb-4 shadow-md shadow-ink/10">
-              <CheckCircle2 size={32} />
-            </div>
-            <h3 className="text-xl font-bold text-ink mb-2">Review Submitted!</h3>
-            <p className="text-muted">Thank you for sharing your feedback with our community.</p>
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="grid grid-cols-1 gap-6">
-        {isLoading ? (
-          <div className="py-12 flex flex-col items-center gap-4 text-muted">
-            <Loader2 className="animate-spin" size={32} />
-            <p>Loading reviews...</p>
+      {/* Success Notification */}
+      {success && (
+        <div className="p-4 bg-canvas border border-ink text-xs font-bold flex items-center gap-2 text-ink">
+          <CheckCircle2 size={16} />
+          <span>Thank you! Your verified customer review has been published.</span>
+        </div>
+      )}
+
+      {/* Reviews List */}
+      <div className="space-y-4">
+        {isLoading && page === 1 ? (
+          <div className="space-y-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="h-28 bg-surface-card animate-pulse border border-hairline" />
+            ))}
           </div>
         ) : reviews.length === 0 ? (
-          <div className="py-12 text-center bg-surface-card rounded-3xl border border-hairline border-dashed">
-            <div className="w-16 h-16 bg-surface-elevated rounded-full flex items-center justify-center mx-auto mb-4">
-              <Star size={24} className="text-muted" />
-            </div>
-            <h3 className="text-lg font-bold text-ink">No reviews yet</h3>
-            <p className="text-muted max-w-xs mx-auto mt-2">Be the first to review this product and help others make a choice.</p>
+          <div className="text-center py-12 bg-surface-soft border border-hairline">
+            <p className="text-sm text-muted">No reviews yet for this product. Be the first to leave one!</p>
           </div>
         ) : (
-          reviews.map((review, idx) => (
-            <motion.div 
-              key={review.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className="bg-surface-card p-6 md:p-8 rounded-3xl border border-hairline shadow-sm hover:shadow-md transition-shadow"
-            >
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-4">
-                  <div className="w-10 h-10 bg-surface-elevated rounded-full flex items-center justify-center text-ink border border-hairline">
-                    <User size={20} />
+          reviews.map((rev) => (
+            <div key={rev.id} className="p-5 bg-surface-card border border-hairline space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-surface-elevated border border-hairline flex items-center justify-center font-bold text-xs text-ink uppercase">
+                    {rev.user_name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="font-bold text-ink">{review.user_name}</h4>
-                    <p className="text-xs text-muted">{new Date(review.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold text-xs text-ink">{rev.user_name}</span>
+                      {rev.verifiedPurchase && (
+                        <span className="text-[10px] text-muted flex items-center gap-0.5">
+                          <CheckCircle2 size={10} className="text-ink" /> Verified Buyer
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 mt-0.5 text-ink">
+                      {[1, 2, 3, 4, 5].map((s) => (
+                        <Star
+                          key={s}
+                          size={11}
+                          className={cn(
+                            s <= rev.rating ? "fill-ink text-ink" : "text-hairline fill-transparent"
+                          )}
+                        />
+                      ))}
+                    </div>
                   </div>
                 </div>
+
                 <div className="flex items-center gap-3">
-                  <div className="flex items-center gap-1 bg-canvas px-3 py-1.5 rounded-full border border-hairline">
-                    <Star size={14} className="text-warning fill-gold" />
-                    <span className="text-sm font-bold text-ink">{review.rating}</span>
-                  </div>
-                  {(isAdmin || (currentUserId && review.user_id === currentUserId)) && (
-                    <button 
-                      onClick={() => handleDeleteReview(review.id)}
-                      className="p-2 text-muted hover:text-m-red transition-colors"
+                  <span className="text-[11px] text-muted">
+                    {new Date(rev.created_at).toLocaleDateString()}
+                  </span>
+                  {(session?.user?.id === rev.user_id || !rev.user_id) && (
+                    <button
+                      onClick={() => handleDeleteReview(rev.id)}
+                      className="text-muted hover:text-red-500 transition-colors p-1"
                       title="Delete review"
                     >
-                      <Trash2 size={16} />
+                      <Trash2 size={13} />
                     </button>
                   )}
                 </div>
               </div>
-              <p className="text-body-text leading-relaxed whitespace-pre-line italic">
-                "{review.comment}"
+
+              <p className="text-xs text-body-text leading-relaxed pt-1">
+                {rev.comment}
               </p>
-            </motion.div>
+            </div>
           ))
         )}
 
+        {/* Load More Button */}
         {hasMore && (
-          <div className="pt-8 flex justify-center">
+          <div className="text-center pt-4">
             <button
               onClick={handleLoadMore}
-              disabled={isLoadingMore}
-              className="px-8 py-3 rounded-xl border border-hairline bg-surface-card text-ink font-bold hover:bg-surface-elevated transition-colors flex items-center gap-2 disabled:opacity-50"
+              className="btn-secondary text-xs uppercase tracking-wider py-2.5 px-6"
             >
-              {isLoadingMore ? <Loader2 className="animate-spin" size={18} /> : null}
-              {isLoadingMore ? 'Loading...' : 'Load More Reviews'}
+              Load More Reviews
             </button>
           </div>
         )}

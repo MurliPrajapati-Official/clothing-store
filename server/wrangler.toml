@@ -1,9 +1,0 @@
-name = "uniform-trends-backend"
-main = "src/index.ts"
-compatibility_date = "2024-04-03"
-compatibility_flags = [ "nodejs_compat" ]
-
-[vars]
-SUPABASE_URL = "https://visklrevckijbgrblbya.supabase.co"
-FRONTEND_URL = "https://uniformtrends.in"
-# NOTE: Set SUPABASE_SERVICE_ROLE_KEY as a secret in your Cloudflare Workers dashboard.

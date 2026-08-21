@@ -1,183 +1,106 @@
 import React, { useState, useEffect } from 'react';
 import SEO from '../components/layout/SEO';
+import { useSearchParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { User, Mail, Lock, Settings, LogOut, Package, ChevronRight, Phone, MapPin, Loader2, ShieldCheck } from 'lucide-react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
-import { supabase } from '../lib/supabase';
-import AccountSkeleton from '../components/layout/AccountSkeleton';
-import { cn, formatCurrency } from '../lib/utils';
-import { getApiUrl } from '../config';
+import { User, Package, MapPin, Settings, Lock, ShieldCheck, Mail, CheckCircle2, ChevronRight, X, Clock, Truck } from 'lucide-react';
+import { formatCurrency, cn } from '../lib/utils';
+import { useAuth, mockAuthService } from '../lib/mockAuth';
+import { mockOrderService } from '../lib/mockService';
+import { Order } from '../types';
+import { STORE_NAME } from '../constants';
 
 export default function Account() {
-  const [session, setSession] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [searchParams] = useSearchParams();
-  const tabParam = searchParams.get('tab');
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'settings'>(
-    (tabParam && ['profile', 'orders', 'address', 'settings'].includes(tabParam)
-      ? tabParam
-      : 'profile') as any
-  );
-  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const navigate = useNavigate();
-  const redirectTo = searchParams.get('redirect');
+  const { session, isLoggedIn } = useAuth();
 
-  useEffect(() => {
-    if (tabParam && ['profile', 'orders', 'address', 'settings'].includes(tabParam)) {
-      setActiveTab(tabParam as any);
-    }
-  }, [tabParam]);
+  const tabParam = searchParams.get('tab') || 'orders';
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'address' | 'settings'>(
+    (tabParam as any) || 'orders'
+  );
 
-  // Form fields
+  const [authMode, setAuthMode] = useState<'login' | 'register'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
   const [authError, setAuthError] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
   const [authLoading, setAuthLoading] = useState(false);
-  const [orders, setOrders] = useState<any[]>([]);
-  const [ordersLoading, setOrdersLoading] = useState(false);
-  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [successMsg, setSuccessMsg] = useState('');
 
-  // Local Address Cache State
+  // Orders State
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(true);
+  const [expandedOrder, setExpandedOrder] = useState<string | null>(null);
+
+  // Address State
   const [addressData, setAddressData] = useState({
     firstName: '',
     lastName: '',
     street: '',
     city: '',
     state: '',
-    pin: ''
+    pin: '',
+    phone: ''
   });
 
-  const lastProcessedTokenRef = React.useRef<string | undefined>(undefined);
+  useEffect(() => {
+    if (tabParam) {
+      setActiveTab(tabParam as any);
+    }
+  }, [tabParam]);
 
   useEffect(() => {
-    // Load local address cache
-    const savedAddress = localStorage.getItem('uniformTrends_savedAddress');
-    if (savedAddress) {
-      try {
-        setAddressData(JSON.parse(savedAddress));
-      } catch (e) { }
-    }
-
-    let isMounted = true;
-
-    const handleSessionChange = (s: any) => {
-      if (!isMounted) return;
-
-      const token = s?.access_token;
-      // Skip if the session token hasn't changed to prevent duplicate requests / token refresh loops
-      if (token === lastProcessedTokenRef.current) {
-        setIsLoading(false);
-        return;
-      }
-
-      lastProcessedTokenRef.current = token;
-      setSession(s);
-      setIsLoading(false);
-
-      if (s?.user) {
-        fetchOrders(s.user.id, s.user.email || '', s.access_token);
-        checkAdminStatus(s);
-      } else {
-        setIsAdmin(false);
-      }
-    };
-
-    // Initial session check
-    supabase.auth.getSession().then(({ data: { session: s } }) => {
-      if (isMounted) {
-        handleSessionChange(s);
-      }
-    });
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, s) => {
-      if (isMounted && (event === 'SIGNED_IN' || event === 'SIGNED_OUT' || event === 'TOKEN_REFRESHED' || event === 'USER_UPDATED')) {
-        handleSessionChange(s);
-      }
-    });
-
-    return () => {
-      isMounted = false;
-      subscription.unsubscribe();
-    };
-  }, []);
-
-  const fetchOrders = async (userId: string, userEmail: string, token: string) => {
-    try {
+    const loadAccountData = async () => {
       setOrdersLoading(true);
-      const apiUrl = getApiUrl();
-      const response = await fetch(`${apiUrl}/api/orders/user/${userId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      });
-      let data = [];
-      if (response.ok) {
-        data = await response.json();
-      }
+      try {
+        const orderList = await mockOrderService.getOrders(
+          session?.user?.id,
+          session?.user?.email
+        );
+        setOrders(orderList);
 
-      // Email fallback
-      if (data.length === 0 && userEmail) {
-        const res = await fetch(`${apiUrl}/api/orders/my-email-orders`, {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        });
-        if (res.ok) {
-          data = await res.json();
+        // Load saved address
+        const saved = localStorage.getItem('uniformTrends_savedAddress');
+        if (saved) {
+          setAddressData(JSON.parse(saved));
+        } else if (session?.user) {
+          const parts = (session.user.user_metadata?.full_name || '').split(' ');
+          setAddressData({
+            firstName: parts[0] || 'Alex',
+            lastName: parts.slice(1).join(' ') || 'Morgan',
+            street: '402 Palm Residency, Bandra West',
+            city: 'Mumbai',
+            state: 'Maharashtra',
+            pin: '400050',
+            phone: '+91 98765 43210'
+          });
         }
+      } catch (e) {
+        console.error('Error loading orders:', e);
+      } finally {
+        setOrdersLoading(false);
       }
-      setOrders(data);
-    } catch (err) {
-      console.error("Failed to fetch orders", err);
-    } finally {
-      setOrdersLoading(false);
-    }
-  };
+    };
 
-  const checkAdminStatus = async (s: any) => {
-    if (!s) return;
-    try {
-      const apiUrl = getApiUrl();
-      const res = await fetch(`${apiUrl}/api/admin/check`, {
-        headers: {
-          'Authorization': `Bearer ${s.access_token}`
-        }
-      });
-      if (res.ok) {
-        setIsAdmin(true);
-      } else {
-        setIsAdmin(false);
-      }
-    } catch (err) {
-      console.error('Failed to check admin status', err);
-    }
-  };
+    loadAccountData();
+  }, [session]);
 
-  const handleAuth = async (e: React.FormEvent) => {
+  const handleAuthSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setAuthLoading(true);
     setAuthError('');
 
     try {
       if (authMode === 'register') {
-        const { error } = await supabase.auth.signUp({
+        await mockAuthService.signUp({
           email,
           password,
           options: { data: { full_name: fullName } }
         });
-        if (error) throw error;
-        setSuccessMsg('Registration successful! Please check your email.');
-        setAuthMode('login');
+        setSuccessMsg('Account created successfully!');
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        if (redirectTo) {
-          navigate(`/${redirectTo}`);
-        }
+        await mockAuthService.signInWithPassword({ email, password });
+        setSuccessMsg('Logged in successfully!');
       }
     } catch (err: any) {
       setAuthError(err.message || 'Authentication failed');
@@ -186,373 +109,496 @@ export default function Account() {
     }
   };
 
+  const handleDemoLogin = async () => {
+    setAuthLoading(true);
+    await mockAuthService.signInWithPassword({
+      email: 'demo@clothingstore.com'
+    });
+    setSuccessMsg('Logged in with Demo Account!');
+    setAuthLoading(false);
+  };
+
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await mockAuthService.signOut();
     navigate('/');
   };
 
   const handleCancelOrder = async (orderId: string) => {
-    const reason = window.prompt('Please enter a reason for cancellation:');
+    const reason = window.prompt('Please provide a reason for cancellation (e.g. ordered wrong size):');
     if (!reason) return;
 
-    try {
-      const apiUrl = getApiUrl();
-      const token = session?.access_token;
-      const res = await fetch(`${apiUrl}/api/orders/${orderId}`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token || ''}`
-        },
-        body: JSON.stringify({ status: 'cancelled', cancellation_reason: reason })
-      });
-      if (res.ok) {
-        setSuccessMsg('Order cancelled successfully.');
-        setTimeout(() => setSuccessMsg(''), 3000);
-        if (session?.user) fetchOrders(session.user.id, session.user.email || '', session.access_token);
-      } else {
-        const errData = await res.json();
-        alert(`Failed to cancel: ${errData.error || 'Unknown error'}`);
-      }
-    } catch (err: any) {
-      console.error("Failed to cancel order", err);
-      alert(`Error cancelling order: ${err.message}`);
-    }
+    await mockOrderService.cancelOrder(orderId, reason);
+    const updated = await mockOrderService.getOrders(session?.user?.id, session?.user?.email);
+    setOrders(updated);
+    setSuccessMsg('Order cancelled successfully.');
+    setTimeout(() => setSuccessMsg(''), 4000);
   };
 
-  if (isLoading) return <AccountSkeleton />;
+  const handleSaveAddress = (e: React.FormEvent) => {
+    e.preventDefault();
+    localStorage.setItem('uniformTrends_savedAddress', JSON.stringify(addressData));
+    setSuccessMsg('Shipping address updated successfully!');
+    setTimeout(() => setSuccessMsg(''), 4000);
+  };
 
-  if (!session) {
+  // If not logged in, show Auth Gate
+  if (!isLoggedIn || !session?.user) {
     return (
-      <div className="pt-32 pb-24 min-h-screen bg-canvas flex items-center justify-center">
-        <SEO
-          title="Sign In & Register"
-          description="Login or register for a Uniform Trends customer account to complete purchases and view your order updates."
-          robots="noindex, nofollow"
-        />
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-surface-card p-8 sm:p-12 rounded-none shadow-[0_2px_10px_rgba(0,0,0,0.05)] border border-hairline w-full max-w-md"
-        >
-          <h1 className="text-3xl font-bold text-ink mb-2 text-center">
-            {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
-          </h1>
-          <form className="space-y-5 mt-8" onSubmit={handleAuth}>
-            {redirectTo === 'checkout' && (
-              <div className="p-4 mb-6 bg-surface-elevated border border-hairline-strong text-ink rounded-none text-sm font-bold flex items-center gap-3">
-                <ShieldCheck className="text-ink shrink-0" size={18} />
-                <span>Please login or signup to complete your purchase.</span>
-              </div>
-            )}
-            {authError && <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 rounded-none text-xs">{authError}</div>}
-            {successMsg && <div className="p-3 bg-green-500/10 border border-green-500/20 text-green-600 rounded-none text-xs">{successMsg}</div>}
+      <div className="pt-32 pb-24 min-h-[85vh] bg-canvas flex items-center justify-center">
+        <SEO title={`Sign In | ${STORE_NAME}`} description="Sign in to your customer account." />
 
-            {authMode === 'register' && (
-              <div>
-                <label className="block text-sm font-semibold text-ink mb-2">Full Name</label>
-                <div className="relative">
-                  <User className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                  <input required value={fullName} onChange={e => setFullName(e.target.value)} type="text" placeholder="John Doe" className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
-                </div>
-              </div>
-            )}
-            <div>
-              <label className="block text-sm font-semibold text-ink mb-2">Email Address</label>
-              <div className="relative">
-                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                <input required value={email} onChange={e => setEmail(e.target.value)} type="email" placeholder="you@example.com" className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
-              </div>
-            </div>
-            <div>
-              <label className="block text-sm font-semibold text-ink mb-2">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-muted" size={18} />
-                <input required value={password} onChange={e => setPassword(e.target.value)} type="password" placeholder="••••••••" minLength={6} className="w-full bg-canvas border border-hairline-strong rounded-none py-3 pl-12 pr-4 text-ink focus:border-ink outline-none" />
-              </div>
-            </div>
+        <div className="bg-white border border-hairline p-8 sm:p-12 w-full max-w-md shadow-lg">
+          <div className="text-center mb-8">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Customer Portal</span>
+            <h1 className="text-2xl sm:text-3xl font-black uppercase tracking-tight text-ink">
+              {authMode === 'login' ? 'Welcome Back' : 'Create Account'}
+            </h1>
+          </div>
 
-            <button type="submit" disabled={authLoading} className="btn-primary w-full mt-4 disabled:opacity-70">
-              {authLoading ? 'Processing...' : (authMode === 'login' ? 'Sign In' : 'Register')}
-            </button>
-          </form>
-          <div className="mt-8 text-center">
-            <button onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')} className="text-sm font-bold text-ink hover:text-m-red transition-colors">
-              {authMode === 'login' ? "Don't have an account? Sign Up" : "Already have an account? Log In"}
+          {/* Quick Demo Login Pill */}
+          <div className="mb-6 p-4 bg-surface-soft border border-hairline text-center">
+            <p className="text-xs text-muted mb-2 font-medium">Testing this prototype? Log in with 1-click:</p>
+            <button
+              onClick={handleDemoLogin}
+              className="w-full bg-ink text-white text-xs font-bold uppercase tracking-wider py-2.5 hover:bg-neutral-800 transition-colors"
+            >
+              1-Click Demo Login (Alex Morgan)
             </button>
           </div>
-        </motion.div>
+
+          <div className="relative flex py-2 items-center mb-4">
+            <div className="flex-grow border-t border-hairline"></div>
+            <span className="flex-shrink mx-4 text-[10px] uppercase tracking-wider font-bold text-muted">Or enter credentials</span>
+            <div className="flex-grow border-t border-hairline"></div>
+          </div>
+
+          {authError && <div className="p-3 mb-4 bg-red-500/10 border border-red-500/20 text-red-600 text-xs font-bold">{authError}</div>}
+          {successMsg && <div className="p-3 mb-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-bold">{successMsg}</div>}
+
+          <form onSubmit={handleAuthSubmit} className="space-y-4">
+            {authMode === 'register' && (
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  placeholder="Alex Morgan"
+                  className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                />
+              </div>
+            )}
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">Email Address</label>
+              <input
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="you@example.com"
+                className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">Password</label>
+              <input
+                type="password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={authLoading}
+              className="w-full btn-primary py-3.5 text-xs font-bold uppercase tracking-wider"
+            >
+              {authLoading ? 'Signing in...' : authMode === 'login' ? 'Sign In' : 'Register Account'}
+            </button>
+          </form>
+
+          <div className="mt-6 text-center">
+            <button
+              onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+              className="text-xs font-bold text-ink underline"
+            >
+              {authMode === 'login' ? "Don't have an account? Sign Up" : "Already have an account? Sign In"}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="pt-32 pb-24 bg-canvas min-h-screen text-body-text">
-      <SEO
-        title="My Account"
-        description="Uniform Trends customer account dashboard. Access your orders, billing address, profile, and security settings."
-        robots="noindex, nofollow"
-      />
-      <div className="container mx-auto px-4 max-w-[1600px]">
+    <div className="pt-28 pb-24 bg-canvas min-h-screen">
+      <SEO title={`My Account | ${STORE_NAME}`} description="Manage your customer account and view past orders." />
+
+      <div className="container mx-auto px-4 lg:px-8 max-w-6xl">
         {successMsg && (
-          <div className="mb-6 p-4 bg-success/10 border border-success/20 text-success rounded-none text-sm font-bold text-center">
-            {successMsg}
+          <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-bold flex items-center gap-2">
+            <CheckCircle2 size={16} />
+            <span>{successMsg}</span>
           </div>
         )}
-        <div className="flex flex-col lg:grid lg:grid-cols-4 gap-8">
-          <aside className="lg:col-span-1">
-            <div className="bg-surface-card rounded-none shadow-sm border border-hairline p-4 md:p-6 sticky top-28">
-              <div className="flex items-center gap-4 mb-4 md:mb-8 md:pb-6 md:border-b border-hairline">
-                <div className="w-14 h-14 bg-ink text-white rounded-none flex items-center justify-center text-xl font-bold uppercase">
-                  {session.user.user_metadata?.full_name?.substring(0, 2) || session.user.email?.substring(0, 2)}
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          {/* Sidebar (4 cols) */}
+          <aside className="lg:col-span-4">
+            <div className="bg-white border border-hairline p-6 sticky top-28 space-y-6">
+              {/* User Avatar Badge */}
+              <div className="flex items-center gap-4 pb-6 border-b border-hairline">
+                <div className="w-14 h-14 bg-ink text-white flex items-center justify-center font-black text-xl uppercase">
+                  {session.user.user_metadata?.full_name?.charAt(0) || session.user.email?.charAt(0) || 'U'}
                 </div>
-                <div>
-                  <h3 className="font-bold text-ink">{session.user.user_metadata?.full_name || 'My Account'}</h3>
-                  <p className="text-sm text-muted break-all">{session.user.email}</p>
+                <div className="min-w-0">
+                  <h3 className="font-bold text-sm text-ink truncate">
+                    {session.user.user_metadata?.full_name || 'Valued Customer'}
+                  </h3>
+                  <p className="text-xs text-muted truncate">{session.user.email}</p>
+                  <span className="inline-block mt-1 bg-surface-elevated text-ink text-[10px] font-bold px-2 py-0.5 border border-hairline">
+                    Verified Customer
+                  </span>
                 </div>
               </div>
 
-              {isAdmin && (
-                <Link 
-                  to="/admin-8822"
-                  className="flex items-center gap-3 w-full p-3 mb-6 bg-ink text-white rounded-none font-bold hover:bg-black/90 transition-all shadow-sm border border-ink"
-                >
-                  <ShieldCheck size={18} /> Admin Dashboard
-                </Link>
-              )}
-
-
-              <nav className="flex lg:flex-col gap-1 md:gap-2 overflow-x-auto lg:overflow-visible scrollbar-hide -mx-2 px-2 pb-2 lg:p-0 justify-between lg:justify-start">
+              {/* Navigation Tabs */}
+              <nav className="space-y-1">
                 {[
-                  { id: 'profile', label: 'Profile', icon: User },
-                  { id: 'orders', label: 'Orders', icon: Package },
-                  { id: 'address', label: 'Address', icon: MapPin },
-                  { id: 'settings', label: 'Settings', icon: Settings },
-                ].map(tab => (
+                  { id: 'orders', label: 'Order History', icon: Package, count: orders.length },
+                  { id: 'profile', label: 'Profile Details', icon: User },
+                  { id: 'address', label: 'Saved Shipping Address', icon: MapPin },
+                  { id: 'settings', label: 'Security & Preferences', icon: Settings },
+                ].map((tab) => (
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id as any)}
                     className={cn(
-                      "flex flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-none transition-all min-w-0 flex-1 lg:flex-none lg:w-full",
-                      activeTab === tab.id ? "bg-canvas text-ink font-bold shadow-sm" : "text-muted hover:bg-canvas hover:text-ink font-medium"
+                      "w-full flex items-center justify-between p-3 text-xs font-bold uppercase tracking-wider transition-colors",
+                      activeTab === tab.id
+                        ? "bg-ink text-white"
+                        : "text-muted hover:bg-surface-elevated hover:text-ink"
                     )}
                   >
-                    <tab.icon size={20} className="sm:w-[18px]" />
-                    <span className="text-[10px] sm:text-sm whitespace-nowrap">{tab.label}</span>
+                    <div className="flex items-center gap-3">
+                      <tab.icon size={16} />
+                      <span>{tab.label}</span>
+                    </div>
+                    {tab.count !== undefined && (
+                      <span className={cn(
+                        "text-[10px] px-1.5 py-0.5 font-bold",
+                        activeTab === tab.id ? "bg-white text-ink" : "bg-canvas text-muted border border-hairline"
+                      )}>
+                        {tab.count}
+                      </span>
+                    )}
                   </button>
                 ))}
-                <div className="hidden lg:block h-px bg-hairline my-2" />
-                <button onClick={handleLogout} className="flex lg:hidden flex-col sm:flex-row items-center gap-1 sm:gap-3 p-2 sm:p-3 rounded-none text-m-red hover:bg-m-red/10 font-medium transition-colors min-w-0 flex-1">
-                   <Lock size={20} className="sm:w-[18px]" />
-                   <span className="text-[10px] sm:text-sm whitespace-nowrap">Logout</span>
+
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-3 p-3 text-xs font-bold uppercase tracking-wider text-red-600 hover:bg-red-50 transition-colors pt-4 border-t border-hairline mt-4"
+                >
+                  <Lock size={16} />
+                  <span>Sign Out</span>
                 </button>
               </nav>
-              <button onClick={handleLogout} className="hidden lg:flex items-center gap-3 w-full p-3 rounded-none text-m-red hover:bg-m-red/10 font-medium transition-colors">
-                <Lock size={18} /> Logout
-              </button>
             </div>
           </aside>
 
-          <div className="lg:col-span-3">
+          {/* Main Content Area (8 cols) */}
+          <div className="lg:col-span-8">
             <AnimatePresence mode="wait">
+              {/* ORDERS TAB */}
+              {activeTab === 'orders' && (
+                <motion.div
+                  key="orders"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-4"
+                >
+                  <div className="flex items-center justify-between pb-4 border-b border-hairline">
+                    <h2 className="text-xl font-black uppercase tracking-tight text-ink">
+                      Order History ({orders.length})
+                    </h2>
+                    <span className="text-xs text-muted">Mock System Persistence</span>
+                  </div>
+
+                  {ordersLoading ? (
+                    <div className="space-y-3">
+                      {[1, 2].map((i) => (
+                        <div key={i} className="h-32 bg-white border border-hairline animate-pulse" />
+                      ))}
+                    </div>
+                  ) : orders.length === 0 ? (
+                    <div className="text-center py-16 bg-white border border-hairline">
+                      <Package size={40} className="mx-auto text-muted mb-3 opacity-30" />
+                      <h3 className="font-bold text-ink mb-1">No Orders Found</h3>
+                      <p className="text-xs text-muted mb-6">You have not placed any orders yet.</p>
+                      <Link to="/shop" className="btn-primary py-3 px-8 text-xs">Start Shopping</Link>
+                    </div>
+                  ) : (
+                    orders.map((order) => (
+                      <div key={order.id} className="bg-white border border-hairline p-6 space-y-4">
+                        <div className="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-hairline">
+                          <div>
+                            <span className="font-mono text-xs font-black text-ink">{order.id}</span>
+                            <p className="text-[11px] text-muted">
+                              Placed on {new Date(order.created_at).toLocaleDateString()} • {order.items?.length || 0} items
+                            </p>
+                          </div>
+
+                          <div className="flex items-center gap-3">
+                            <span className={cn(
+                              "text-[10px] font-black uppercase tracking-widest px-3 py-1 border",
+                              order.status === 'delivered' || order.status === 'completed'
+                                ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                                : order.status === 'cancelled'
+                                ? "bg-red-50 text-red-700 border-red-200"
+                                : "bg-amber-50 text-amber-800 border-amber-200"
+                            )}>
+                              {order.status}
+                            </span>
+                            <span className="text-base font-black text-ink">
+                              {formatCurrency(order.total_amount)}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Items Preview */}
+                        <div className="space-y-2">
+                          {(order.items || order.order_items || []).map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-xs py-1">
+                              <div className="flex items-center gap-3">
+                                {item.image && (
+                                  <img src={item.image} alt="" className="w-10 h-12 object-cover bg-surface-soft border border-hairline" />
+                                )}
+                                <div>
+                                  <p className="font-bold text-ink">{item.name || item.products?.name || 'Clothing Item'}</p>
+                                  <p className="text-muted text-[11px]">Size: {item.size} {item.color ? `• ${item.color}` : ''} • Qty: {item.quantity}</p>
+                                </div>
+                              </div>
+                              <span className="font-bold text-ink">{formatCurrency((item.price || 0) * item.quantity)}</span>
+                            </div>
+                          ))}
+                        </div>
+
+                        {/* Expandable Details */}
+                        {expandedOrder === order.id && (
+                          <div className="pt-4 border-t border-hairline text-xs space-y-3 bg-canvas p-4">
+                            <div>
+                              <span className="text-[10px] uppercase font-bold text-muted block mb-0.5">Shipping Address</span>
+                              <p className="text-ink font-medium">{order.shipping_address}</p>
+                            </div>
+                            {order.tracking_number && (
+                              <div>
+                                <span className="text-[10px] uppercase font-bold text-muted block mb-0.5">Tracking Number</span>
+                                <p className="font-mono text-ink font-bold">{order.tracking_number} (Express Logistics)</p>
+                              </div>
+                            )}
+                            {order.payment_method && (
+                              <div>
+                                <span className="text-[10px] uppercase font-bold text-muted block mb-0.5">Payment Method</span>
+                                <p className="text-ink font-medium">{order.payment_method}</p>
+                              </div>
+                            )}
+                            {order.cancellation_reason && (
+                              <div className="p-3 bg-red-50 text-red-700 border border-red-200">
+                                <span className="font-bold">Cancellation Reason:</span> {order.cancellation_reason}
+                              </div>
+                            )}
+                          </div>
+                        )}
+
+                        <div className="flex items-center justify-between pt-2">
+                          <button
+                            onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
+                            className="text-xs font-bold text-ink underline"
+                          >
+                            {expandedOrder === order.id ? 'Hide Details' : 'View Full Details'}
+                          </button>
+
+                          {order.status === 'processing' || order.status === 'pending' ? (
+                            <button
+                              onClick={() => handleCancelOrder(order.id)}
+                              className="text-xs font-bold text-red-600 hover:underline"
+                            >
+                              Cancel Order
+                            </button>
+                          ) : null}
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </motion.div>
+              )}
+
+              {/* PROFILE TAB */}
               {activeTab === 'profile' && (
-                <motion.div key="profile" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><User className="text-ink" /> Profile Details</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div className="p-4 bg-canvas rounded-none border border-hairline">
-                      <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Full Name</p>
-                      <p className="font-bold text-ink">{session.user.user_metadata?.full_name || 'N/A'}</p>
+                <motion.div
+                  key="profile"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-white border border-hairline p-8 space-y-6"
+                >
+                  <h2 className="text-xl font-black uppercase tracking-tight text-ink pb-4 border-b border-hairline">
+                    Customer Profile
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-xs">
+                    <div className="p-4 bg-canvas border border-hairline">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Full Name</span>
+                      <p className="text-sm font-bold text-ink">{session.user.user_metadata?.full_name || 'Alex Morgan'}</p>
                     </div>
-                    <div className="p-4 bg-canvas rounded-none border border-hairline">
-                      <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Email</p>
-                      <p className="font-bold text-ink">{session.user.email}</p>
+                    <div className="p-4 bg-canvas border border-hairline">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Email</span>
+                      <p className="text-sm font-bold text-ink">{session.user.email}</p>
                     </div>
-                    <div className="p-4 bg-canvas rounded-none border border-hairline">
-                      <p className="text-xs text-muted uppercase font-bold tracking-widest mb-1">Account Created</p>
-                      <p className="font-bold text-ink">{new Date(session.user.created_at).toLocaleDateString()}</p>
+                    <div className="p-4 bg-canvas border border-hairline">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Phone</span>
+                      <p className="text-sm font-bold text-ink">{session.user.user_metadata?.phone || '+91 98765 43210'}</p>
+                    </div>
+                    <div className="p-4 bg-canvas border border-hairline">
+                      <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Member Since</span>
+                      <p className="text-sm font-bold text-ink">{new Date(session.user.created_at).toLocaleDateString()}</p>
                     </div>
                   </div>
                 </motion.div>
               )}
 
+              {/* ADDRESS TAB */}
               {activeTab === 'address' && (
-                <motion.div key="address" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-2 flex items-center gap-2"><MapPin className="text-ink" /> Saved Address</h2>
-                  <p className="text-muted text-sm mb-6">Manage your primary shipping address for a faster checkout experience.</p>
+                <motion.div
+                  key="address"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-white border border-hairline p-8 space-y-6"
+                >
+                  <h2 className="text-xl font-black uppercase tracking-tight text-ink pb-4 border-b border-hairline">
+                    Saved Shipping Address
+                  </h2>
 
-                  <form onSubmit={(e) => {
-                    e.preventDefault();
-                    localStorage.setItem('uniformTrends_savedAddress', JSON.stringify(addressData));
-                    setSuccessMsg('Address updated successfully!');
-                    setTimeout(() => setSuccessMsg(''), 3000);
-                  }} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <form onSubmit={handleSaveAddress} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">First Name</label>
-                        <input type="text" required value={addressData.firstName} onChange={(e) => setAddressData({ ...addressData, firstName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">First Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={addressData.firstName}
+                          onChange={(e) => setAddressData({ ...addressData, firstName: e.target.value })}
+                          className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                        />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">Last Name</label>
-                        <input type="text" required value={addressData.lastName} onChange={(e) => setAddressData({ ...addressData, lastName: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">Last Name</label>
+                        <input
+                          type="text"
+                          required
+                          value={addressData.lastName}
+                          onChange={(e) => setAddressData({ ...addressData, lastName: e.target.value })}
+                          className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                        />
                       </div>
                     </div>
+
                     <div>
-                      <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">Street Address</label>
-                      <input type="text" required value={addressData.street} onChange={(e) => setAddressData({ ...addressData, street: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                      <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">Street Address</label>
+                      <input
+                        type="text"
+                        required
+                        value={addressData.street}
+                        onChange={(e) => setAddressData({ ...addressData, street: e.target.value })}
+                        className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                      />
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">City</label>
-                        <input type="text" required value={addressData.city} onChange={(e) => setAddressData({ ...addressData, city: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">City</label>
+                        <input
+                          type="text"
+                          required
+                          value={addressData.city}
+                          onChange={(e) => setAddressData({ ...addressData, city: e.target.value })}
+                          className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                        />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">State</label>
-                        <input type="text" required value={addressData.state} onChange={(e) => setAddressData({ ...addressData, state: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">State</label>
+                        <input
+                          type="text"
+                          required
+                          value={addressData.state}
+                          onChange={(e) => setAddressData({ ...addressData, state: e.target.value })}
+                          className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                        />
                       </div>
                       <div>
-                        <label className="block text-xs font-bold text-muted uppercase tracking-widest mb-1">PIN Code</label>
-                        <input type="text" required value={addressData.pin} onChange={(e) => setAddressData({ ...addressData, pin: e.target.value })} className="w-full bg-canvas border border-hairline rounded-none px-4 py-3 text-ink outline-none focus:border-ink transition-colors" />
+                        <label className="block text-xs font-bold uppercase tracking-widest text-muted mb-1">PIN Code</label>
+                        <input
+                          type="text"
+                          required
+                          value={addressData.pin}
+                          onChange={(e) => setAddressData({ ...addressData, pin: e.target.value })}
+                          className="w-full bg-canvas border border-hairline px-4 py-3 text-xs text-ink outline-none focus:border-ink"
+                        />
                       </div>
                     </div>
-                    <div className="pt-4">
-                      <button type="submit" className="btn-primary px-8">Save Address</button>
-                    </div>
+
+                    <button type="submit" className="btn-primary py-3.5 px-8 text-xs">
+                      Save Shipping Address
+                    </button>
                   </form>
                 </motion.div>
               )}
 
-              {activeTab === 'orders' && (
-                <motion.div key="orders" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Package className="text-ink" /> Order History</h2>
-                  {ordersLoading ? (
-                    <div className="space-y-4">
-                      {[...Array(3)].map((_, i) => <div key={i} className="h-24 bg-canvas animate-pulse rounded-none" />)}
-                    </div>
-                  ) : orders.length === 0 ? (
-                    <div className="text-center py-20 bg-canvas rounded-none border border-hairline">
-                      <Package size={64} className="mx-auto text-muted mb-4 opacity-10" />
-                      <p className="text-muted text-lg mb-6">No orders found in your account.</p>
-                      <Link to="/shop" className="btn-primary inline-flex px-12">Start Shopping</Link>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      {orders.map(order => (
-                        <div key={order.id} className="border border-hairline rounded-none overflow-hidden bg-canvas/30 transition-all hover:border-ink/30">
-                          <div className="bg-canvas p-4 flex justify-between items-center border-b border-hairline">
-                            <div>
-                              <p className="text-[10px] uppercase tracking-widest text-muted font-bold mb-1">UK-{order.id.substring(0, 8)}</p>
-                              <p className="text-sm font-bold text-ink">Placed on {new Date(order.created_at).toLocaleDateString()}</p>
-                            </div>
-                            <div className={cn(
-                              "px-4 py-1 rounded-none text-[10px] font-black uppercase tracking-widest border shadow-sm",
-                              order.status === 'pending' ? "bg-warning/10 text-warning border-warning/20" :
-                                order.status === 'completed' ? "bg-success/10 text-success border-success/20" :
-                                  "bg-m-red/10 text-m-red border-m-red/20"
-                            )}>
-                              {order.status}
-                            </div>
-                          </div>
-                          <div className="p-4 flex justify-between items-end">
-                            <div className="space-y-1">
-                              <p className="text-xs text-muted">Total Amount</p>
-                              <p className="text-xl font-black text-ink">{formatCurrency(order.total_amount)}</p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
-                                className="text-[10px] bg-canvas text-ink px-3 py-1.5 rounded-none border border-hairline font-bold uppercase hover:border-ink transition-all"
-                              >
-                                {expandedOrder === order.id ? 'Hide Details' : 'View Details'}
-                              </button>
-                              {order.status === 'pending' && (
-                                <button onClick={() => handleCancelOrder(order.id)} className="text-[10px] bg-m-red/10 text-m-red px-3 py-1.5 rounded-none border border-m-red/20 font-bold uppercase hover:bg-m-red hover:text-white transition-all">
-                                  Cancel Order
-                                </button>
-                              )}
-                            </div>
-                          </div>
-                          {expandedOrder === order.id && (
-                            <div className="p-4 bg-canvas border-t border-hairline grid grid-cols-1 md:grid-cols-2 gap-6">
-                              <div>
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Delivery Details</h4>
-                                <div className="space-y-4">
-                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
-                                    <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Contact Name</p>
-                                    <p className="text-sm font-bold text-ink">{order.shipping_address.split(',')[0] || 'N/A'}</p>
-                                  </div>
-                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
-                                    <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Shipping Address</p>
-                                    <p className="text-sm text-ink leading-relaxed">
-                                      {order.shipping_address.replace(/\((.*?)\)/g, '').split('\n\n---')[0].split(',').slice(1).join(', ').trim()}
-                                    </p>
-                                  </div>
-                                  <div className="bg-surface-card p-4 rounded-none border border-hairline shadow-sm">
-                                    <p className="text-[10px] uppercase text-muted font-bold tracking-widest mb-1">Payment Method</p>
-                                    <p className="text-sm font-bold text-ink">Online Payment / Bulk Invoice</p>
-                                  </div>
-                                </div>
-                              </div>
-                              <div>
-                                <h4 className="text-xs font-bold uppercase tracking-widest text-muted mb-4">Order Items</h4>
-                                {order.order_items && order.order_items.length > 0 ? (
-                                  <div className="space-y-3">
-                                    {order.order_items.map((item: any) => (
-                                      <div key={item.id} className="flex justify-between items-center bg-surface-card p-3 rounded-none border border-hairline shadow-sm">
-                                        <div className="flex items-center gap-3">
-                                          <div className="w-10 h-10 bg-canvas rounded-none flex items-center justify-center overflow-hidden border border-hairline">
-                                            {item.products?.images?.[0] ? (
-                                              <img src={item.products.images[0]} alt="" className="w-full h-full object-cover" />
-                                            ) : (
-                                              <Package size={16} className="text-muted" />
-                                            )}
-                                          </div>
-                                          <div>
-                                            <p className="text-sm font-bold text-ink">{item.products?.name || 'Unknown Product'}</p>
-                                            <p className="text-[10px] text-muted">Qty: {item.quantity}</p>
-                                          </div>
-                                        </div>
-                                        <p className="font-bold text-ink">{formatCurrency(item.price_at_time)}</p>
-                                      </div>
-                                    ))}
-                                  </div>
-                                ) : (
-                                  <p className="text-sm text-muted">No items found for this order.</p>
-                                )}
-                              </div>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </motion.div>
-              )}
-
+              {/* SETTINGS TAB */}
               {activeTab === 'settings' && (
-                <motion.div key="settings" initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -10 }} className="bg-surface-card rounded-none border border-hairline p-8 shadow-sm">
-                  <h2 className="text-2xl font-bold text-ink mb-6 flex items-center gap-2"><Settings className="text-ink" /> Settings</h2>
-                  <div className="space-y-6">
-                    <div className="p-6 bg-canvas rounded-none border border-hairline group hover:border-ink transition-all">
-                      <div className="flex items-center gap-4 mb-4">
-                        <div className="w-10 h-10 rounded-none bg-surface-elevated flex items-center justify-center text-ink"><ShieldCheck /></div>
-                        <h3 className="font-bold text-ink">Security</h3>
-                      </div>
-                      <p className="text-sm text-muted mb-6">Manage your account security and password settings.</p>
+                <motion.div
+                  key="settings"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-white border border-hairline p-8 space-y-6"
+                >
+                  <h2 className="text-xl font-black uppercase tracking-tight text-ink pb-4 border-b border-hairline">
+                    Security & Preferences
+                  </h2>
+
+                  <div className="space-y-4 text-xs">
+                    <div className="p-6 bg-canvas border border-hairline">
+                      <h4 className="font-bold text-sm text-ink mb-1">Password & Authentication</h4>
+                      <p className="text-muted mb-4">You are currently using the mock system with instant authentication.</p>
                       <button
-                        onClick={async () => {
-                          try {
-                            const { error } = await supabase.auth.resetPasswordForEmail(session.user.email, {
-                              redirectTo: `${window.location.origin}/account`,
-                            });
-                            if (error) throw error;
-                            alert('Password reset email sent! Check your inbox.');
-                          } catch (err: any) {
-                            alert(`Error: ${err.message}`);
+                        onClick={() => alert('Password reset link sent to registered email in mock mode.')}
+                        className="btn-secondary py-2.5 px-6 text-xs"
+                      >
+                        Reset Password
+                      </button>
+                    </div>
+
+                    <div className="p-6 bg-canvas border border-hairline">
+                      <h4 className="font-bold text-sm text-ink mb-1">Local Mock Data Management</h4>
+                      <p className="text-muted mb-4">Reset stored mock orders, reviews, and address data to factory defaults.</p>
+                      <button
+                        onClick={() => {
+                          if (window.confirm('Reset all mock orders and data?')) {
+                            localStorage.clear();
+                            window.location.reload();
                           }
                         }}
-                        className="text-xs font-bold uppercase tracking-widest text-ink hover:underline"
+                        className="text-xs font-bold text-red-600 border border-red-200 bg-red-50 py-2.5 px-6 hover:bg-red-100 transition-colors"
                       >
-                        Send Password Reset Email →
+                        Reset Mock Storage
                       </button>
                     </div>
                   </div>

@@ -1,182 +1,113 @@
 import SEO from '../components/layout/SEO';
-import { motion } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { CATEGORIES } from '../constants';
-import { Camera, ArrowRight, ShieldCheck, Star } from 'lucide-react';
+import { ArrowRight, Sparkles } from 'lucide-react';
+import { STORE_NAME } from '../constants';
 
-const showcaseImages = [
-  { 
-    url: '/products/gen_school_1.png', 
-    title: 'School Uniforms Showcase', 
-    category: 'School',
-    desc: 'Premium school blazers, shirts, and trousers manufactured for durability.'
+const EDITORIAL_COLLECTIONS = [
+  {
+    title: 'The Minimalist Wardrobe',
+    season: 'Year-Round Capsule',
+    image: 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=1200&auto=format&fit=crop&q=80',
+    description: 'Crisp organic cottons, clean lines, and unpretentious silhouettes designed to anchor your daily rotation with effortless refinement.',
+    link: '/shop?category=Tops+%26+Shirts'
   },
-  { 
-    url: '/products/gen_corporate_1.png', 
-    title: 'Corporate Attire Gallery', 
-    category: 'Corporate',
-    desc: 'Professional suits and administrative wear for Indian corporate sectors.'
+  {
+    title: 'Architectural Outerwear & Trench',
+    season: 'Autumn / Winter',
+    image: 'https://images.unsplash.com/photo-1539533018447-63fcce2678e3?w=1200&auto=format&fit=crop&q=80',
+    description: 'Virgin wool blends, oversized storm flaps, and double-breasted structuring tailored for cold-weather elegance.',
+    link: '/shop?category=Outerwear'
   },
-  { 
-    url: '/products/gen_hospital_1.png', 
-    title: 'Medical Scrubs Collection', 
-    category: 'Hospital',
-    desc: 'Antimicrobial hospital scrubs and lab coats for healthcare professionals.'
+  {
+    title: '450 GSM Heavy Streetwear',
+    season: 'Essential Fleece',
+    image: 'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=1200&auto=format&fit=crop&q=80',
+    description: 'Dense French terry hoodies, drop-shoulder cuts, and heavy canvas carpenter trousers built for sculptural streetwear drape.',
+    link: '/shop?category=Streetwear'
   },
-  { 
-    url: '/products/gen_factory_1.png', 
-    title: 'Industrial Workwear Gallery', 
-    category: 'Factory',
-    desc: 'Safety-first industrial uniforms for factory and mining operations.'
+  {
+    title: 'Executive Tailoring & Italian Wool',
+    season: 'Occasion & Business',
+    image: 'https://images.unsplash.com/photo-1507679799987-c73779587ccf?w=1200&auto=format&fit=crop&q=80',
+    description: 'Unstructured blazers, sharp pleats, and crease-resistant weaves engineered for boardroom presence and evening dinners.',
+    link: '/shop?category=Outerwear'
   },
-  { 
-    url: '/products/gen_hotel_1.png', 
-    title: 'Hospitality Uniforms', 
-    category: 'Hotels',
-    desc: 'Elegant uniforms for hotel staff, chefs, and front desk administration.'
+  {
+    title: 'Satin & Evening Silhouettes',
+    season: 'Evening Capsule',
+    image: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=1200&auto=format&fit=crop&q=80',
+    description: 'Bias-cut mulberry satin slip dresses and fluid separates with lustrous sheen and second-skin comfort.',
+    link: '/shop?category=Dresses'
   },
-  { 
-    url: '/products/gen_defence_1.png', 
-    title: 'Defence & Tactical Gear', 
-    category: 'Defence',
-    desc: 'High-performance tactical uniforms for security and paramilitary forces.'
+  {
+    title: 'Studio Movement & Active Sets',
+    season: 'Performance Series',
+    image: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?w=1200&auto=format&fit=crop&q=80',
+    description: 'Seamless micro-ribbed compression knitwear crafted for high-performance yoga, studio conditioning, and recovery.',
+    link: '/shop?category=Activewear'
   }
 ];
 
 export default function Collections() {
   return (
-    <div className="pt-32 pb-24 min-h-screen bg-canvas">
+    <div className="pt-28 pb-24 bg-canvas min-h-screen">
       <SEO
-        title="Uniform Collections Showcase | Best Uniform PNG Gallery India"
-        description="Explore our premium uniform image gallery. High-quality PNG showcase of school uniforms, corporate wear, and medical scrubs by Uniform Trends."
-        keywords="uniform images PNG, school uniform gallery, corporate wear showcase, hospital scrubs photos, Uniform Trends gallery"
-      >
-        <script type="application/ld+json">
-          {JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "ImageGallery",
-            "name": "Uniform Trends Collections",
-            "description": "A high-quality showcase of premium uniforms manufactured in India.",
-            "image": showcaseImages.map(img => `https://uniformtrends.in${img.url}`)
-          })}
-        </script>
-      </SEO>
+        title={`Lookbook & Collections | ${STORE_NAME}`}
+        description="Explore the seasonal lookbooks and curated capsules."
+      />
 
-      <div className="container mx-auto px-4">
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="max-w-4xl mx-auto text-center mb-20"
-        >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-surface-elevated border border-hairline-strong text-ink rounded-full mb-6 font-bold text-sm uppercase tracking-widest shadow-sm">
-            <Camera size={16} />
-            Visual Showcase
+      <div className="container mx-auto px-4 lg:px-8">
+        {/* Header */}
+        <div className="text-center max-w-2xl mx-auto mb-16 space-y-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-surface-card border border-hairline text-xs font-bold uppercase tracking-widest text-ink">
+            <Sparkles size={12} />
+            <span>Seasonal Lookbooks</span>
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold text-ink mb-6 tracking-tight">Our Premium Collections</h1>
-          <p className="text-xl text-muted font-light leading-relaxed">
-            High-definition visual representation of our manufacturing excellence. 
-            Google recognizes our quality through precision-stitched PNG assets designed for durability.
+          <h1 className="text-4xl sm:text-5xl font-black uppercase tracking-tight text-ink">
+            Curated Capsules
+          </h1>
+          <p className="text-sm text-muted leading-relaxed">
+            Each collection explores the relationship between architectural silhouette, tactile textiles, and functional everyday durability.
           </p>
-        </motion.div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-24">
-          {showcaseImages.map((img, idx) => (
-            <motion.div
-              key={img.url}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="group bg-surface-card rounded-3xl overflow-hidden border border-hairline shadow-lg hover:shadow-2xl transition-all duration-500"
-            >
-              <div className="aspect-[4/5] relative overflow-hidden bg-canvas">
-                <img 
-                  src={img.url} 
-                  alt={img.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" 
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute bottom-6 left-6 right-6 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                  <Link 
-                    to={`/shop?category=${encodeURIComponent(img.category)}`}
-                    className="w-full bg-white text-ink font-bold py-3 rounded-xl flex items-center justify-center gap-2"
-                  >
-                    View Category <ArrowRight size={18} />
-                  </Link>
-                </div>
-              </div>
-              <div className="p-8">
-                <div className="flex items-center gap-2 mb-3">
-                  <ShieldCheck size={16} className="text-ink" />
-                  <span className="text-[11px] font-bold uppercase tracking-widest text-ink">{img.category}</span>
-                </div>
-                <h3 className="text-2xl font-bold text-ink mb-2">{img.title}</h3>
-                <p className="text-muted text-sm font-light leading-relaxed mb-6">{img.desc}</p>
-                <div className="flex items-center gap-1 text-warning">
-                  {[...Array(5)].map((_, i) => <Star key={i} size={14} fill="currentColor" />)}
-                  <span className="text-muted text-xs ml-2 font-medium">Industry Standard</span>
-                </div>
-              </div>
-            </motion.div>
-          ))}
         </div>
 
-        {/* Expanded SEO & Catalog Styling Guidelines */}
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-surface-card p-8 md:p-16 rounded-[40px] border border-hairline shadow-xl max-w-5xl mx-auto text-left"
-        >
-          <h2 className="text-3xl font-bold text-ink mb-8 text-center tracking-tight">Designing a Unified Corporate & School Collection</h2>
-          <div className="space-y-8 text-muted font-light leading-relaxed text-sm">
-            <p>
-              At Uniform Trends, we design our uniform collections with a focus on institutional identity and day-long practicality. Every garment type undergoes testing to ensure comfort under variable weather conditions. Our design process matches school color palettes and corporate brand guides to deliver durable clothing.
-            </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div>
-                <h4 className="font-bold text-ink mb-2">School & Academic Uniform Collections</h4>
-                <p className="mb-2">
-                  Academic uniform collections need to look smart while remaining comfortable. Our academic apparel is made with breathable cotton-polyester blends that are easy to launder.
-                </p>
-                <p>
-                  Features like adjustable waistbands in trousers, double-stitch reinforcements on active friction spots, and colorfast plaids ensure our school uniforms look great all year.
-                </p>
+        {/* Lookbooks Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+          {EDITORIAL_COLLECTIONS.map((col, idx) => (
+            <div key={idx} className="bg-white border border-hairline group flex flex-col justify-between">
+              <div className="relative aspect-[16/10] overflow-hidden bg-surface-soft border-b border-hairline">
+                <img
+                  src={col.image}
+                  alt={col.title}
+                  loading="lazy"
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+                <span className="absolute top-4 left-4 bg-ink text-white text-[10px] font-black uppercase px-2.5 py-1 tracking-wider">
+                  {col.season}
+                </span>
               </div>
-              <div>
-                <h4 className="font-bold text-ink mb-2">Corporate Wear & Administrative Collections</h4>
-                <p className="mb-2">
-                  Administrative apparel is designed to reflect your organization's core values. Our collections include executive blazers, wrinkle-resistant shirts, and tailored trousers.
-                </p>
-                <p>
-                  We prioritize premium linings and light poly-wool fabrics that feel fresh throughout long office hours. These designs project a professional corporate image.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-bold text-ink mb-2">Hospital Scrubs & Clinical Uniform Collections</h4>
-                <p className="mb-2">
-                  Medical attire requires strict fabric hygiene standards. Our scrubs and medical laboratory coats are constructed from soft, antimicrobial-treated fabrics.
-                </p>
-                <p>
-                  These garments are fade-resistant under high-temperature washing and features include quick-access utility pockets, side-slits, and reinforced necklines.
-                </p>
-              </div>
-              <div>
-                <h4 className="font-bold text-ink mb-2">Industrial Workwear & Safety Apparel</h4>
-                <p className="mb-2">
-                  Our heavy-duty industrial workwear collections are built for physical protection. We use fire-resistant materials and double-layer paneling.
-                </p>
-                <p>
-                  Additional elements like high-visibility reflective bands, bar-tack sewing at pockets, and robust fasteners ensure safety compliance in industrial environments.
-                </p>
+
+              <div className="p-8 flex flex-col justify-between flex-grow space-y-6">
+                <div>
+                  <h3 className="text-2xl font-black uppercase tracking-tight text-ink mb-2">
+                    {col.title}
+                  </h3>
+                  <p className="text-xs text-muted leading-relaxed">
+                    {col.description}
+                  </p>
+                </div>
+
+                <Link
+                  to={col.link}
+                  className="inline-flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-ink group-hover:translate-x-1 transition-transform"
+                >
+                  <span>Explore Collection</span>
+                  <ArrowRight size={14} />
+                </Link>
               </div>
             </div>
-            <p className="text-center pt-6 border-t border-hairline/30 text-xs">
-              All collections are available for custom sizing. Whether you require <Link to="/shop?category=School" className="text-ink font-semibold hover:underline">school uniform photos</Link> or <Link to="/shop?category=Corporate" className="text-ink font-semibold hover:underline">corporate wear catalogs</Link>, our resources help institutional buyers throughout India source their uniform supplies easily.
-            </p>
-          </div>
-        </motion.div>
+          ))}
+        </div>
       </div>
     </div>
   );
