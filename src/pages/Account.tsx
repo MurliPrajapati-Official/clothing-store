@@ -72,7 +72,7 @@ export default function Account() {
             city: 'Mumbai',
             state: 'Maharashtra',
             pin: '400050',
-            phone: '+91 98765 43210'
+            phone: '+91 XXXXX XXXXX'
           });
         }
       } catch (e) {
@@ -463,7 +463,7 @@ export default function Account() {
                     </div>
                     <div className="p-4 bg-canvas border border-hairline">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Phone</span>
-                      <p className="text-sm font-bold text-ink">{session.user.user_metadata?.phone || '+91 98765 43210'}</p>
+                      <p className="text-sm font-bold text-ink">{session.user.user_metadata?.phone || '+91 XXXXX XXXXX'}</p>
                     </div>
                     <div className="p-4 bg-canvas border border-hairline">
                       <span className="text-[10px] font-bold uppercase tracking-widest text-muted block mb-1">Member Since</span>

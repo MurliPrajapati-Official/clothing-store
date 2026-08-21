@@ -7,7 +7,7 @@ const DEFAULT_DEMO_USER: UserProfile = {
   id: 'usr-demo-1',
   email: 'demo@clothingstore.com',
   full_name: 'Alex Morgan',
-  phone: '+91 98765 43210',
+  phone: '+91 XXXXX XXXXX',
   organization: 'Studio Atelier',
   created_at: '2026-01-15T08:00:00Z',
   avatar_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80'

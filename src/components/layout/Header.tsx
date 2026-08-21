@@ -463,7 +463,7 @@ export default function Header() {
               <div className="pt-6 border-t border-hairline text-xs text-muted">
                 <p className="font-semibold text-ink mb-1">Customer Support</p>
                 <p>care@clothingstore.com</p>
-                <p>+91 98765 43210</p>
+                <p>+91 XXXXX XXXXX</p>
               </div>
             </motion.div>
           </>

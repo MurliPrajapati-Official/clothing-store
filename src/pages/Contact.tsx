@@ -85,7 +85,7 @@ export default function Contact() {
                   </div>
                   <div>
                     <span className="font-bold uppercase text-ink block mb-0.5">Client Line & WhatsApp</span>
-                    <p className="text-muted">+91 98765 43210</p>
+                    <p className="text-muted">+91 XXXXX XXXXX</p>
                     <p className="text-muted text-[10px]">Mon – Sat: 9:00 AM – 7:00 PM IST</p>
                   </div>
                 </div>
